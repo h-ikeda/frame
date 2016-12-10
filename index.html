@@ -2,18 +2,4 @@
 <script src="scripts/seen.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.7.1/coffee-script.min.js"></script>
 <canvas width="400" height="400" id="model"></canvas>
-<script type="text/coffeescript">
-  # Create a shape
-  shape = seen.Shapes.tetrahedron()
-
-  # Create scene and add shape to model
-  scene = new seen.Scene
-    model    : seen.Models.default().add(shape)
-    viewport : seen.Viewports.center(400, 400)
-
-  # Create render context from canvas
-  context = seen.Context('model', scene)
-
-  # Render it!
-  context.render()
-</script>
+<script src="scripts/inputModel.js"></script>
