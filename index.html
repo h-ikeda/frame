@@ -1,5 +1,17 @@
-<title>Frame - 1stop-st.org</title>
-<script src="scripts/seen.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.7.1/coffee-script.min.js"></script>
-<canvas width="400" height="400" id="model"></canvas>
-<script src="scripts/inputModel.coffee" type="text/coffeescript"></script>
+<!DOCTYPE html>
+<title>Frame | 1stop-st.org</title>
+<link rel="stylesheet" href="css/frame.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/w2ui/1.4.3/w2ui.min.css" integrity="sha256-9NhTAZAROAHtIWbQFuVzNaJMUj5TrXMd+2F5syPrp+c=" crossorigin="anonymous">
+<link rel="stylesheet" href="css/frame.css">
+<div class="grid" id="nodes"></div>
+<div class="grid" id="lines"></div>
+<div class="grid" id="boundaries"></div>
+<div class="grid" id="nodeLoads"></div>
+<input type="button" class="commands" id="calculate" value="Calculate">
+<script src="https://cdn.jsdelivr.net/jquery/3.1.1/jquery.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/threejs/0.0.0-r74/three.min.js" integrity="sha256-nT8Ncm26OimDHZQgF86mveAFOT5utrEOpkbFwROSEw8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/w2ui/1.4.3/w2ui.min.js" integrity="sha256-eueTEynUp7DTpXoQ+yGRN2jfF5TDth85X4yAd6QE6UA=" crossorigin="anonymous"></script>
+<script src="scripts/model.js"></script>
+<script src="scripts/table.js"></script>
+<script src="scripts/draw.js"></script>
+<script src="scripts/calc.js"></script>
