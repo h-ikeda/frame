@@ -25,7 +25,9 @@ var model = {
         { recid: 12, n1: 0, n2: 4, EA:1.0},
         { recid:13, n1:0, n2:5, EA:1.0},
         { recid:14, n1:4, n2:5, EA:1.0},
-        {recid:15,n1:0,n2:6,EA:1.0}
+        {recid:15,n1:0,n2:6,EA:1.0},
+        {recid:16,n1:4,n2:6,EA:1.0},
+        {recid:17,n1:5,n2:6,EA:1.0}
     ],
     boundaries: [
         { recid: 0, node: 0, x:true, y:true, z:true, rx: false, ry: false, rz: false},
