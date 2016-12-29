@@ -167,14 +167,29 @@ $('#calculate').click(/* @callback */ function(e){
             }
         });
         
-        
+        model.nodeLoads.forEach(function(lp){
+            $.each(lp, function(key, value){
+                if (key !== 'recid' && key !== 'node'){
+                    var ii = t.indexOf(t.find(function(s){
+                        return s[0] === lp.node && s[1] === key;
+                    }));
+                    if (ii > -1){
+                        P[ii] += value;
+                    }
+                }
+            });
+        });
         
     var jsonRequest = jsonrpc2_makeRequest('solve', {a:K, b:P});
     
     jsonrpc2('http://jsonrpc-calculator.1stop-st.org', jsonRequest, function(json_data){
+        var b='';
+        json_data.result.forEach(function(va, index){
+            b += '<br> Node ID:' + t[index][0] + ' ' + t[index][1] + '-component  :  ' + va;
+        });
         w2popup.open({
             title   : 'Result',
-            body    : 'Displacements:<br>' + json_data.result +'<br>'//+ json_data.error.message
+            body    : 'Displacements:<br>' + b +'<br>'//+ json_data.error.message
         });
     }, function(){
             w2popup.open({
