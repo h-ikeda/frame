@@ -13,6 +13,7 @@ body {
 
 .grid {
     height:100%;
+    padding-bottom:50px;
     display:none;
 }
 
