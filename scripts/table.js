@@ -121,12 +121,12 @@ $('#boundaries').w2grid({
     columns: [
         { field: 'recid', caption: 'ID', size: '12.5%', sortable: true, resizable: true },
         { field: 'node', caption: 'Node', size: '12.5%', sortable: true, resizable: true, editable: { type: 'int'} },
-        { field: 'x', caption: 'X', size: '12.5%', sortable: true, resizable: true, editable: { type: 'float'} },
-        { field: 'y', caption: 'Y', size: '12.5%', sortable: true, resizable: true, editable: { type: 'float'} },
-        { field: 'z', caption: 'Z', size: '12.5%', sortable: true, resizable: true, editable: { type: 'float'} },
-        { field: 'rx', caption: 'RX', size: '12.5%', sortable: true, resizable: true, editable: { type: 'float'} },
-        { field: 'ry', caption: 'RY', size: '12.5%', sortable: true, resizable: true, editable: { type: 'float'} },
-        { field: 'rz', caption: 'RZ', size: '12.5%', sortable: true, resizable: true, editable: { type: 'float'} }
+        { field: 'x', caption: 'X', size: '12.5%', sortable: true, resizable: true, editable: { type: 'check'} },
+        { field: 'y', caption: 'Y', size: '12.5%', sortable: true, resizable: true, editable: { type: 'check'} },
+        { field: 'z', caption: 'Z', size: '12.5%', sortable: true, resizable: true, editable: { type: 'check'} },
+        { field: 'rx', caption: 'RX', size: '12.5%', sortable: true, resizable: true, editable: { type: 'check'} },
+        { field: 'ry', caption: 'RY', size: '12.5%', sortable: true, resizable: true, editable: { type: 'check'} },
+        { field: 'rz', caption: 'RZ', size: '12.5%', sortable: true, resizable: true, editable: { type: 'check'} }
     ],
     searches: [
         { field: 'node', caption: 'Node', type: 'int' },
