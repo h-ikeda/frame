@@ -38,6 +38,7 @@ $('#nodes').w2grid({
         { field: 'z', caption: 'Z', type: 'float' }
     ],
     records: model.nodes,
+    selectType: 'cell',
     onAdd: function(e){
         var uniq = 0;
         this.records.forEach(function(rec){

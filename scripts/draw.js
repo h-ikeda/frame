@@ -9,6 +9,11 @@ renderer.setSize( window.innerWidth*0.5, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 function update(){
+    var rx, ry;
+    if (scene) {
+        rx = scene.rotation.x;
+        ry = scene.rotation.y;
+    }
     scene = new THREE.Scene();
     model.nodes.forEach(function(rec){
         var geometry = new THREE.SphereGeometry( 50/500 );
@@ -31,7 +36,13 @@ function update(){
         var line = new THREE.Line(geometry, material );
         scene.add(line);
     });
-
+    
+    if (rx){
+        scene.rotation.x = rx;
+    }
+    if (ry){
+        scene.rotation.y = ry;
+    }
 }
 update();
 
