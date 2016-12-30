@@ -1,4 +1,4 @@
-/*eslint-env jquery, node*/
+/*eslint-env jquery*/
 /*globals w2popup model THREE*/
 
 function jsonrpc2_makeRequest(method, params){

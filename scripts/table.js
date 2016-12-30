@@ -1,4 +1,20 @@
 /*eslint-env browser, jquery*/
+$('#model').w2tabs({
+    name: 'model',
+    active: 'tab_nodes',
+    tabs: [
+        {id: 'tab_nodes', caption: 'Nodes'},
+        {id: 'tab_lines', caption: 'Line Elements'},
+        {id: 'tab_boundaries', caption: 'Boundaries'},
+        {id: 'tab_nodeLoads', caption: 'Loads at Nodes'}
+    ],
+    onClick: function(e){
+        $('#'+ this.active.slice(4)).hide();
+        $('#'+ e.target.slice(4)).show();
+        w2ui[e.target.slice(4)].refresh();
+    }
+});
+
 $('#nodes').w2grid({
     name: 'nodes',
     header: 'Nodes',
