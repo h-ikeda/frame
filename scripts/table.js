@@ -1,4 +1,5 @@
-/*eslint-env browser, jquery*/
+/*eslint-env jquery*/
+/*globals w2ui model*/
 $('#model').w2tabs({
     name: 'model',
     active: 'tab_nodes',
@@ -15,17 +16,21 @@ $('#model').w2tabs({
     }
 });
 
-$('#nodes').w2grid({
-    name: 'nodes',
-    header: 'Nodes',
+var gridOptions = {
     show: {
-        header: true,
         toolbar: true,
         footer: true,
         toolbarReload: false,
         toolbarAdd: true,
         toolbarDelete: true,
     },
+    selectType: 'cell'
+};
+
+$('#nodes').w2grid(
+    $.extend(gridOptions,{
+    name: 'nodes',
+    header: 'Nodes',
     columns: [
         { field: 'recid', caption: 'ID', size: '10%', sortable: true, resizable: true },
         { field: 'x', caption: 'X', size: '30%', sortable: true, resizable: true, editable: { type: 'float'} },
@@ -38,7 +43,6 @@ $('#nodes').w2grid({
         { field: 'z', caption: 'Z', type: 'float' }
     ],
     records: model.nodes,
-    selectType: 'cell',
     onAdd: function(e){
         var uniq = 0;
         this.records.forEach(function(rec){
@@ -59,19 +63,12 @@ $('#nodes').w2grid({
             render();
         };
     }
-}).refresh();
+})).refresh();
 
-$('#lines').w2grid({
+$('#lines').w2grid(
+    $.extend(gridOptions,{
     name: 'lines',
     header: 'Line elements',
-    show: {
-        header: true,
-        toolbar: true,
-        footer: true,
-        toolbarReload: false,
-        toolbarAdd: true,
-        toolbarDelete: true,
-    },
     columns: [
         { field: 'recid', caption: 'ID', size: '10%', sortable: true, resizable: true },
         { field: 'n1', caption: 'Node 1', size: '30%', sortable: true, resizable: true, editable: { type: 'int'} },
@@ -84,7 +81,6 @@ $('#lines').w2grid({
         { field: 'EA', caption: 'EA', type: 'float' }
     ],
     records: model.lines,
-    selectType: 'cell',
     onAdd: function(e){
         var uniq = 0;
         this.records.forEach(function(rec){
@@ -105,19 +101,12 @@ $('#lines').w2grid({
             render();
         };
     }
-}).refresh();
+})).refresh();
 
-$('#boundaries').w2grid({
+$('#boundaries').w2grid(
+    $.extend(gridOptions,{
     name: 'boundaries',
     header: 'Boundaries',
-    show: {
-        header: true,
-        toolbar: true,
-        footer: true,
-        toolbarReload: false,
-        toolbarAdd: true,
-        toolbarDelete: true,
-    },
     columns: [
         { field: 'recid', caption: 'ID', size: '12.5%', sortable: true, resizable: true },
         { field: 'node', caption: 'Node', size: '12.5%', sortable: true, resizable: true, editable: { type: 'int'} },
@@ -138,7 +127,6 @@ $('#boundaries').w2grid({
         { field: 'rz', caption: 'RZ', type: 'float' }
     ],
     records: model.boundaries,
-    selectType: 'cell',
     onAdd: function(e){
         var uniq = 0;
         this.records.forEach(function(rec){
@@ -159,19 +147,12 @@ $('#boundaries').w2grid({
             render();
         };
     }
-}).refresh();
+})).refresh();
 
-$('#nodeLoads').w2grid({
+$('#nodeLoads').w2grid(
+    $.extend(gridOptions,{
     name: 'nodeLoads',
     header: 'Loads at nodes',
-    show: {
-        header: true,
-        toolbar: true,
-        footer: true,
-        toolbarReload: false,
-        toolbarAdd: true,
-        toolbarDelete: true,
-    },
     columns: [
         { field: 'recid', caption: 'ID', size: '12.5%', sortable: true, resizable: true },
         { field: 'node', caption: 'Node', size: '12.5%', sortable: true, resizable: true, editable: { type: 'int'} },
@@ -192,7 +173,6 @@ $('#nodeLoads').w2grid({
         { field: 'rz', caption: 'Mz', type: 'float' }
     ],
     records: model.nodeLoads,
-    selectType: 'cell',
     onAdd: function(e){
         var uniq = 0;
         this.records.forEach(function(rec){
@@ -213,4 +193,4 @@ $('#nodeLoads').w2grid({
             render();
         };
     }
-}).refresh();
+})).refresh();
