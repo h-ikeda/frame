@@ -84,6 +84,7 @@ $('#lines').w2grid({
         { field: 'EA', caption: 'EA', type: 'float' }
     ],
     records: model.lines,
+    selectType: 'cell',
     onAdd: function(e){
         var uniq = 0;
         this.records.forEach(function(rec){
@@ -137,6 +138,7 @@ $('#boundaries').w2grid({
         { field: 'rz', caption: 'RZ', type: 'float' }
     ],
     records: model.boundaries,
+    selectType: 'cell',
     onAdd: function(e){
         var uniq = 0;
         this.records.forEach(function(rec){
@@ -190,6 +192,7 @@ $('#nodeLoads').w2grid({
         { field: 'rz', caption: 'Mz', type: 'float' }
     ],
     records: model.nodeLoads,
+    selectType: 'cell',
     onAdd: function(e){
         var uniq = 0;
         this.records.forEach(function(rec){
