@@ -1,209 +1,68 @@
 /*eslint-env jquery*/
-/*globals w2popup model THREE*/
+/*globals w2popup model*/
 
-function jsonrpc2_makeRequest(method, params){
-    return {
-        jsonrpc: '2.0',
-        id: 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c === 'x' ? r : r&0x3|0x8;
-            return v.toString(16);
+$('#calculate').click(function(){
+    var btn = $(this).attr("disabled", true);
+    $.ajax({
+        type:'post',
+        url:'http://jsonrpc-calculator.1stop-st.org',
+        data:JSON.stringify({
+            jsonrpc: '2.0',
+            id: 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c === 'x' ? r : r&0x3|0x8;
+                return v.toString(16);
+            }),
+            method: 'frame_calculate',
+            params: [model]
         }),
-        method: method,
-        params: params
-    };
-}
-
-function jsonrpc2(url, requests, onSuccess, onError, onComplete){
-    var req = {
-        type:"post",
-        url:url,
-        data:JSON.stringify(requests),
-        dataType: "json"
-    };
-    if (onSuccess !== void 0){
-        req.success = onSuccess;
-    }
-    if (onError !== void 0){
-        req.error = onError;
-    }
-    if (onComplete !== void 0){
-        req.complete = onComplete;
-    }
-    $.ajax(req);
-}
-
-function rotateXmatrix(theta){
-    //right-handed system, right-hand rule.
-    return [
-        [1,0,0],
-        [0,Math.cos(theta),Math.sin(theta)],
-        [0,-Math.sin(theta),Math.cos(theta)]
-    ];
-}
-
-function rotateYmatrix(theta){
-    //right-handed system, right-hand rule.
-    return [
-        [Math.cos(theta),0,-Math.sin(theta)],
-        [0,1,0],
-        [Math.sin(theta),0,Math.cos(theta)]
-    ];
-}
-
-function rotateZmatrix(theta){
-    //right-handed system, right-hand rule.
-    return [
-        [Math.cos(theta),Math.sin(theta),0],
-        [-Math.sin(theta),Math.cos(theta),0],
-        [0,0,1]
-    ];
-}
-
-$('#calculate').click(/* @callback */ function(e){
-    var button = $(this).attr("disabled", true);
-    
-    var K = [], P = [], t=[];
-    model.nodes.forEach(function(rec){
-        t.push([rec.recid, 'x'], [rec.recid, 'y'], [rec.recid, 'z']); //,[rec.recid,'rx'],[rec.recid,'ry'],[rec.recid,'rz']);
-    });
-    
-    model.boundaries.forEach(function(rec){
-        $.each(rec, function(key, value){
-            if (key !== 'recid' && value === true){
-                t.splice(t.indexOf(t.find(function(s){
-                    return s[0] === rec.node && s[1] === key;
-                })),1);
-            }
-        });
-    });
-    for (var i=0; i<t.length; ++i){
-        K[i]=[];
-        P[i]=0.0;
-        for (var j=0; j<t.length; ++j){
-            K[i][j] = 0.0;
-        }
-    }
-    
-    var requests = [];
-    var u = [];
-    
-    model.lines.forEach(function(rec){
-        var n1 = model.nodes.find(function(t){
-            return rec.n1 === t.recid;
-        });
-        var n2 = model.nodes.find(function(t){
-            return rec.n2 === t.recid;
-        });
-        var v = new THREE.Vector3(n2.x-n1.x, n2.y-n1.y, n2.z-n1.z);
-        var localKz = rec.EA / v.length();
-        var localK11=[
-            [0,0,0],
-            [0,0,0],
-            [0,0,-localKz]
-        ];
-        
-        var localK12=[
-            [0,0,0],
-            [0,0,0],
-            [0,0,localKz]
-        ];
-        
-        var localK21=[
-            [0,0,0],
-            [0,0,0],
-            [0,0,localKz]
-        ];
-        
-        var localK22=[
-            [0,0,0],
-            [0,0,0],
-            [0,0,-localKz]
-        ];
-        
-        var vv = new THREE.Vector3();
-        vv.copy(v);
-        vv=vv.projectOnPlane(new THREE.Vector3(0,1,0));
-        
-        var rY = rotateYmatrix(v.x === 0 && v.z === 0 ? 0 :(new THREE.Vector3(0,0,1)).angleTo(vv));
-        var rX = rotateXmatrix(v.x === 0 && v.z === 0 ? (v.y > 0 ? Math.PI*0.5 : -Math.PI*0.5) :vv.angleTo(v));
-
-        var invrY = rotateYmatrix(v.x === 0 && v.z === 0 ? 0 :-(new THREE.Vector3(0,0,1)).angleTo(vv));
-        var invrX = rotateXmatrix(v.x === 0 && v.z === 0 ? (v.y < 0 ? Math.PI*0.5 : -Math.PI*0.5) :-vv.angleTo(v));
-
-        var r;
-        r=jsonrpc2_makeRequest('dot', {a:invrY, b:invrX, c:localK11, d:rX, e: rY});
-        u.push([n1.recid, n1.recid, r.id]);
-        requests.push(r);
-        r=jsonrpc2_makeRequest('dot', {a:invrY, b:invrX, c:localK12, d:rX, e: rY});
-        u.push([n1.recid, n2.recid, r.id]);
-        requests.push(r);
-        r=jsonrpc2_makeRequest('dot', {a:invrY, b:invrX, c:localK21, d:rX, e: rY});
-        u.push([n2.recid, n1.recid, r.id]);
-        requests.push(r);
-        r=jsonrpc2_makeRequest('dot', {a:invrY, b:invrX, c:localK22, d:rX, e: rY});
-        u.push([n2.recid, n2.recid, r.id]);
-        requests.push(r);
-    });
-    
-    jsonrpc2('http://jsonrpc-calculator.1stop-st.org', requests, function(json_data){
-
-       json_data.forEach(function(res){
-            var n = u.find(function(o){
-                return o[2] === res.id;
-            });
-            var d = ['x', 'y', 'z'];
-            for (var v = 0; v < 3; ++v){
-                for (var m=0; m<3; ++m){
-                    var r = t.indexOf(t.find(function(x){
-                            return x[0] === n[0] && x[1] === d[v];
-                        }));
-                    var c = t.indexOf(t.find(function(x){
-                            return x[0] === n[1] && x[1] === d[m];
-                        }));
-                    if (r > -1 && c > -1) {
-                        K[r][c] += res.result[v][m];
-                    }
-                }
-            }
-        });
-        
-        model.nodeLoads.forEach(function(lp){
-            $.each(lp, function(key, value){
-                if (key !== 'recid' && key !== 'node'){
-                    var ii = t.indexOf(t.find(function(s){
-                        return s[0] === lp.node && s[1] === key;
-                    }));
-                    if (ii > -1){
-                        P[ii] += value;
-                    }
-                }
-            });
-        });
-        
-    var jsonRequest = jsonrpc2_makeRequest('solve', {a:K, b:P});
-    
-    jsonrpc2('http://jsonrpc-calculator.1stop-st.org', jsonRequest, function(json_data){
-        var b='';
-        json_data.result.forEach(function(va, index){
-            b += '<br> Node ID:' + t[index][0] + ' ' + t[index][1] + '-component  :  ' + va;
-        });
-        w2popup.open({
-            title   : 'Result',
-            body    : 'Displacements:<br>' + b +'<br>'//+ json_data.error.message
-        });
-    }, function(){
+        dataType: "json",
+        success: function(response){
             w2popup.open({
-                title   : 'Result',
-                body    : 'Server error.'
+                title:'Result',
+                body:'<div id="popup_res" style="height:100%;width:100%"></div>'
             });
-    }, function(){
-            button.attr("disabled", false);
-    });
-}, function(){
-        w2popup.open({
-            title :'Result',
-            body : 'Server error.'
-        });
-        button.attr("disabled", false);
+            var r = [];
+            var d = response.result.displacements;
+            for (p in d){
+                r.push({recid:p, x:d[p].x, y:d[p].y, z:d[p].z});
+            }
+            if (w2ui['displacements']){
+                w2ui['displacements'].records = r;
+                w2ui['displacements'].refresh();
+            } else {
+            $('#popup_res').w2grid(
+                $.extend(gridOptions,{
+                    name: 'displacements',
+                    header: 'Displacements',
+                    show: {
+                        toolbar: true,
+                        footer: true,
+                        toolbarReload: false
+                    },
+                    columns: [
+                        { field: 'recid', caption: 'ID', size: '10%', sortable: true, resizable: true },
+                        { field: 'x', caption: 'dx', size: '30%', sortable: true, resizable: true },
+                        { field: 'y', caption: 'dy', size: '30%', sortable: true, resizable: true },
+                        { field: 'z', caption: 'dz', size: '30%', sortable: true, resizable: true }
+                    ],
+                    searches: [
+                        { field: 'x', caption: 'X', type: 'float' },
+                        { field: 'y', caption: 'Y', type: 'float' },
+                        { field: 'z', caption: 'Z', type: 'float' }
+                    ],
+                    records: r
+                })
+            ).refresh();
+            }
+        },
+        error: function(){
+            w2popup.open({
+                title:'Error',
+                body:'Server error.'
+            });
+        },
+        complete: function(){
+            btn.attr('disabled',false);
+        }
     });
 });
