@@ -1,0 +1,6 @@
+language: php
+deploy:
+  provider: openshift
+  user: OPENSHIFT_USER
+  password: OPENSHIFT_PASS
+  domain: OPENSHIFT_DOMAIN
