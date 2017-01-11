@@ -1,4 +1,5 @@
 language: php
+script: phpunit --version
 deploy:
   provider: openshift
   user: OPENSHIFT_USER
