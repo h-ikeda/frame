@@ -2,6 +2,6 @@ language: php
 script: phpunit --version
 deploy:
   provider: openshift
-  user: OPENSHIFT_USER
-  password: OPENSHIFT_PASS
-  domain: OPENSHIFT_DOMAIN
+  user: $OPENSHIFT_USER
+  password: $OPENSHIFT_PASS
+  domain: $OPENSHIFT_DOMAIN
