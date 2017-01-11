@@ -48,6 +48,7 @@ $('#calculate').click(function(){
             params: [model]
         }),
         dataType: "json",
+        contentType: false,
         success: function(response){
             w2ui['displacements'].records = parseResponse(response);
             w2popup.open({
