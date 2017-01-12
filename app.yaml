@@ -1,9 +1,9 @@
 runtime: php55
 api_version: 1
 handlers:
-- url: /
+- url: /$
   static_files: index.html
   upload: index.html
-- url: /.*
+- url: /(.+)
   static_files: \1
   upload: .*
