@@ -1,7 +1,9 @@
 language: php
 script: phpunit --version
 deploy:
-  provider: openshift
-  user: $OPENSHIFT_USER
-  password: $OPENSHIFT_PASS
-  domain: $OPENSHIFT_DOMAIN
+  provider: gae
+  keyfile: secret.json
+  project: frame-155310
+before_install:
+- openssl aes-256-cbc -K $encrypted_283774e94de8_key -iv $encrypted_283774e94de8_iv
+  -in .json.enc -out secret.json -d
