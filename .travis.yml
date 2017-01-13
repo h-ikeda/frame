@@ -1,9 +1,2 @@
 language: php
 script: phpunit --version
-deploy:
-  provider: gae
-  keyfile: .json
-  project: frame-155310
-before_install:
-- openssl aes-256-cbc -K $encrypted_4394b7d0ab90_key -iv $encrypted_4394b7d0ab90_iv
-  -in .json.enc -out .json -d
