@@ -5,8 +5,11 @@
     </testsuite>
   </testsuites>
   <filter>
-  <whitelist processUncoveredFilesFromWhitelist="true">
-    <directory>.</directory>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory>.</directory>
+      <exclude>
+        <directory>tests</directory>
+      </exclude>
     </whitelist>
   </filter>
   <logging>
