@@ -4,4 +4,15 @@
       <directory>tests</directory>
     </testsuite>
   </testsuites>
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory>.</directory>
+      <exclude>
+        <directory>tests</directory>
+      </exclude>
+    </whitelist>
+  </filter>
+  <logging>
+    <log type="coverage-clover" target="clover.xml"/>
+  </logging>
 </phpunit>
