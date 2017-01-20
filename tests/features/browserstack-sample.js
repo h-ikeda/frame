@@ -3,9 +3,11 @@ var Cucumber = require('cucumber');
 var assert = require('cucumber-assert');
 var webdriver = require('selenium-webdriver');
 
+Cucumber.defineSupportCode(function({setDefaultTimeout}) {
+  setDefaultTimeout(60 * 1000);
+});
+
 Cucumber.defineSupportCode(function(context) {
-  var setWorldConstructor = context.setWorldConstructor;
-  var Given = context.Given;
   var When = context.When;
   var Then = context.Then;
   
@@ -19,7 +21,9 @@ Cucumber.defineSupportCode(function(context) {
   var config = {
     server: 'hub-cloud.browserstack.com',
     capabilities: [{
-      browserName: 'chrome'
+      browserName: 'chrome',
+      build: process.env.CIRCLE_BUILD_NUM,
+      project: 'frame'
     }]
   };
   
@@ -29,7 +33,7 @@ Cucumber.defineSupportCode(function(context) {
   caps['browserstack.key'] = process.env.BS_AUTHKEY || config.key;
   
   var driver = createBrowserStackSession(config, caps);
-  
+
   ///// Your step definitions /////
   //
   // use 'Given', 'When' and 'Then' to declare step definitions
@@ -56,5 +60,7 @@ Cucumber.defineSupportCode(function(context) {
         assert.equal(title, titleMatch, next, 'Expected title to be ' + titleMatch);
       });
   });
+  
+  driver.quit();
 
 });
