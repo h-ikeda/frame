@@ -1,5 +1,17 @@
-/*eslint-env jquery*/
+/*eslint-env jquery, browser*/
 /*globals w2ui model*/
+
+var $ = require('jquery');
+var w2ui = require('w2ui');
+
+var e = [["tabs", "model"], ["grid", "nodes"], ["grid", "lines"], ["grid", "boundaries"], ["grid", "nodeLoads"]];
+e.forEach(function(p){
+    var m=document.createElement('div');
+    m.className = p[0];
+    m.setAttribute('id', p[1]);
+    document.body.appendChild(m);
+});
+
 $('#model').w2tabs({
     name: 'model',
     active: 'tab_nodes',

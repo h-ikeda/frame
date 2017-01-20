@@ -1,5 +1,7 @@
-/*eslint-env jquery*/
+/*eslint-env node*/
 /*globals w2popup model*/
+
+var $ = require('jquery');
 
 function parseResponse(response){
     var r = [];
