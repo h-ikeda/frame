@@ -7,3 +7,5 @@ Have an experience at http://frame.1stop-st.org/ !
 [<img alt="Browserstack" src="https://storage.googleapis.com/frame-static/browserstack.svg" width=250>](https://www.browserstack.com/)
 ## Overview
 An Online frame structure analyzer.
+## Thanks
+[BrowserStack](https://www.browserstack.com/), who provides a cross browser testing service, kindly helps us to manage easier.
