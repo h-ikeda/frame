@@ -1,6 +1,5 @@
-# frame
 Have an experience at http://frame.1stop-st.org/ !
-
+# frame
 [![CircleCI Status](https://circleci.com/gh/1stop-st/frame.svg?style=svg)](https://circleci.com/gh/1stop-st/frame)  
 [<img alt="CircleCI" src="https://storage.googleapis.com/frame-static/circleci.png" width=200>](https://circleci.com/)
 
