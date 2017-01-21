@@ -23,7 +23,7 @@ Cucumber.defineSupportCode(function(context) {
     capabilities: [{
       browserName: 'chrome',
       build: process.env.CIRCLE_BUILD_NUM,
-      project: 'frame'
+      project: process.env.CIRCLE_PROJECT_REPONAME + '-' + process.env.CIRCLE_BRANCH
     }]
   };
   
