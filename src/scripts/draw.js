@@ -1,13 +1,13 @@
 /*eslint-env browser, node*/
 
 var THREE = require('three');
+var model = require('./model');
 
 var scene;
 var camera = new THREE.PerspectiveCamera( 100, window.innerWidth*0.5/window.innerHeight, 1, 1000 );
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth*0.5, window.innerHeight );
-document.body.appendChild( renderer.domElement );
 
 function update(){
     var rx, ry;
@@ -85,3 +85,7 @@ function render() {
 	renderer.render(scene, camera);
 }
 render();
+
+module.exports.update = update;
+module.exports.render = render;
+module.exports.canvas = renderer.domElement;

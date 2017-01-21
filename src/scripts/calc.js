@@ -2,7 +2,14 @@
 /*globals w2popup model*/
 
 var $ = require('jquery');
+var model = require('./model');
 
+var m=document.createElement('button');
+    m.className = 'commands';
+    m.setAttribute('id', 'calculate');
+    m.innerHTML = 'Calculate';
+    document.body.appendChild(m);
+    
 function parseResponse(response){
     var r = [];
     var d = response.result.displacements;
@@ -11,6 +18,17 @@ function parseResponse(response){
     }
     return r;
 }
+
+var gridOptions = {
+    show: {
+        toolbar: true,
+        footer: true,
+        toolbarReload: false,
+        toolbarAdd: true,
+        toolbarDelete: true,
+    },
+    selectType: 'cell'
+};
 
 $().w2grid(
     $.extend(gridOptions,{

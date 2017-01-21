@@ -55,6 +55,11 @@ module.exports = {
         url: 'https://cdn.jsdelivr.net/w2ui/1.4.3/w2ui.min.js'
       },
       {
+        name: 'firebase',
+        var: 'firebase',
+        url: 'https://www.gstatic.com/firebasejs/3.3.0/firebase.js'
+      },
+      {
         name: 'w2ui.css',
         url: 'https://cdn.jsdelivr.net/w2ui/1.4.3/w2ui.min.css'
       }

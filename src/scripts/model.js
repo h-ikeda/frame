@@ -1,10 +1,6 @@
-var $ = require('jquery');
+/*eslint-env node */
 
-var model = {
-    
-};
-
-$.extend(model, {
+module.exports = {
     nodes: [
         { recid: 0, x: 0.0, y: 0.0, z: 0.0 },
         { recid: 1, x: 3.0, y: 0.0, z: 0.0 },
@@ -49,7 +45,7 @@ $.extend(model, {
         {recid:0, node:3, x:1.0, y:0.0, z:0.0, rx:0.0, ry:0.0, rz:0.0},
         {recid:1, node:6, x:1.0, y:0.0, z:0.0, rx:0.0, ry:0.0, rz:0.0}
     ]
-});
+};
 
 /*
 //test simple X

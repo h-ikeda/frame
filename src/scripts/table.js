@@ -1,8 +1,10 @@
-/*eslint-env jquery, browser*/
-/*globals w2ui model*/
 
 var $ = require('jquery');
 var w2ui = require('w2ui');
+var model = require('./model');
+
+var update = require('./draw').update;
+var render = require('./draw').render;
 
 var e = [["tabs", "model"], ["grid", "nodes"], ["grid", "lines"], ["grid", "boundaries"], ["grid", "nodeLoads"]];
 e.forEach(function(p){
