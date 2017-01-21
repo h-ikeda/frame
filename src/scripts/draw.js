@@ -1,5 +1,6 @@
-/*eslint-env browser */
-/*globals THREE */
+/*eslint-env browser, node*/
+
+var THREE = require('three');
 
 var scene;
 var camera = new THREE.PerspectiveCamera( 100, window.innerWidth*0.5/window.innerHeight, 1, 1000 );
