@@ -1,5 +1,6 @@
 Have an experience at http://frame.1stop-st.org/ !
 # Frame
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9e1afcc2c28b4ab9bc85837e1a81ebb4)](https://www.codacy.com/app/h-ikeda/frame?utm_source=github.com&utm_medium=referral&utm_content=1stop-st/frame&utm_campaign=badger)
 [![CircleCI Status](https://circleci.com/gh/1stop-st/frame.svg?style=svg)](https://circleci.com/gh/1stop-st/frame)  
 [<img alt="CircleCI" src="https://storage.googleapis.com/frame-static/circleci.png" width=200>](https://circleci.com/)
 
