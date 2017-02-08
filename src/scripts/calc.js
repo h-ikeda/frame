@@ -1,95 +1,109 @@
 /*eslint-env node*/
-/*globals w2popup model*/
 
-var $ = require('jquery');
-var model = require('./model');
+var ref = require("./firebase_ref");
 
-var m=document.createElement('button');
-    m.className = 'commands';
-    m.setAttribute('id', 'calculate');
-    m.innerHTML = 'Calculate';
-    document.body.appendChild(m);
-    
-function parseResponse(response){
+function converted(obj) {
+    var t = {};
+    Object.keys(obj).forEach(function(key) {
+        t[key] = Object.keys(obj[key]).map(function(k) {
+            var u = obj[key][k];
+            u.recid = parseInt(k, 10);
+            return u;
+        });
+    });
+    return t;
+}
+
+function parseResponse(response) {
     var r = [];
     var d = response.result.displacements;
-    for (p in d){
-        r.push({recid:p, x:d[p].x, y:d[p].y, z:d[p].z});
+    for (var p in d) {
+        r.push({
+            recid: p,
+            x: d[p].x,
+            y: d[p].y,
+            z: d[p].z
+        });
     }
     return r;
 }
 
-var gridOptions = {
-    show: {
-        toolbar: true,
-        footer: true,
-        toolbarReload: false,
-        toolbarAdd: true,
-        toolbarDelete: true,
-    },
-    selectType: 'cell'
-};
+$().w2grid({
+    name: 'displacements',
+    header: 'Displacements',
+    selectType: 'cell',
+    columns: [{
+        field: 'recid',
+        caption: 'ID',
+        size: '10%',
+        sortable: true,
+        resizable: true
+    }, {
+        field: 'x',
+        caption: 'dx',
+        size: '30%',
+        sortable: true,
+        resizable: true
+    }, {
+        field: 'y',
+        caption: 'dy',
+        size: '30%',
+        sortable: true,
+        resizable: true
+    }, {
+        field: 'z',
+        caption: 'dz',
+        size: '30%',
+        sortable: true,
+        resizable: true
+    }]
+});
 
-$().w2grid(
-    $.extend(gridOptions,{
-        name: 'displacements',
-        header: 'Displacements',
-        show: {
-            toolbar: true,
-            footer: true,
-            toolbarReload: false
-        },
-        columns: [
-            { field: 'recid', caption: 'ID', size: '10%', sortable: true, resizable: true },
-            { field: 'x', caption: 'dx', size: '30%', sortable: true, resizable: true },
-            { field: 'y', caption: 'dy', size: '30%', sortable: true, resizable: true },
-            { field: 'z', caption: 'dz', size: '30%', sortable: true, resizable: true }
-        ],
-        searches: [
-            { field: 'x', caption: 'X', type: 'float' },
-            { field: 'y', caption: 'Y', type: 'float' },
-            { field: 'z', caption: 'Z', type: 'float' }
-        ]
-    })
-);
+module.exports = document.createElement('button');
+module.exports.id = "calculate";
+module.exports.innerHTML = "Calculate";
 
-$('#calculate').click(function(){
+module.exports.addEventListener("click", function() {
     var btn = $(this).attr("disabled", true);
-    $.ajax({
-        type:'post',
-        url:'http://jsonrpc-calculator.1stop-st.org',
-        data:JSON.stringify({
-            jsonrpc: '2.0',
-            id: 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random()*16|0, v = c === 'x' ? r : r&0x3|0x8;
-                return v.toString(16);
+    ref.once("value", function(res) {
+        var model = converted(res.val());
+        $.ajax({
+            type: "post",
+            url: "http://jsonrpc-calculator.1stop-st.org",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+                    var r = Math.random() * 16 | 0,
+                        v = c === "x" ? r : r & 0x3 | 0x8;
+                    return v.toString(16);
+                }),
+                method: "frame_calculate",
+                params: [model]
             }),
-            method: 'frame_calculate',
-            params: [model]
-        }),
-        dataType: "json",
-        contentType: false,
-        success: function(response){
-            w2ui['displacements'].records = parseResponse(response);
-            w2popup.open({
-                title:'Result',
-                body:'<div id="popup_res" style="height:100%;width:100%"></div>',
-                onOpen: function(e){
-                    e.onComplete=function(){
-                        $('#popup_res').w2render('displacements');
-                        w2ui['displacements'].refresh();
+            dataType: "json",
+            contentType: false,
+            success: function(response) {
+                w2ui['displacements'].records = parseResponse(response);
+                w2popup.open({
+                    title: "Result",
+                    body: "<div id=\"popup_res\" style=\"height:100%;width:100%\"></div>",
+                    onOpen: function(e) {
+                        e.onComplete = function(e) {
+                            $("#popup_res").w2render("displacements");
+                            w2ui['displacements'].refresh();
+                        };
                     }
-                }
-            });
-        },
-        error: function(){
-            w2popup.open({
-                title:'Error',
-                body:'Server error.'
-            });
-        },
-        complete: function(){
-            btn.attr('disabled',false);
-        }
+                });
+            },
+            error: function() {
+                w2popup.open({
+                    title: 'Error',
+                    body: 'Server error.'
+                });
+            },
+            complete: function() {
+                btn.attr('disabled', false);
+            }
+        });
     });
 });
