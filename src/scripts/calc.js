@@ -17,7 +17,7 @@ function converted(obj) {
 function parseResponse(response) {
     var r = [];
     var d = response.result.displacements;
-    for (p in d) {
+    for (var p in d) {
         r.push({
             recid: p,
             x: d[p].x,
