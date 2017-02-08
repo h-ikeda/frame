@@ -5,31 +5,5 @@ html {
 body {
     margin: 0;
     height: 100%;
-    position: relative;
-    column-count: 2;
-    column-gap: 0;
     overflow: hidden;
 }
-
-.grid {
-    height:100%;
-    padding-bottom:50px;
-    display:none;
-}
-
-#nodes {
-    display:block;
-}
-
-.commands {
-    position:absolute;
-    top:0;
-    left:50%;
-    margin:10px;
-}
-
-/*
-.grid:last-of-type {
-    height:34.01%;
-}
-*/
