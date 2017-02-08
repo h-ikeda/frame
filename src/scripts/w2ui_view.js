@@ -38,7 +38,7 @@ ref.on("value", function(res){
         t.active = t.tabs[0].id;
     }
     t.refresh();
-    var g =w2ui["grid"];
+    var g =w2ui['grid'];
     g.columns = columnHeaders(model[t.active][0]);
     g.records = model[t.active];
     g.refresh();
