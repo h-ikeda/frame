@@ -33,7 +33,14 @@ Cucumber.defineSupportCode(function(context) {
   caps['browserstack.user'] = process.env.BS_USERNAME || config.user;
   caps['browserstack.key'] = process.env.BS_AUTHKEY || config.key;
 
-  var driver = createBrowserStackSession(config, caps);
+  // Code to start browserstack local before start of test and stop browserstack local after end of test
+  var browserstack = require("browserstack-local");
+  var driver;
+  bs_local = new browserstack.Local();
+  bs_local.start({'key': caps['browserstack.key']}, function(error) {
+    if (error) return console.log(error.red);
+    driver = createBrowserStackSession(config, caps);
+  });
 
   ///// Your step definitions /////
   //
