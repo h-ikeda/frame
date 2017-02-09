@@ -12,8 +12,6 @@ var createBrowserStackSession = function(config, caps){
 
 var config = {
     server: 'hub-cloud.browserstack.com',
-    user: "hirokiikeda1",
-    key: "1JSwFjEmHAJzMRYtyp6q",
     capabilities: [
         {
             browserName: 'chrome',
