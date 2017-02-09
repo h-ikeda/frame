@@ -22,7 +22,7 @@
     "webpack": "^2.2.0"
   },
   "files": [
-    "dist"
+    "dest"
   ],
   "repository": {
     "type": "git",
