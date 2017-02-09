@@ -1,0 +1,11 @@
+S(function(m) {
+	m.mount(S.document.body, require("./solufa_model"));
+	m.render(S.document.head,
+    	<rdr init={{frame: "#solufa", preserveDrawingBuffer: true }}>
+		  <OrbitVp cam="#cam" />
+		</rdr>
+	);
+});
+
+module.exports = document.createElement("div");
+module.exports.id = "solufa";
