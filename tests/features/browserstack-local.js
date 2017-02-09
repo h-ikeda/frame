@@ -38,7 +38,6 @@ Cucumber.defineSupportCode(function(context) {
   var driver;
   bs_local = new browserstack.Local();
   bs_local.start({'key': caps['browserstack.key']}, function(error) {
-    if (error) return console.log(error.red);
     driver = createBrowserStackSession(config, caps);
   });
 
@@ -58,6 +57,6 @@ Cucumber.defineSupportCode(function(context) {
       });
   });
   
-  driver.quit();
+  setTimeout(driver.quit, 5000);
 
 });
