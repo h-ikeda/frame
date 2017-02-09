@@ -8,7 +8,7 @@ var createBrowserStackSession = function(config, caps){
     usingServer('http://'+config.server+'/wd/hub').
     withCapabilities(caps).
     build();
-}
+};
 
 var config = {
     server: 'hub-cloud.browserstack.com',
