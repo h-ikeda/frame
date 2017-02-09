@@ -23,7 +23,8 @@ Cucumber.defineSupportCode(function(context) {
     capabilities: [{
       browserName: 'chrome',
       build: process.env.CIRCLE_BUILD_NUM,
-      project: process.env.CIRCLE_PROJECT_REPONAME + '-' + process.env.CIRCLE_BRANCH
+      project: process.env.CIRCLE_PROJECT_REPONAME + '-' + process.env.CIRCLE_BRANCH,
+      'browserstack.local': true
     }]
   };
 
@@ -39,19 +40,9 @@ Cucumber.defineSupportCode(function(context) {
   // use 'Given', 'When' and 'Then' to declare step definitions
   //
 
-  When(/^I type query as "([^"]*)"$/, function (searchQuery, next) {
-    driver.get('https://www.google.com/ncr');
-    driver.findElement({ name: 'q' })
-      .sendKeys(searchQuery + '\n').then(next);
-  });
-
-  Then(/^I submit$/, function (next) {
-    driver.findElement({ name: 'btnG' })
-      .click()
-      .then(function() {
-        driver.wait(webdriver.until.elementLocated(webdriver.By.id('top_navi')), 5000);
-        next();
-      });
+  When(/^I open site$/, function (searchQuery, next) {
+    driver.get('http://localhost/');
+    next();
   });
 
   Then(/^I should see title "([^"]*)"$/, function (titleMatch, next) {
