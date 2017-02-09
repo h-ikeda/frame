@@ -53,13 +53,6 @@ Cucumber.defineSupportCode(function(context) {
         next();
       });
   });
-
-  Then(/^I should see title "([^"]*)"$/, function (titleMatch, next) {
-    driver.getTitle()
-      .then(function(title) {
-        assert.equal(title, titleMatch, next, 'Expected title to be ' + titleMatch);
-      });
-  });
   
   driver.quit();
 
