@@ -41,7 +41,7 @@ Cucumber.defineSupportCode(function(context) {
   //
 
   When(/^I open site$/, function (next) {
-    driver.get('http://localhost/');
+    driver.get('http://127.0.0.1/');
     next();
   });
 
