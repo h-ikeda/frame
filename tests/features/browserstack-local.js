@@ -40,7 +40,7 @@ Cucumber.defineSupportCode(function(context) {
   // use 'Given', 'When' and 'Then' to declare step definitions
   //
 
-  When(/^I open site$/, function (searchQuery, next) {
+  When(/^I open site$/, function (next) {
     driver.get('http://localhost/');
     next();
   });
