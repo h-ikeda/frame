@@ -41,8 +41,7 @@ Cucumber.defineSupportCode(function(context) {
   //
 
   When(/^I open site$/, function (next) {
-    driver.get('http://127.0.0.1/');
-    next();
+    driver.get('http://127.0.0.1/').then(next);
   });
 
   Then(/^I should see title "([^"]*)"$/, function (titleMatch, next) {
