@@ -31,37 +31,37 @@ function parseResponse(response) {
 }
 
 $().w2grid({
-    name: 'displacements',
-    header: 'Displacements',
-    selectType: 'cell',
+    name: "displacements",
+    header: "Displacements",
+    selectType: "cell",
     columns: [{
-        field: 'recid',
-        caption: 'ID',
-        size: '10%',
+        field: "recid",
+        caption: "ID",
+        size: "10%",
         sortable: true,
         resizable: true
     }, {
-        field: 'x',
-        caption: 'dx',
-        size: '30%',
+        field: "x",
+        caption: "dx",
+        size: "30%",
         sortable: true,
         resizable: true
     }, {
-        field: 'y',
-        caption: 'dy',
-        size: '30%',
+        field: "y",
+        caption: "dy",
+        size: "30%",
         sortable: true,
         resizable: true
     }, {
-        field: 'z',
-        caption: 'dz',
-        size: '30%',
+        field: "z",
+        caption: "dz",
+        size: "30%",
         sortable: true,
         resizable: true
     }]
 });
 
-module.exports = document.createElement('button');
+module.exports = document.createElement("button");
 module.exports.id = "calculate";
 module.exports.innerHTML = "Calculate";
 
