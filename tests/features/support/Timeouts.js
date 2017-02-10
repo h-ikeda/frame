@@ -1,5 +1,5 @@
-var {defineSupportCode} = require('cucumber');
+var defineSupportCode = require('cucumber').defineSupportCode;
 
-defineSupportCode(function({setDefaultTimeout}) {
-  setDefaultTimeout(60 * 1000);
+defineSupportCode(function(context) {
+  context.setDefaultTimeout(60 * 1000);
 });
