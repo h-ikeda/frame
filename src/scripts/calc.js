@@ -83,14 +83,14 @@ module.exports.addEventListener("click", function() {
             dataType: "json",
             contentType: false,
             success: function(response) {
-                w2ui['displacements'].records = parseResponse(response);
+                w2ui.displacements.records = parseResponse(response);
                 w2popup.open({
                     title: "Result",
                     body: "<div id=\"popup_res\" style=\"height:100%;width:100%\"></div>",
                     onOpen: function(e) {
                         e.onComplete = function(e) {
                             $("#popup_res").w2render("displacements");
-                            w2ui['displacements'].refresh();
+                            w2ui.displacements.refresh();
                         };
                     }
                 });
