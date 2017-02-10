@@ -26,23 +26,23 @@ var username = process.env.BS_USERNAME || config.user;
 var accessKey = process.env.BS_AUTHKEY || config.key;
 
 defineSupportCode(function(context) {
-  var Before = context.Before;
-  var After = context.After;
+  var before = context.Before;
+  var after = context.After;
   var bsLocal = null;
 
-  Before(function (scenario, callback) {
+  before(function (scenario, callback) {
     var world = this;
     var taskId = parseInt(process.env.TASK_ID || 0, 10);
     var caps = config.capabilities[taskId];
-    caps['browserstack.user'] = username;
-    caps['browserstack.key'] = accessKey;
+    caps["browserstack.user"] = username;
+    caps["browserstack.key"] = accessKey;
 
     if(caps["browserstack.local"]){
       // Code to start browserstack local before start of test and stop browserstack local after end of test
       bsLocal = new browserstack.Local();
       bsLocal.start({key: accessKey}, function(error) {
         if (error) {
-          return console.log(error.red);
+          throw new Error("Error at starting browserstack local.");
         }
         world.driver = createBrowserStackSession(config, caps);
         callback();
@@ -54,7 +54,7 @@ defineSupportCode(function(context) {
     }
   });
 
-  After(function(scenario, callback){
+  after(function(scenario, callback){
     this.driver.quit().then(function(){
       if(bsLocal){
         bsLocal.stop(callback);
