@@ -1,12 +1,13 @@
 /*eslint-env node */
 
-var {defineSupportCode} = require('cucumber');
+var defineSupportCode = require('cucumber').defineSupportCode;
 var assert = require('cucumber-assert');
 var webdriver = require('selenium-webdriver');
 
-defineSupportCode(function({Then, When}) {
-	
-	When(/^I open site$/, function (next) {
+defineSupportCode(function(context) {
+    var Then = context.Then;
+    var When = context.When;
+    When(/^I open site$/, function (next) {
         this.driver.get('http://127.0.0.1/');
         next();
     });
