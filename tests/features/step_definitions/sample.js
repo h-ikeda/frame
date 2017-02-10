@@ -40,7 +40,7 @@ Cucumber.defineSupportCode(function(context) {
   });
 
   Then(/^the variable should contain (\d+)$/, function(number) {
-    if (this.variable != parseInt(number))
+    if (this.variable !== parseInt(number))
       throw new Error('Variable should contain ' + number +
         ' but it contains ' + this.variable + '.');
   });
