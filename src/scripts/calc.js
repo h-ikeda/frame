@@ -18,12 +18,14 @@ function parseResponse(response) {
     var r = [];
     var d = response.result.displacements;
     for (var p in d) {
-        r.push({
-            recid: p,
-            x: d[p].x,
-            y: d[p].y,
-            z: d[p].z
-        });
+        if (d.hasOwnProperty(p)) {
+            r.push({
+                recid: p,
+                x: d[p].x,
+                y: d[p].y,
+                z: d[p].z
+            });
+        }
     }
     return r;
 }
