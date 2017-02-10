@@ -24,6 +24,15 @@ function createTabs(obj) {
     });
 }
 
+function columnHeaders(obj) {
+    return Object.keys(obj).map(function(key) {
+        return {
+            field: key,
+            caption: key,
+            size: "10%"};
+    });
+}
+
 ref.on("value", function(res){
     model = converted(res.val());
     var t = w2ui.tabs;
@@ -54,15 +63,6 @@ $(tabs).w2tabs({
         g.refresh();
     }
 });
-
-function columnHeaders(obj) {
-    return Object.keys(obj).map(function(key) {
-        return {
-            field: key,
-            caption: key,
-            size: "10%"};
-    });
-}
 
 var grid = document.createElement("div");
 grid.style.height = "80%";

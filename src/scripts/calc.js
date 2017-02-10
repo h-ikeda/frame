@@ -18,48 +18,50 @@ function parseResponse(response) {
     var r = [];
     var d = response.result.displacements;
     for (var p in d) {
-        r.push({
-            recid: p,
-            x: d[p].x,
-            y: d[p].y,
-            z: d[p].z
-        });
+        if (d.hasOwnProperty(p)) {
+            r.push({
+                recid: p,
+                x: d[p].x,
+                y: d[p].y,
+                z: d[p].z
+            });
+        }
     }
     return r;
 }
 
 $().w2grid({
-    name: 'displacements',
-    header: 'Displacements',
-    selectType: 'cell',
+    name: "displacements",
+    header: "Displacements",
+    selectType: "cell",
     columns: [{
-        field: 'recid',
-        caption: 'ID',
-        size: '10%',
+        field: "recid",
+        caption: "ID",
+        size: "10%",
         sortable: true,
         resizable: true
     }, {
-        field: 'x',
-        caption: 'dx',
-        size: '30%',
+        field: "x",
+        caption: "dx",
+        size: "30%",
         sortable: true,
         resizable: true
     }, {
-        field: 'y',
-        caption: 'dy',
-        size: '30%',
+        field: "y",
+        caption: "dy",
+        size: "30%",
         sortable: true,
         resizable: true
     }, {
-        field: 'z',
-        caption: 'dz',
-        size: '30%',
+        field: "z",
+        caption: "dz",
+        size: "30%",
         sortable: true,
         resizable: true
     }]
 });
 
-module.exports = document.createElement('button');
+module.exports = document.createElement("button");
 module.exports.id = "calculate";
 module.exports.innerHTML = "Calculate";
 
