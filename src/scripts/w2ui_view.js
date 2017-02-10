@@ -26,7 +26,7 @@ function createTabs(obj) {
 
 ref.on("value", function(res){
     model = converted(res.val());
-    var t = w2ui['tabs'];
+    var t = w2ui.tabs;
     t.tabs = createTabs(model);
     var f = true;
     t.tabs.forEach(function(tab) {
@@ -38,7 +38,7 @@ ref.on("value", function(res){
         t.active = t.tabs[0].id;
     }
     t.refresh();
-    var g =w2ui['grid'];
+    var g =w2ui.grid;
     g.columns = columnHeaders(model[t.active][0]);
     g.records = model[t.active];
     g.refresh();
@@ -48,7 +48,7 @@ var tabs = document.createElement("div");
 $(tabs).w2tabs({
     name: "tabs",
     onClick: function(e){
-        var g = w2ui['grid'];
+        var g = w2ui.grid;
         g.columns = columnHeaders(model[e.target][0]);
         g.records = model[e.target];
         g.refresh();
@@ -75,7 +75,7 @@ $(grid).w2grid({
 });
 
 $(function(){
-    w2ui['grid'].refresh();
+    w2ui.grid.refresh();
 });
 
 var wrapper = document.createElement("div");
