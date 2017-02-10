@@ -46,7 +46,7 @@ module.exports = {
         }, {
             name: "w2ui",
             var: "w2ui",
-            path: "w2ui/w2ui.js"
+            path: "w2ui/w2ui.min.js"
         }, {
             name: "w2ui.css",
             path: "w2ui/w2ui.min.css"

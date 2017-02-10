@@ -69,10 +69,9 @@ module.exports.addEventListener("click", function() {
     var btn = $(this).attr("disabled", true);
     ref.once("value", function(res) {
         var model = converted(res.val());
-        $.ajax({
-            type: "post",
-            url: "http://jsonrpc-calculator.1stop-st.org",
-            data: JSON.stringify({
+        require("superagent")
+            .post("http://jsonrpc-calculator.1stop-st.org")
+            .send(JSON.stringify({
                 jsonrpc: "2.0",
                 id: "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
                     var r = Math.random() * 16 | 0,
@@ -81,31 +80,28 @@ module.exports.addEventListener("click", function() {
                 }),
                 method: "frame_calculate",
                 params: [model]
-            }),
-            dataType: "json",
-            contentType: false,
-            success: function(response) {
-                w2ui.displacements.records = parseResponse(response);
-                w2popup.open({
-                    title: "Result",
-                    body: "<div id=\"popup_res\" style=\"height:100%;width:100%\"></div>",
-                    onOpen: function(e) {
-                        e.onComplete = function(e) {
-                            $("#popup_res").w2render("displacements");
-                            w2ui.displacements.refresh();
-                        };
-                    }
-                });
-            },
-            error: function() {
-                w2popup.open({
-                    title: 'Error',
-                    body: 'Server error.'
-                });
-            },
-            complete: function() {
+            }))
+            .end(function(err, res) {
+                if (err) {
+                    var msg = "";
+                    Object.keys(err.response).forEach(function(key) {
+                        msg += key + ": " + err.response[key];
+                    });
+                    alert(msg);
+                } else {
+                    w2ui.displacements.records = parseResponse(JSON.parse(res.text));
+                    w2popup.open({
+                        title: "Result",
+                        body: "<div id=\"popup_res\" style=\"height:100%;width:100%\"></div>",
+                        onOpen: function(e) {
+                            e.onComplete = function(e) {
+                                $("#popup_res").w2render("displacements");
+                                w2ui.displacements.refresh();
+                            };
+                        }
+                    });
+                }
                 btn.attr('disabled', false);
-            }
-        });
+            });
     });
 });
