@@ -1,22 +1,22 @@
-var {defineSupportCode} = require('cucumber');
+var defineSupportCode = require('cucumber').defineSupportCode;
 
 var webdriver = require("selenium-webdriver");
 var browserstack = require("browserstack-local");
 
 var createBrowserStackSession = function(config, caps){
   return new webdriver.Builder().
-    usingServer('http://'+config.server+'/wd/hub').
+    usingServer("http://"+config.server+"/wd/hub").
     withCapabilities(caps).
     build();
 };
 
 var config = {
-    server: 'hub-cloud.browserstack.com',
+    server: "hub-cloud.browserstack.com",
     capabilities: [
         {
-            browserName: 'chrome',
+            browserName: "chrome",
             build: process.env.CIRCLE_BUILD_NUM,
-            project: process.env.CIRCLE_PROJECT_REPONAME + '-' + process.env.CIRCLE_BRANCH,
+            project: process.env.CIRCLE_PROJECT_REPONAME + "-" + process.env.CIRCLE_BRANCH,
             'browserstack.local': true
         }
     ]
@@ -25,7 +25,9 @@ var config = {
 var username = process.env.BS_USERNAME || config.user;
 var accessKey = process.env.BS_AUTHKEY || config.key;
 
-defineSupportCode(function({After, Before}) {
+defineSupportCode(function(context) {
+  var Before = context.Before;
+  var After = context.After;
   var bs_local = null;
 
   Before(function (scenario, callback) {
