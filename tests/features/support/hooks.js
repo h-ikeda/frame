@@ -59,7 +59,9 @@ defineSupportCode(function(context) {
       if(bsLocal){
         bsLocal.stop(callback);
       }
-      else callback();
+      else {
+        callback();
+      }
     });
   });
 });
