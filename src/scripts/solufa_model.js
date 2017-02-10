@@ -42,7 +42,7 @@ function createPointsElement(pos, color) {
         mtl: {
             type: "Points",
             value: {
-                color
+                color: color
             }
         }
     });
