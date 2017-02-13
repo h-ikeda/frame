@@ -2,7 +2,7 @@ var defineSupportCode = require("cucumber").defineSupportCode;
 
 var webdriver = require("selenium-webdriver");
 var browserstack = require("browserstack-local");
-var config = require("../../../browserstack_config");
+var config = require("../../browserstack_config");
 
 var createBrowserStackSession = function(config, caps){
   return new webdriver.Builder().
