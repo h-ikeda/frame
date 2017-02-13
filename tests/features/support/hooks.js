@@ -12,14 +12,7 @@ var createBrowserStackSession = function(config, caps){
 
 var config = {
     server: "hub-cloud.browserstack.com",
-    capabilities: [
-        {
-            browserName: "chrome",
-            build: process.env.CIRCLE_BUILD_NUM,
-            project: process.env.CIRCLE_PROJECT_REPONAME + "-" + process.env.CIRCLE_BRANCH,
-            "browserstack.local": true
-        }
-    ]
+    capabilities: require("../../browserstack-capabilities")
 };
 
 var username = process.env.BS_USERNAME || config.user;
@@ -36,6 +29,9 @@ defineSupportCode(function(context) {
     var caps = config.capabilities[taskId];
     caps["browserstack.user"] = username;
     caps["browserstack.key"] = accessKey;
+    caps.build = process.env.CIRCLE_BUILD_NUM;
+    caps.project = process.env.CIRCLE_PROJECT_REPONAME + "-" + process.env.CIRCLE_BRANCH;
+    caps["browserstack.local"] = true;
 
     if(caps["browserstack.local"]){
       // Code to start browserstack local before start of test and stop browserstack local after end of test
