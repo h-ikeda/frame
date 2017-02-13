@@ -131,8 +131,7 @@ var username = process.env.BS_USERNAME || config.user;
 var accessKey = process.env.BS_AUTHKEY || config.key;
 var build = process.env.CIRCLE_BUILD_NUM;
 var project = process.env.CIRCLE_PROJECT_REPONAME + "-" + process.env.CIRCLE_BRANCH;
-var browserstack_local = true;
-var taskId = 0;
+var browserstackLocal = true;
 
 defineSupportCode(function(context) {
   var before = context.Before;
@@ -141,12 +140,14 @@ defineSupportCode(function(context) {
 
   before(function (scenario, callback) {
     var world = this;
+    var taskId = parseInt(process.env.TASK_ID || 0, 10);
     var caps = config.capabilities[taskId];
+
     caps["browserstack.user"] = username;
     caps["browserstack.key"] = accessKey;
-    caps["build"] = build;
-    caps["project"] = project;
-    caps["browserstack.local"] = browserstack_local;
+    caps.build = build;
+    caps.project = project;
+    caps["browserstack.local"] = browserstackLocal;
 
     if(caps["browserstack.local"]){
       // Code to start browserstack local before start of test and stop browserstack local after end of test
@@ -166,7 +167,6 @@ defineSupportCode(function(context) {
   });
 
   after(function(scenario, callback){
-    ++taskId;
     this.driver.quit().then(function(){
       if(bsLocal){
         bsLocal.stop(callback);
