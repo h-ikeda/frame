@@ -56,7 +56,7 @@ module.exports = {
             os: "OS X",
             os_vertion: "Sierra",
             resolution: "1024x768"
-        },
+        }/*,
         {
             browserName: "iPhone",
             platform: "MAC",
@@ -111,6 +111,6 @@ module.exports = {
             browserName: "android",
             platform: "ANDROID",
             device: "Samsung Galaxy Tab 4 10.1"
-        }
+        }*/
     ]
 };
