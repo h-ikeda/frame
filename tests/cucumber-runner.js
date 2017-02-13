@@ -7,9 +7,6 @@ process.argv[1] = "cucumber-js";
 process.argv[2] = "tests/features";
 
 for(var i in config.capabilities){
-  if (i > 9) {
-    break;
-  }
   var env = Object.create( process.env );
   env.TASK_ID = i.toString();
   var p = child_process.spawn('/usr/bin/env', process.argv, { env: env } );  
