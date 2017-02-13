@@ -4,7 +4,7 @@ var config = require("./browserstack_config.js");
 
 process.argv[0] = "node";
 process.argv[1] = "cucumber-js";
-process.argv[2] = "tests/features";
+process.argv[2] = "tests";
 
 for(var i in config.capabilities){
   var env = Object.create( process.env );
