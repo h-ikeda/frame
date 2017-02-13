@@ -7,14 +7,14 @@ module.exports = {
             os: "Windows",
             os_vertion: "10",
             resolution: "1024x768"
-        }/*,
+        },
         {
             browserName: "firefox",
             browserVersion: "52.0 beta",
             os: "Windows",
             os_vertion: "10",
             resolution: "1024x768"
-        },
+        }/*,
         {
             browserName: "IE",
             browserVersion: "11.0",
