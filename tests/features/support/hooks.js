@@ -2,6 +2,7 @@ var defineSupportCode = require("cucumber").defineSupportCode;
 
 var webdriver = require("selenium-webdriver");
 var browserstack = require("browserstack-local");
+var config = require("../../browserstack_config");
 
 var createBrowserStackSession = function(config, caps){
   return new webdriver.Builder().
@@ -10,20 +11,11 @@ var createBrowserStackSession = function(config, caps){
     build();
 };
 
-var config = {
-    server: "hub-cloud.browserstack.com",
-    capabilities: [
-        {
-            browserName: "chrome",
-            build: process.env.CIRCLE_BUILD_NUM,
-            project: process.env.CIRCLE_PROJECT_REPONAME + "-" + process.env.CIRCLE_BRANCH,
-            "browserstack.local": true
-        }
-    ]
-};
-
 var username = process.env.BS_USERNAME || config.user;
 var accessKey = process.env.BS_AUTHKEY || config.key;
+var build = process.env.CIRCLE_BUILD_NUM;
+var project = process.env.CIRCLE_PROJECT_REPONAME + "-" + process.env.CIRCLE_BRANCH;
+var browserstackLocal = true;
 
 defineSupportCode(function(context) {
   var before = context.Before;
@@ -34,8 +26,12 @@ defineSupportCode(function(context) {
     var world = this;
     var taskId = parseInt(process.env.TASK_ID || 0, 10);
     var caps = config.capabilities[taskId];
+
     caps["browserstack.user"] = username;
     caps["browserstack.key"] = accessKey;
+    caps.build = build;
+    caps.project = project;
+    caps["browserstack.local"] = browserstackLocal;
 
     if(caps["browserstack.local"]){
       // Code to start browserstack local before start of test and stop browserstack local after end of test
