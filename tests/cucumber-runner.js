@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var child_process = require("child_process");
 var config = require("./browserstack_config.js");
 
