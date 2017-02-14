@@ -2,24 +2,39 @@
 /*globals S */
 
 var m = S.m;
-var data = {};
+var nodes = {};
+var lines = {};
 
-require("./firebase_ref").on("value", function(res) {
+var ref = require("./firebase_ref");
+
+ref.child("nodes").on("value", function(res) {
     m.startComputation();
-    data = res.val();
+    nodes = res.val();
     m.endComputation();
 });
 
-function nodes(){
-    return "nodes" in data ? Object.values(data.nodes): [];
+ref.child("lines").on("value", function(res) {
+    m.startComputation();
+    lines = res.val();
+    m.endComputation();
+})
+
+function nodesList(){
+    return Object.values(nodes);
 }
 
-function lines(){
-    return "lines" in data ? Object.values(data.lines).map(function(line){
-        var p1 = this[line.n1];
-        var p2 = this[line.n2];
-        return {pos1: p1, pos2: p2};
-    }, data.nodes): [];
+function linesList(){
+    return Object.values(lines).map(function(line){
+        if (line.n1 in this && line.n2 in this) {
+            var p1 = this[line.n1];
+            var p2 = this[line.n2];
+            return {pos1: p1, pos2: p2};
+        } else {
+            return false;
+        }
+    }, nodes).filter(function(o) {
+        return o;
+    });
 }
 
 function createPointsElement(pos, color) {
@@ -69,10 +84,10 @@ module.exports = {
     controller: function(){
         return {
             displayedObjects: function() {
-                var t = nodes().map(function(pos) {
+                var t = nodesList().map(function(pos) {
                     return createPointsElement(pos, "#f00");
                 });
-                lines().forEach(function(pos){
+                linesList().forEach(function(pos){
                     this.push(createLineElement(pos.pos1, pos.pos2, "#0f0"));
                 }, t);
                 return t;
