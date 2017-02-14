@@ -73,11 +73,7 @@ module.exports.addEventListener("click", function() {
             .post("http://jsonrpc-calculator.1stop-st.org")
             .send(JSON.stringify({
                 jsonrpc: "2.0",
-                id: "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-                    var r = Math.random() * 16 | 0,
-                        v = c === "x" ? r : r & 0x3 | 0x8;
-                    return v.toString(16);
-                }),
+                id: require("./uuid")(),
                 method: "frame_calculate",
                 params: [model]
             }))
