@@ -2,6 +2,9 @@
 
 var m = require("mithril");
 
+var grid = require("./w2ui_grid");
+grid.view.style.height = "calc(100% - 48px)";
+
 var tabs = require("./polythene_tabs");
 tabs.onClick(function(newIndex, oldIndex) {
     var h = require("./headers")[newIndex];
@@ -10,9 +13,6 @@ tabs.onClick(function(newIndex, oldIndex) {
 
 var t = document.createElement("div");
 m.mount(t, tabs.view);
-
-var grid = require("./w2ui_grid");
-grid.view.style.height = "calc(100% - 48px)";
 
 var wrapper = document.createElement("div");
 wrapper.appendChild(t);
