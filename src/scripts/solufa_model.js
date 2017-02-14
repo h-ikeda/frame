@@ -17,7 +17,7 @@ ref.child("lines").on("value", function(res) {
     m.startComputation();
     lines = res.val();
     m.endComputation();
-})
+});
 
 function nodesList(){
     return Object.values(nodes);
