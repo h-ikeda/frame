@@ -61,19 +61,14 @@ $().w2grid({
     }]
 });
 
-module.exports = document.createElement("button");
-module.exports.id = "calculate";
-module.exports.innerHTML = "Calculate";
-
-module.exports.addEventListener("click", function() {
-    var btn = $(this).attr("disabled", true);
+module.exports = function() {
     ref.once("value", function(res) {
         var model = converted(res.val());
         require("superagent")
             .post("http://jsonrpc-calculator.1stop-st.org")
             .send(JSON.stringify({
                 jsonrpc: "2.0",
-                id: require("./uuid")(),
+                id: require("uuid/v4")(),
                 method: "frame_calculate",
                 params: [model]
             }))
@@ -97,7 +92,7 @@ module.exports.addEventListener("click", function() {
                         }
                     });
                 }
-                btn.attr('disabled', false);
+                //btn.attr('disabled', false);
             });
     });
-});
+};

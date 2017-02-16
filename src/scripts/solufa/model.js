@@ -5,7 +5,7 @@ var m = S.m;
 var nodes = {};
 var lines = {};
 
-var ref = require("./firebase_ref");
+var ref = require("../firebase_ref");
 
 ref.child("nodes").on("value", function(res) {
     m.startComputation();
@@ -29,9 +29,8 @@ function linesList(){
             var p1 = this[line.n1];
             var p2 = this[line.n2];
             return {pos1: p1, pos2: p2};
-        } else {
-            return false;
         }
+        return false;
     }, nodes).filter(function(o) {
         return o;
     });
@@ -80,22 +79,17 @@ function createLineElement(pos1, pos2, color) {
     });
 }
 
-module.exports = {
-    controller: function(){
-        return {
-            displayedObjects: function() {
-                var t = nodesList().map(function(pos) {
-                    return createPointsElement(pos, "#f00");
-                });
-                linesList().forEach(function(pos){
-                    this.push(createLineElement(pos.pos1, pos.pos2, "#0f0"));
-                }, t);
-                return t;
-            }
-        };
-    },
-	view: function(ctrl) {
-        return m("scene", [m("obj", ctrl.displayedObjects()),
-            m("cam#cam", {style: {posY: -20}})]);
-    }
+function displayedObjects() {
+    var t = nodesList().map(function(pos) {
+        return createPointsElement(pos, "#f00");
+    });
+    linesList().forEach(function(pos){
+        this.push(createLineElement(pos.pos1, pos.pos2, "#0f0"));
+    }, t);
+    return t;
+}
+
+module.exports.view = function(ctrl) {
+    return m("scene", [m("obj", displayedObjects()),
+        m("cam#cam", {style: {posY: -20}})]);
 };
