@@ -5,7 +5,7 @@ module.exports = function(wrapper, solufaComponent, cameraId) {
     S(function(m) {
         m.mount(S.document.body, solufaComponent);
         m.render(S.document.head,
-    	    m("rdr", {
+            m("rdr", {
                 init: {
                     frame: "#" + wrapper.id,
                     preserveDrawingBuffer: true,
