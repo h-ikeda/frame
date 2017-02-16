@@ -11,15 +11,6 @@ module.exports = {
         path: __dirname + "/dest",
         filename: "bundle.js"
     },
-    module: {
-        rules: [{
-            test: /\.css$/,
-            use: ["style-loader", "css-loader"]
-        }, {
-            test: /\.msx$/,
-            use: ["msx-loader"]
-        }]
-    },
     plugins: [
         new webpack.optimize.UglifyJsPlugin(),
         new HtmlWebpackPlugin({
