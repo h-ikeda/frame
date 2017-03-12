@@ -2,18 +2,6 @@
 
 var ref = require("./firebase_ref");
 
-function converted(obj) {
-    var t = {};
-    Object.keys(obj).forEach(function(key) {
-        t[key] = Object.keys(obj[key]).map(function(k) {
-            var u = obj[key][k];
-            u.recid = parseInt(k, 10);
-            return u;
-        });
-    });
-    return t;
-}
-
 function parseResponse(response) {
     var r = [];
     var d = response.result.displacements;
@@ -63,13 +51,13 @@ $().w2grid({
 
 module.exports = function() {
     ref.once("value", function(res) {
-        var model = converted(res.val());
+        var model = res.val();
         require("superagent")
-            .post("http://jsonrpc-calculator.1stop-st.org")
+            .post("https://nameless-falls-59671.herokuapp.com")
             .send(JSON.stringify({
                 jsonrpc: "2.0",
                 id: require("uuid/v4")(),
-                method: "frame_calculate",
+                method: "calculate",
                 params: [model]
             }))
             .end(function(err, res) {
