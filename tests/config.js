@@ -65,7 +65,7 @@ var capabilities = [
         "browser": "Chrome",
         "browser_version": "56.0",
         "resolution": "1024x768"
-    }, {
+    }/*, {
         "os": "OS X",
         "os_version": "Sierra",
         "browser": "Opera",
@@ -75,7 +75,7 @@ var capabilities = [
         "browserName": "iPhone",
         "platform": "MAC",
         "device": "iPhone 6S"
-    }/*, {
+    }, {
         "browserName": "iPhone",
         "platform": "MAC",
         "device": "iPhone 6S Plus"
