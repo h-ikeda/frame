@@ -142,6 +142,10 @@ exports.config = {
     ],
     capabilities: capabilities,
     maxInstances: 7,
+    framework: 'mocha',
+    mochaOpts: {
+        timeout: 20000
+    },
     onPrepare: function(config){
         return new Promise(function(resolve, reject){
             server.listen(8080, function() {
