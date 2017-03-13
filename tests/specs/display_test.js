@@ -1,4 +1,5 @@
-/*eslint-env node, mocha, webdriverio/wdio*/
+/*eslint-env node, mocha*/
+/*global browser*/
 
 var assert = require("assert");
 
