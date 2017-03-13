@@ -75,7 +75,7 @@ var capabilities = [
         "browserName": "iPhone",
         "platform": "MAC",
         "device": "iPhone 6S"
-    },/* {
+    }/*, {
         "browserName": "iPhone",
         "platform": "MAC",
         "device": "iPhone 6S Plus"
@@ -91,11 +91,11 @@ var capabilities = [
         "browserName": "iPad",
         "platform": "MAC",
         "device": "iPad Mini 4"
-    }, */{
+    }, {
         "browserName": "android",
         "platform": "ANDROID",
         "device": "Samsung Galaxy S5 Mini"
-    },/* {
+    }, {
         "browserName": "android",
         "platform": "ANDROID",
         "device": "Samsung Galaxy S5"
