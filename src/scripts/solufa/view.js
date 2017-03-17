@@ -2,12 +2,11 @@
 
 var m = require("mithril");
 
-module.exports.view = function() {
-    return m("#solufa.pe-fit", {
-        config: function(domElement, isInitialized) {
-            if (!isInitialized) {
-                require("./renderer")(domElement, require("./model"), "cam");
-            }
-        }
+module.exports.view = function(vnode) {
+    return m("#solufa", {
+        oncreate: function(vn) {
+            require("./renderer")("#solufa", require("./model"), "cam");
+        },
+        style: vnode.attrs.style
     });
 };

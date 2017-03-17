@@ -1,15 +1,13 @@
 /*eslint-env node */
 /*globals S OrbitVp*/
 
-module.exports = function(wrapper, solufaComponent, cameraId) {
+module.exports = function(query, solufaComponent, cameraId) {
     S(function(m) {
         m.mount(S.document.body, solufaComponent);
         m.render(S.document.head,
             m("rdr", {
                 init: {
-                    frame: "#" + wrapper.id,
-                    preserveDrawingBuffer: true,
-                    antialias: true
+                    frame: query
                 },
                 clearColor: "#fff"
             }, [
