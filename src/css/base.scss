@@ -1,0 +1,33 @@
+@CHARSET "UTF-8";
+@import "~@material/theme/mixins";
+
+.mdc-toolbar__section .mdc-button--compact {
+  color: inherit;
+}
+
+.mdc-temporary-drawer__content .mdc-list-group__subheader {
+  @include mdc-theme-prop(color, text-secondary-on-background);
+  padding-left: 16px;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex > * {
+  flex: 1;
+}
+
+main.flex {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.mdc-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+}

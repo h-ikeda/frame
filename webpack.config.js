@@ -1,6 +1,6 @@
 /*eslint-env node */
 
-var webpack = require("webpack");
+var BabiliPlugin = require("babili-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
 
@@ -11,8 +11,35 @@ module.exports = {
         path: __dirname + "/dest",
         filename: "bundle.js"
     },
+    module: {
+        rules: [{
+            test: /\.css$/,
+            use: [{
+                loader: "style-loader"
+            }, {
+                loader: "css-loader"
+            }]
+        }, {
+            test: /\.scss$/,
+            use: [{
+                loader: "style-loader"
+            }, {
+                loader: "css-loader"
+            }, {
+                loader: "sass-loader",
+                options: {
+                    includePaths: [__dirname + "/node_modules"]
+                }
+            }]
+        }, {
+            test: /\.(eot|svg|ttf|woff|woff2)$/,
+            use: [{
+                loader: "url-loader"
+            }]
+        }]
+    },
     plugins: [
-        new webpack.optimize.UglifyJsPlugin(),
+        new BabiliPlugin(),
         new HtmlWebpackPlugin({
             title: "Frame | 1stop-st.org",
             favicon: "favicon.ico",
