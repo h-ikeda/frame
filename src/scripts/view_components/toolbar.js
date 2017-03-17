@@ -25,7 +25,7 @@ var toolbarTitle = {
                 m("input.mdc-textfield__input.mdc-toolbar__title", {
                     onchange: m.withAttr("value", vnode.attrs.onchange),
                     onblur: function(e) {
-                        this.onchange(e)
+                        this.onchange(e)；
                     },
                     value: vnode.attrs.title,
                     oncreate: function(vn) {
