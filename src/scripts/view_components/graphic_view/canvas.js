@@ -50,10 +50,10 @@ module.exports.view = function(args) {
             camera.lookAt(new THREE.Vector3(0, 0, 0));
 
             function render() {
-            	requestAnimationFrame( render );
-            	scene.rotation.x = args.state.rX;
-				scene.rotation.z = args.state.rZ;
-            	renderer.render( scene, camera );
+                requestAnimationFrame( render );
+                scene.rotation.x = args.state.rX;
+                scene.rotation.z = args.state.rZ;
+                renderer.render( scene, camera );
             }
             render();
         },
