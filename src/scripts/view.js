@@ -51,7 +51,9 @@ module.exports.view = function() {
         }),
         m("main.mdc-toolbar-fixed-adjust.flex", [
             m(require("./view_components/table")),
-            m(require("./solufa/view"))
+            m(require("./view_components/graphic_view/canvas"), {
+                ref: require("./firebase_ref")
+            })
         ]),
         m(require("./view_components/fab"), {
             onclick: function() {

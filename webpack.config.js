@@ -68,13 +68,6 @@ module.exports = {
         }, {
             name: "w2ui.css",
             path: "w2ui/w2ui.min.css"
-        }, {
-            name: "Solufa",
-            var: "S",
-            path: "solufa/static/js/Solufa.min.js"
-        }, {
-            name: "Solufa-OrbitVp",
-            path: "solufa/static/components/Solufa-OrbitVp.js"
         }], {
             basedir: __dirname
         })
