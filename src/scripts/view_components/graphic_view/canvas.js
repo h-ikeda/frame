@@ -32,7 +32,7 @@ module.exports.view = function(args) {
                     var lineObject = new THREE.Line(geometry, material);
                     scene.add(lineObject);
                 });
-                var material = new THREE.PointsMaterial({color: 0xff0000});
+                material = new THREE.PointsMaterial({color: 0xff0000});
                 Object.values(model.nodes).forEach(function(node) {
                     var geometry = new THREE.Geometry();
                     geometry.vertices.push(new THREE.Vector3(node.x, node.y, node.z));
