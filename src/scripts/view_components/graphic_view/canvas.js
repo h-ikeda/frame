@@ -32,7 +32,7 @@ module.exports.view = function(args) {
                     var lineObject = new THREE.Line(geometry, material);
                     scene.add(lineObject);
                 });
-                var material = new THREE.PointsMaterial({color: 0xff0000});
+                material = new THREE.PointsMaterial({color: 0xff0000});
                 Object.values(model.nodes).forEach(function(node) {
                     var geometry = new THREE.Geometry();
                     geometry.vertices.push(new THREE.Vector3(node.x, node.y, node.z));
@@ -50,10 +50,10 @@ module.exports.view = function(args) {
             camera.lookAt(new THREE.Vector3(0, 0, 0));
 
             function render() {
-            	requestAnimationFrame( render );
-            	scene.rotation.x = args.state.rX;
-				scene.rotation.z = args.state.rZ;
-            	renderer.render( scene, camera );
+                requestAnimationFrame( render );
+                scene.rotation.x = args.state.rX;
+                scene.rotation.z = args.state.rZ;
+                renderer.render( scene, camera );
             }
             render();
         },
