@@ -1,5 +1,6 @@
 /*eslint-env node */
 
+require("@material/snackbar/mdc-snackbar.scss");
 var m = require("mithril");
 var snackbar = null;
 
