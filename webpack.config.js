@@ -1,6 +1,5 @@
 /*eslint-env node */
 
-var BabiliPlugin = require("babili-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
 
@@ -34,28 +33,14 @@ module.exports = {
         }, {
             test: /\.(eot|svg|ttf|woff|woff2)$/,
             use: [{
-                loader: "url-loader"
+                loader: "file-loader"
             }]
         }]
     },
     plugins: [
-        new BabiliPlugin(),
         new HtmlWebpackPlugin({
             title: "Frame | 1stop-st.org",
-            favicon: "favicon.ico",
-            minify: {
-                collapseBooleanAttributes: true,
-                collapseInlineTagWhitespace: true,
-                collapseWhitespace: true,
-                removeAttributeQuotes: true,
-                removeComments: true,
-                removeOptionalTags: true,
-                removeRedundantAttributes: true,
-                removeScriptTypeAttributes: true,
-                sortAttributes: true,
-                sortClassName: true,
-                useShortDoctype: true
-            }
+            favicon: "favicon.ico"
         }),
         new HtmlWebpackExternalsPlugin([{
             name: "jquery",
@@ -65,9 +50,6 @@ module.exports = {
             name: "w2ui",
             var: "w2ui",
             path: "w2ui/w2ui.min.js"
-        }, {
-            name: "w2ui.css",
-            path: "w2ui/w2ui.min.css"
         }], {
             basedir: __dirname
         })

@@ -1,6 +1,8 @@
 /*eslint-env node, jquery, browser*/
 /*globals w2ui */
 
+require("w2ui/w2ui.css");
+
 var m = require("mithril");
 var gridName = require("uuid/v4")();
 

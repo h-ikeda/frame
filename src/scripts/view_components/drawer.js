@@ -1,11 +1,14 @@
 /*eslint-env node */
 
+require("@material/drawer/mdc-drawer.scss");
+require("@material/list/mdc-list.scss");
+require("material-design-icons/iconfont/material-icons.css");
 var m = require("mithril");
-var mdc = require("material-components-web");
+var mdcDrawer = require("@material/drawer");
 var drawer = null;
 
 function setDrawer(dom) {
-    drawer = new mdc.drawer.MDCTemporaryDrawer(dom);
+    drawer = new mdcDrawer.MDCTemporaryDrawer(dom);
 }
 
 function resetDrawer() {

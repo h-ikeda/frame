@@ -1,5 +1,9 @@
 /*eslint-env node */
 
+require("@material/toolbar/mdc-toolbar.scss");
+require("@material/button/mdc-button.scss");
+require("@material/textfield/mdc-textfield.scss");
+require("material-design-icons/iconfont/material-icons.css");
 var m = require("mithril");
 
 var commandIconButton = {
