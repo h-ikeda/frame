@@ -12,7 +12,7 @@ function openMenu() {
 
 function load() {
     if (viewMode[0] === 1) {
-        var ref = require("./firebase_ref").child(require("./define_structure")[viewMode[0]].menuList[viewMode[1]].id);
+        var ref = require("./firebase_ref").ref.child(require("./define_structure")[viewMode[0]].menuList[viewMode[1]].id);
         var headers = require("./define_structure")[viewMode[0]].menuList[viewMode[1]].columns;
         require("./view_components/table").setRef(ref, headers);
     } else {
@@ -24,7 +24,7 @@ function load() {
 load();
 
 module.exports.view = function() {
-    return m("", [
+    return [
         m(require("./view_components/toolbar"), {
             title: documentTitle,
             titleEdit: titleEdit,
@@ -52,7 +52,7 @@ module.exports.view = function() {
         m("main.mdc-toolbar-fixed-adjust.flex", [
             m(require("./view_components/table")),
             m(require("./view_components/graphic_view/canvas"), {
-                ref: require("./firebase_ref")
+                ref: require("./firebase_ref").ref
             })
         ]),
         m(require("./view_components/fab"), {
@@ -61,5 +61,5 @@ module.exports.view = function() {
             }
         }),
         m(require("./view_components/snackbar"))
-    ]);
+    ];
 };
