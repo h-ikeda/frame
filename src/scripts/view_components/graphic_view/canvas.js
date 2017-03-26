@@ -39,7 +39,7 @@ function setRef(ref) {
 }
 
 module.exports.view = function(args) {
-    return m(".canvas-wapper", {
+    return m("canvas", {
         onupdate: function(vnode) {
             setRef(args.attrs.ref);
         },
@@ -48,9 +48,10 @@ module.exports.view = function(args) {
             var h = vnode.dom.clientHeight;
 
             setRef(args.attrs.ref);
-            var renderer = new THREE.WebGLRenderer();
+            var renderer = new THREE.WebGLRenderer({
+                canvas: vnode.dom
+            });
             renderer.setSize( w, h );
-            vnode.dom.appendChild( renderer.domElement );
 
             var camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
             camera.position.y = -10;
