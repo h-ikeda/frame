@@ -8,7 +8,10 @@ firebase.initializeApp({
     databaseURL: "https://frame-155310.firebaseio.com"
 });
 
-module.exports.ref = firebase.database().ref("demo/frameModel");
+function setRef(ref) {
+    module.exports.ref = firebase.database().ref(ref);
+}
+setRef("demo/frameModel");
 
 module.exports.signIn = function(email, password) {
     firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
@@ -16,3 +19,12 @@ module.exports.signIn = function(email, password) {
         console.log(error.message);
     });
 };
+
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        setRef("userdata/" + user.uid + "/frameModel");
+    } else {
+        setRef("demo/frameModel");
+    }
+    module.exports.onRefChanged();
+});

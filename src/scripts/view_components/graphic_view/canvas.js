@@ -9,14 +9,10 @@ module.exports = {
     mD: false
 };
 
-module.exports.view = function(args) {
-    return m(".canvas-wapper", {
-        oncreate: function(vnode) {
-            var w = vnode.dom.clientWidth;
-            var h = vnode.dom.clientHeight;
-            var ref = args.attrs.ref;
+var scene;
 
-            var scene = new THREE.Scene();
+function setRef(ref) {
+    scene = new THREE.Scene();
             ref.on("value", function(res) {
                 while (scene.children.length > 0) {
                     scene.remove(scene.children[0]);
@@ -40,7 +36,18 @@ module.exports.view = function(args) {
                     scene.add(points);
                 });
             });
+}
 
+module.exports.view = function(args) {
+    return m(".canvas-wapper", {
+        onupdate: function(vnode) {
+            setRef(args.attrs.ref);
+        },
+        oncreate: function(vnode) {
+            var w = vnode.dom.clientWidth;
+            var h = vnode.dom.clientHeight;
+
+            setRef(args.attrs.ref);
             var renderer = new THREE.WebGLRenderer();
             renderer.setSize( w, h );
             vnode.dom.appendChild( renderer.domElement );

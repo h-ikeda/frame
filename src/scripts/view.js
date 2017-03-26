@@ -55,6 +55,12 @@ function load() {
         });
     }
 }
+
+require("./firebase_ref").onRefChanged = function() {
+    load();
+    m.redraw();
+};
+
 load();
 
 module.exports.view = function() {
