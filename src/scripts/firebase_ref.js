@@ -8,4 +8,11 @@ firebase.initializeApp({
     databaseURL: "https://frame-155310.firebaseio.com"
 });
 
-module.exports = firebase.database().ref("demo/frameModel");
+module.exports.ref = firebase.database().ref("demo/frameModel");
+
+module.exports.signIn = function(email, password) {
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        console.log(error.code);
+        console.log(error.message);
+    });
+};

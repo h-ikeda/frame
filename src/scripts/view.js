@@ -5,9 +5,43 @@ var m = require("mithril");
 var viewMode = [1, 0];
 var documentTitle = "Demo";
 var titleEdit = false;
+var dialogContent = {body: ""};
 
 function openMenu() {
     require("./view_components/drawer").open();
+}
+
+function popUpDialog(content) {
+    dialogContent = content;
+    m.redraw();
+    require("./view_components/dialog").show();
+}
+
+function signIn() {
+    var email = "email@example.com";
+    var password = "Apassword";
+    popUpDialog({
+        body: [
+            m("input", {
+                type: "email",
+                value: email,
+                onchange: m.withAttr("value", function(value) {
+                    email = value;
+                })
+            }),
+            m("input", {
+                type: "password",
+                value: password,
+                onchange: m.withAttr("value", function(value) {
+                    password = value;
+                })
+            })
+        ],
+        footer: ["Cancel", "Log In"],
+        onaccept: function() {
+            require("./firebase_ref").signIn(email, password);
+        }
+    });
 }
 
 function load() {
@@ -35,7 +69,8 @@ module.exports.view = function() {
                 documentTitle = newTitle;
                 titleEdit = false;
             },
-            openMenu: openMenu
+            openMenu: openMenu,
+            logIn: signIn
         }),
         m(require("./view_components/drawer"), {
             menuGroups: require("./define_structure"),
@@ -60,6 +95,7 @@ module.exports.view = function() {
                 require("./calc")();
             }
         }),
-        m(require("./view_components/snackbar"))
+        m(require("./view_components/snackbar")),
+        m(require("./view_components/dialog"), dialogContent, dialogContent.body)
     ];
 };
