@@ -10,8 +10,18 @@ firebase.initializeApp({
 
 function setRef(ref) {
     module.exports.ref = firebase.database().ref(ref);
+    if (typeof module.exports.onRefChanged === "function") {
+        module.exports.onRefChanged();
+    }
 }
 setRef("demo/frameModel");
+
+module.exports.signInAnonymously = function() {
+    firebase.auth().signInAnonymously().catch(function(error) {
+        console.log(error.code);
+        console.log(error.message);
+    });
+};
 
 module.exports.signIn = function(email, password) {
     firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
@@ -22,9 +32,20 @@ module.exports.signIn = function(email, password) {
 
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-        setRef("userdata/" + user.uid + "/frameModel");
+        var path = "userdata/" + user.uid + "/frameModel";
+        firebase.database().ref(path).once("value").then(function(snapshot) {
+            if (!snapshot.exists()) {
+                firebase.database().ref("demo/frameModel").once("value").then(function(snap) {
+                    firebase.database().ref(path).set(snap.val()).then(function() {
+                        setRef(path);
+                        
+                    });
+                });
+            } else {
+                setRef(path);
+            }
+        });
     } else {
         setRef("demo/frameModel");
     }
-    module.exports.onRefChanged();
 });

@@ -18,8 +18,8 @@ function popUpDialog(content) {
 }
 
 function signIn() {
-    var email = "email@example.com";
-    var password = "Apassword";
+    var email = "";
+    var password = "";
     popUpDialog({
         body: [
             m("input", {
@@ -60,8 +60,7 @@ require("./firebase_ref").onRefChanged = function() {
     load();
     m.redraw();
 };
-
-load();
+require("./firebase_ref").signInAnonymously();
 
 module.exports.view = function() {
     return [
