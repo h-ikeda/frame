@@ -21,7 +21,8 @@ function setRef(ref) {
                 }
                 var model = res.val();
                 var material = new THREE.LineBasicMaterial();
-                Object.values(model.lines).forEach(function(line) {
+                Object.keys(model.lines).forEach(function(key) {
+                    var line = model.lines[key];
                     var n1 = model.nodes[line.n1];
                     var n2 = model.nodes[line.n2];
                     var geometry = new THREE.Geometry();
