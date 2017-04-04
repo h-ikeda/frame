@@ -9,14 +9,12 @@ module.exports = {
     mD: false
 };
 
-module.exports.view = function(args) {
-    return m(".canvas-wapper", {
-        oncreate: function(vnode) {
-            var w = vnode.dom.clientWidth;
-            var h = vnode.dom.clientHeight;
-            var ref = args.attrs.ref;
+var scene;
+var renderer;
+var camera;
 
-            var scene = new THREE.Scene();
+function setRef(ref) {
+    scene = new THREE.Scene();
             ref.on("value", function(res) {
                 while (scene.children.length > 0) {
                     scene.remove(scene.children[0]);
@@ -40,12 +38,24 @@ module.exports.view = function(args) {
                     scene.add(points);
                 });
             });
+}
 
-            var renderer = new THREE.WebGLRenderer();
+module.exports.view = function(args) {
+    return m("canvas", {
+        onupdate: function(vnode) {
+            setRef(args.attrs.ref);
+        },
+        oncreate: function(vnode) {
+            var w = vnode.dom.clientWidth;
+            var h = vnode.dom.clientHeight;
+
+            setRef(args.attrs.ref);
+            renderer = new THREE.WebGLRenderer({
+                canvas: vnode.dom
+            });
             renderer.setSize( w, h );
-            vnode.dom.appendChild( renderer.domElement );
 
-            var camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
+            camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
             camera.position.y = -10;
             camera.lookAt(new THREE.Vector3(0, 0, 0));
 

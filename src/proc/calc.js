@@ -1,6 +1,6 @@
 /*eslint-env node*/
 
-var ref = require("./firebase_ref");
+var ref = require("../database/firebase_ref");
 
 function parseResponse(response) {
     var r = [];

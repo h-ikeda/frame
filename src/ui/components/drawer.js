@@ -1,32 +1,7 @@
 /*eslint-env node */
 
-require("@material/drawer/mdc-drawer.scss");
-require("@material/list/mdc-list.scss");
-require("material-design-icons/iconfont/material-icons.css");
 var m = require("mithril");
-var mdcDrawer = require("@material/drawer");
-var drawer = null;
-
-function setDrawer(dom) {
-    drawer = new mdcDrawer.MDCTemporaryDrawer(dom);
-}
-
-function resetDrawer() {
-    drawer = null;
-}
-
-function openDrawer() {
-    if (drawer) {
-        drawer.open = true;
-        drawer.drawer.getElementsByClassName("mdc-temporary-drawer--selected")[0].focus();
-    }
-}
-
-function closeDrawer() {
-    if (drawer) {
-        drawer.open = false;
-    }
-}
+import {MDCTemporaryDrawer} from "@material/drawer";
 
 var menuListItemComponent = {
     view: function(vnode) {
@@ -96,13 +71,16 @@ var commandMenusComponent = {
     }
 };
 
-module.exports.view = function(vnode) {
-    return m("aside.mdc-temporary-drawer.mdc-typography", {
-        oncreate: function(vn) {
-            setDrawer(vn.dom);
-        },
-        onremove: resetDrawer
-    }, [
+export default {
+    oncreate(vnode2) {
+        vnode2.dom.MDCTemporaryDrawer = new MDCTemporaryDrawer(vnode2.dom);
+        vnode2.dom.MDCTemporaryDrawer.open = vnode2.attrs.open;
+    },
+    onupdate(vnode2) {
+        vnode2.dom.MDCTemporaryDrawer.open = vnode2.attrs.open;
+    },
+    view(vnode) {
+    return m("aside.mdc-temporary-drawer.mdc-typography", vnode.attrs, [
         m("nav.mdc-temporary-drawer__drawer", [
             m("header.mdc-temporary-drawer__header", [
                 m(".mdc-temporary-drawer__header-content", [
@@ -114,7 +92,6 @@ module.exports.view = function(vnode) {
                     menuListGroups: vnode.attrs.menuGroups,
                     selected: vnode.attrs.selected,
                     onselect: function(groupIndex, menuIndex) {
-                        closeDrawer();
                         vnode.attrs.onselect(groupIndex, menuIndex);
                     }
                 }),
@@ -122,7 +99,6 @@ module.exports.view = function(vnode) {
                 m(commandMenusComponent, {
                     menuList: vnode.attrs.commands,
                     onclick: function(commandIndex) {
-                        closeDrawer();
                         vnode.attrs.onclick(commandIndex);
                     }
                 }),
@@ -130,7 +106,5 @@ module.exports.view = function(vnode) {
             ]),
         ])
     ]);
+}
 };
-
-module.exports.open = openDrawer;
-module.exports.close = closeDrawer;
