@@ -1,7 +1,7 @@
 /*eslint-env node */
 
 import "material-components-web/material-components-web.scss";
-import "./view.scss"
+import "./view.scss";
 import m from "mithril";
 import toolbar from "./components/toolbar";
 import drawer from "./components/drawer";
@@ -71,7 +71,7 @@ module.exports.view = function() {
                 documentTitle = newTitle;
                 titleEdit = false;
             },
-            onMenuClick() {menuOpen = true;console.log(menuOpen)},
+            onMenuClick() {menuOpen = true;},
             onLogIn: () => {}
         }, documentTitle),
         m(drawer, {

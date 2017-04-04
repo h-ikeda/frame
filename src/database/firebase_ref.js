@@ -23,14 +23,14 @@ export function signInAnonymously() {
         console.log(error.code);
         console.log(error.message);
     });
-};
+}
 
 export function signIn(email, password) {
     firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
         console.log(error.code);
         console.log(error.message);
     });
-};
+}
 
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
