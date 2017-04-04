@@ -6,6 +6,9 @@
     "test": "wdio tests/config.js"
   },
   "devDependencies": {
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-env": "^1.3.2",
     "browserstack-local": "^1.3.0",
     "css-loader": "^0.27.2",
     "file-loader": "^0.10.1",
