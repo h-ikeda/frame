@@ -1,7 +1,7 @@
 /*eslint-env node */
 
 var finalhandler = require("finalhandler");
-var serveStatic = require("serve-static")("dest");
+var serveStatic = require("serve-static")("dist");
 var server = require("http").createServer(function onRequest(req, res) {
     serveStatic(req, res, finalhandler(req, res));
 });
