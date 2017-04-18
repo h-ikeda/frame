@@ -1,3 +1,3 @@
 <template>
-    <p>table here.
+    <p>table here.</p>
 </template>

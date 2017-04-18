@@ -1,0 +1,20 @@
+<template>
+    <a href="javascript:void(0);" class="material-icons" @click="onclick">menu</a>
+</template>
+
+<style scoped>
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
+
+<script>
+    export default {
+        methods: {
+            onclick() {
+                this.$store.dispatch("openDrawerMenu");
+            }
+        }
+    };
+</script>
