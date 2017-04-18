@@ -4,7 +4,6 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --content-base dist --open --hot --inline --host 0.0.0.0",
     "build": "cross-env NODE_ENV=production webpack",
-    "postinstall": "npm run build",
     "test": "wdio tests/config.js"
   },
   "dependencies": {
