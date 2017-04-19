@@ -15,7 +15,7 @@
 <script>
 import toolbar from "./components/toolbar/toolbar.vue";
 import drawer from "./components/drawer/drawer.vue";
-import datatable from "./components/datatable.vue";
+import datatable from "./components/datatable/datatable.vue";
 import canvas from "./components/canvas.vue";
 import splitter from "./components/splitter.vue";
 import dialog from "./components/dialog/dialog.vue";
