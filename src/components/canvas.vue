@@ -16,14 +16,14 @@
             var w = this.$el.clientWidth;
             var h = this.$el.clientHeight;
             this.renderer = new THREE.WebGLRenderer({canvas: this.$el});
-            this.renderer.setSize( w, h );
+            //this.renderer.setSize( w, h );
 
             this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
             this.camera.position.y = -10;
             this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-            
+
             this.scene = new THREE.Scene();
-            
+
             var model = {
                 nodes: {
                     0: {x: 0, y: 0, z: 0},

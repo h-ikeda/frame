@@ -1,7 +1,7 @@
 <template>
     <button class="mdc-fab material-icons" @click="calculate">
         <span class="mdc-fab__icon">
-            favorite
+            navigate_next
         </span>
     </button>
 </template>

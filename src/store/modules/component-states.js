@@ -3,6 +3,8 @@ export default {
         drawerMenuOpen: false,
         dialogOpen: false,
         dialogMode: "",
+        splitVertical: false,
+        splitRatio: 0.5,
         waiting: false
     },
     mutations: {
@@ -14,6 +16,12 @@ export default {
         },
         setDialogMode(state, mode) {
             state.dialogMode = mode;
+        },
+        setSplitVertical(state, vertical) {
+            state.splitVertical = vertical;
+        },
+        setSplitRatio(state, ratio) {
+            state.splitRatio = ratio;
         },
         setWaitingState(state, waiting) {
             state.waiting = waiting;
