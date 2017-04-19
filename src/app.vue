@@ -4,6 +4,7 @@
         <frame-drawer></frame-drawer>
         <main class="mdc-toolbar-fixed-adjust" :style="mainStyle">
             <frame-datatable :style="pane1style"></frame-datatable>
+            <frame-splitter></frame-splitter>
             <frame-canvas :style="pane2style"></frame-canvas>
         </main>
         <frame-fab></frame-fab>
@@ -16,6 +17,7 @@ import toolbar from "./components/toolbar/toolbar.vue";
 import drawer from "./components/drawer/drawer.vue";
 import datatable from "./components/datatable.vue";
 import canvas from "./components/canvas.vue";
+import splitter from "./components/splitter.vue";
 import dialog from "./components/dialog/dialog.vue";
 import fab from "./components/fab.vue";
 
@@ -42,6 +44,7 @@ export default {
         "frame-drawer": drawer,
         "frame-datatable": datatable,
         "frame-canvas": canvas,
+        "frame-splitter": splitter,
         "frame-fab": fab,
         "frame-dialog": dialog
     }

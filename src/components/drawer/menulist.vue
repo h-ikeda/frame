@@ -56,7 +56,7 @@
     .menu-spacer {
         flex-grow: 1;
     }
-    .mdc-list-group__subheader:hover {
+    .mdc-list-group__subheader {
         cursor: pointer;
     }
     .material-icons {
