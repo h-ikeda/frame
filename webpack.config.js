@@ -1,66 +1,50 @@
-/*eslint-env node */
-
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
+var path = require("path");
+var webpack = require("webpack");
 
 module.exports = {
-    context: __dirname + "/src",
-    entry: "./entry.js",
+    entry: "./src/main.js",
     output: {
-        path: __dirname + "/dist",
-        filename: "bundle.js"
+        path: path.resolve(__dirname, "./dist"),
+        filename: "build.js"
     },
     module: {
         rules: [{
+            test: /\.vue$/,
+            loader: "vue-loader",
+            options: {
+                loaders: {
+                    scss: "vue-style-loader!css-loader!sass-loader?includePaths[]=" + path.resolve(__dirname, "./node_modules"),
+                    sass: "vue-style-loader!css-loader!sass-loader?indentedSyntax&includePaths[]=" + path.resolve(__dirname, "./node_modules")
+                }
+            }
+        }, {
             test: /\.js$/,
+            loader: "babel-loader",
             exclude: /node_modules/,
-            use: [{
-                loader: "babel-loader",
-                options: {
-                    presets: ["env"]
-                }
-            }]
+            options: {
+                presets: ["env"]
+            }
         }, {
-            test: /\.css$/,
-            use: [{
-                loader: "style-loader"
-            }, {
-                loader: "css-loader"
-            }]
+            test: /\.(png|jpg|gif|svg|ico)$/,
+            loader: "file-loader?name=[hash].[ext]"
         }, {
-            test: /\.scss$/,
-            use: [{
-                loader: "style-loader"
-            }, {
-                loader: "css-loader"
-            }, {
-                loader: "sass-loader",
-                options: {
-                    includePaths: [__dirname + "/node_modules"]
-                }
-            }]
-        }, {
-            test: /\.(eot|svg|ttf|woff|woff2)$/,
-            use: [{
-                loader: "file-loader"
-            }]
+            test: /\.html$/,
+            loader: "file-loader?name=[name].[ext]"
         }]
     },
+    resolve: {
+        alias: {
+            "vue$": "vue/dist/vue.esm.js"
+        }
+    },
+    devServer: {
+        historyApiFallback: true
+    },
     plugins: [
-        new HtmlWebpackPlugin({
-            title: "Frame | 1stop-st.org",
-            favicon: "favicon.ico"
-        }),
-        new HtmlWebpackExternalsPlugin([{
-            name: "jquery",
-            var: "jQuery",
-            path: "jquery/dist/jquery.min.js"
-        }, {
-            name: "w2ui",
-            var: "w2ui",
-            path: "w2ui/w2ui.min.js"
-        }], {
-            basedir: __dirname
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: "\"" + process.env.NODE_ENV + "\""
+            }
         })
     ]
 };
