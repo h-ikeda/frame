@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mdc-typography">
         <frame-toolbar></frame-toolbar>
         <frame-drawer></frame-drawer>
         <main class="mdc-toolbar-fixed-adjust">
