@@ -20,7 +20,7 @@
                     cursor = "row-resize";
                 }
                 return {
-                    [thickness]: "4px",
+                    [thickness]: "7px",
                     cursor
                 };
             },
@@ -56,7 +56,7 @@
 
 <style scoped>
     .display {
-        background-color: gray;
+        background-color: black;
         display: flex;
     }
     .surface {

@@ -15,7 +15,10 @@
         mounted() {
             var w = this.$el.clientWidth;
             var h = this.$el.clientHeight;
-            this.renderer = new THREE.WebGLRenderer({canvas: this.$el});
+            this.renderer = new THREE.WebGLRenderer({
+                canvas: this.$el,
+                alpha: true
+            });
             //this.renderer.setSize( w, h );
 
             this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
@@ -62,3 +65,9 @@
         }
     };
 </script>
+
+<style scoped>
+    canvas {
+        background-color: #9E9E9E;
+    }
+</style>

@@ -5,6 +5,17 @@
             <table>
                 <thead>
                     <tr>
+                        <th>
+                            <div class="mdc-checkbox">
+                                <input type="checkbox" class="mdc-checkbox__native-control">
+                                <div class="mdc-checkbox__background">
+                                    <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                                        <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                                    </svg>
+                                    <div class="mdc-checkbox__mixedmark"></div>
+                                </div>
+                            </div>
+                        </th>
                         <th v-for="item in columns">
                             {{item.label}}
                         </th>
@@ -12,6 +23,17 @@
                 </thead>
                 <tbody>
                     <tr v-for="(record, index) in records" :class="{selected: isSelected(index)}" @click="onclick(index)">
+                        <td>
+                            <div class="mdc-checkbox">
+                                <input type="checkbox" class="mdc-checkbox__native-control">
+                                <div class="mdc-checkbox__background">
+                                    <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                                        <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                                    </svg>
+                                    <div class="mdc-checkbox__mixedmark"></div>
+                                </div>
+                            </div>
+                        </td>
                         <td v-for="item in columns">
                             <span contenteditable @input="onchange(index, item.id)" @blur="onchange(index, item.id)">{{record[item.id]}}</span>
                         </td>
@@ -119,14 +141,15 @@
     };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+    @import "@material/theme/mixins";
     .data-table--wrapper {
         display: flex;
         flex-direction: column;
     }
     .data-table-header {
         font-weight: normal;
-        color: rgba(0, 0, 0, .87);
+        @include mdc-theme-prop(color, primary);
         line-height: 64px;
         margin: 0 24px;
     }
@@ -141,13 +164,14 @@
     }
     th, td {
         text-align: right;
-        padding-left: 56px;
+        padding-right: 56px;
     }
     td span {
         display: block;
     }
     th:first-child, td:first-child {
-        padding-left: 24px;
+        padding: 0 13px;
+        width: 40px;
     }
     th:last-child, td:last-child {
         padding-right: 24px;
@@ -158,6 +182,9 @@
         border-bottom: 1px solid rgba(0, 0, 0, .12);
         height: 48px;
         line-height: 48px;
+    }
+    td {
+        height: 48px;
     }
     thead tr {
         color: rgba(0, 0, 0, .54);

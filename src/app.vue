@@ -36,7 +36,7 @@ export default {
                 a = innerHeight;
             }
             return {
-                [p]: a - this.$store.state.componentStates.splitPosition + "px"
+                [p]: a - this.$store.state.componentStates.splitPosition - 3 + "px"
             };
         }
     },
