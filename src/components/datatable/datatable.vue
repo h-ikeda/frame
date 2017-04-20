@@ -1,22 +1,24 @@
 <template>
-    <div>
-        <h2 class="mdc-typography--subheading2">Table header</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th v-for="item in columns">
-                        {{item.label}}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(record, index) in records" :class="{selected: isSelected(index)}" @click="onclick(index)">
-                    <td v-for="item in columns">
-                        {{record[item.id]}}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="data-table--wrapper">
+        <h2 class="mdc-typography--title data-table-header">Table header</h2>
+        <div class="data-table--content">
+            <table>
+                <thead>
+                    <tr>
+                        <th v-for="item in columns">
+                            {{item.label}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(record, index) in records" :class="{selected: isSelected(index)}" @click="onclick(index)">
+                        <td v-for="item in columns">
+                            <span contenteditable @input="onchange(index, item.id)" @blur="onchange(index, item.id)">{{record[item.id]}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -101,6 +103,12 @@
             };
         },
         methods: {
+            onchange(index, id) {
+                return e => {
+                    this.records[index][id] = e.target.textContent;
+                    console.log(this.records[index]);
+                };
+            },
             onclick(index) {
                 this.$store.commit(this.$store.getters.isSelectedRecord(index) ? "unselectRecord": "selectRecord", index);
             },
@@ -112,29 +120,51 @@
 </script>
 
 <style scoped>
+    .data-table--wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    .data-table-header {
+        font-weight: normal;
+        color: rgba(0, 0, 0, .87);
+        line-height: 64px;
+        margin: 0 24px;
+    }
+    .data-table--content {
+        flex-grow: 1;
+        position: relative;
+        overflow-y: auto;
+    }
     table {
         width: 100%;
         border-collapse: collapse;
     }
     th, td {
-        padding-right: 56px;
-        border-bottom: 1px solid rgba(0, 0, 0, .12);
         text-align: right;
+        padding-left: 56px;
     }
-    th {
-        height: 56px;
-        font-size: .75rem;
-        font-weight: normal;
-        color: rgba(0, 0, 0, .54);
+    td span {
+        display: block;
     }
-    td {
-        height: 48px;
-        font-size: .8125rem;
-        color: rgba(0, 0, 0, .87);
+    th:first-child, td:first-child {
+        padding-left: 24px;
+    }
+    th:last-child, td:last-child {
+        padding-right: 24px;
     }
     tr {
-        padding-left: 24px;
-        padding-right: 24px;
+        color: rgba(0, 0, 0, .87);
+        font-size: .8125rem;
+        border-bottom: 1px solid rgba(0, 0, 0, .12);
+        height: 48px;
+        line-height: 48px;
+    }
+    thead tr {
+        color: rgba(0, 0, 0, .54);
+        font-weight: normal;
+        font-size: .75rem;
+        height: 56px;
+        line-height: 56px;
     }
     tbody tr:hover {
         background: #EEEEEE;

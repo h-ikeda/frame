@@ -37,10 +37,10 @@
         methods: {
             onMove(e) {
                 if (this.buttons) {
-                    this.$store.commit("setSplitRatio",
+                    this.$store.commit("setSplitPosition",
                         this.$store.state.componentStates.splitVertical ?
-                            (e.clientY / innerHeight):
-                            (e.clientX / innerWidth)
+                            e.clientY:
+                            e.clientX
                     );
                 }
             },
