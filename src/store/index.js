@@ -9,7 +9,15 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         userInfo: null,
-        model: null,
+        model: {
+            nodes: {
+                0: {x: 0, y: 0, z: 0},
+                1: {x: 1, y: 1, z: 1}
+            },
+            lines: {
+                0: {n1: 0, n2: 1, EA: 1}
+            }
+        },
         documentTitle: ""
     },
     getters: {

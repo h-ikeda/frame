@@ -4,38 +4,44 @@
 
 <script>
     import * as THREE from "three";
+
+    function render(renderer, scene, camera) {
+        function inner() {
+            requestAnimationFrame(inner);
+            renderer.render(scene, camera);
+        }
+        inner();
+    }
+
     export default {
         data() {
             return {
-                scene: null,
+                camera: null,
                 renderer: null,
-                camera: null
+                scene: null
+            }
+        },
+        methods: {
+            resize() {
+                this.renderer.setSize(this.$el.clientWidth, this.$el.clientHeight, false);
+                this.camera.aspect = this.$el.clientWidth / this.$el.clientHeight;
+                this.camera.updateProjectionMatrix();
             }
         },
         mounted() {
-            var w = this.$el.clientWidth;
-            var h = this.$el.clientHeight;
+            this.camera = new THREE.PerspectiveCamera();
             this.renderer = new THREE.WebGLRenderer({
                 canvas: this.$el,
-                alpha: true
+                alpha: true,
+                antialias: true,
+                logarithmicDepthBuffer: true
             });
-            //this.renderer.setSize( w, h );
+            this.scene = new THREE.Scene();
 
-            this.camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
             this.camera.position.y = -10;
             this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-            this.scene = new THREE.Scene();
-
-            var model = {
-                nodes: {
-                    0: {x: 0, y: 0, z: 0},
-                    1: {x: 1, y: 1, z: 1}
-                },
-                lines: {
-                    0: {n1: 0, n2: 1, EA: 1}
-                }
-            };
+            const model = this.$store.state.model;
             var material = new THREE.LineBasicMaterial();
             Object.keys(model.lines).forEach(key => {
                 var line = model.lines[key];
@@ -55,13 +61,16 @@
                 this.scene.add(points);
             });
 
-            const render = () => {
-                requestAnimationFrame( render );
+            setInterval(()=>{
                 this.scene.rotation.x += 0.08;
                 this.scene.rotation.z += 0.03;
-                this.renderer.render( this.scene, this.camera );
-            }
-            render();
+            }, 15);
+
+            addEventListener("resize", this.resize);
+            this.$store.watch(state => state.componentStates.splitPosition, this.resize, {
+                immediate: true
+            })
+            render(this.renderer, this.scene, this.camera);
         }
     };
 </script>
