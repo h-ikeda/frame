@@ -3,7 +3,7 @@
         <frame-toolbar></frame-toolbar>
         <frame-drawer></frame-drawer>
         <main class="mdc-toolbar-fixed-adjust" :style="mainStyle">
-            <frame-datatable :style="pane1style"></frame-datatable>
+            <frame-datatable class="pane1"></frame-datatable>
             <frame-splitter></frame-splitter>
             <frame-canvas :style="pane2style"></frame-canvas>
         </main>
@@ -28,14 +28,15 @@ export default {
                 flexDirection: "column"
             }: {};
         },
-        pane1style() {
-            return {
-                flexGrow: this.$store.state.componentStates.splitRatio
-            };
-        },
         pane2style() {
+            var p = "width";
+            var a = innerWidth;
+            if (this.$store.state.componentStates.splitVertical) {
+                p = "height";
+                a = innerHeight;
+            }
             return {
-                flexGrow: 1 - this.$store.state.componentStates.splitRatio
+                [p]: a - this.$store.state.componentStates.splitPosition + "px"
             };
         }
     },
@@ -67,5 +68,8 @@ export default {
         .mdc-toolbar-fixed-adjust {
             height: calc(100vh - 56px);
         }
+    }
+    .pane1 {
+        flex-grow: 1;
     }
 </style>

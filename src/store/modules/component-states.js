@@ -4,7 +4,7 @@ export default {
         dialogOpen: false,
         dialogMode: "",
         splitVertical: false,
-        splitRatio: 0.5,
+        splitPosition: innerWidth * 0.5 + "px",
         selectedRecords: [],
         waiting: false
     },
@@ -26,8 +26,8 @@ export default {
         setSplitVertical(state, vertical) {
             state.splitVertical = vertical;
         },
-        setSplitRatio(state, ratio) {
-            state.splitRatio = ratio;
+        setSplitPosition(state, pos) {
+            state.splitPosition = pos;
         },
         selectRecord(state, index) {
             if (state.selectedRecords.indexOf(index) < 0) {
