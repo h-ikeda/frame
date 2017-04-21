@@ -15,12 +15,12 @@
     export default {
         computed: {
             caption() {
-                return this.$store.getters.signedIn ? "Sign Out": "Sign In";
+                return this.$store.state.userInfo ? "Sign Out": "Sign In";
             }
         },
         methods: {
             toggleAuthState() {
-                if (this.$store.getters.signedIn) {
+                if (this.$store.state.userInfo) {
                     this.$store.dispatch("signOut");
                 } else {
                     this.$store.commit("setDialogMode", "signIn");
