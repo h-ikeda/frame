@@ -38,7 +38,7 @@
                     if (e.shiftKey) {
 
                     } else {
-                        this.scene.rotation.z -= (e.clientX - this.prevPos[0]) * 0.1;
+                        this.scene.rotation.z += (e.clientX - this.prevPos[0]) * 0.1;
                         this.scene.rotation.x += (e.clientY - this.prevPos[1]) * 0.1;
                     }
                     this.prevPos = [e.clientX, e.clientY];
@@ -66,6 +66,7 @@
             const model = this.$store.state.model;
             var material = new THREE.LineBasicMaterial();
             Object.keys(model.lines).forEach(key => {
+                if (model.lines[key]) {
                 var line = model.lines[key];
                 var n1 = model.nodes[line.n1];
                 var n2 = model.nodes[line.n2];
@@ -74,13 +75,16 @@
                 geometry.vertices.push(new THREE.Vector3(n2.x, n2.y, n2.z));
                 var lineObject = new THREE.Line(geometry, material);
                 this.scene.add(lineObject);
+            }
             });
             material = new THREE.PointsMaterial({color: 0xff0000});
             Object.values(model.nodes).forEach(node => {
+                if (node) {
                 var geometry = new THREE.Geometry();
                 geometry.vertices.push(new THREE.Vector3(node.x, node.y, node.z));
                 var points = new THREE.Points(geometry, material);
                 this.scene.add(points);
+            }
             });
 
 

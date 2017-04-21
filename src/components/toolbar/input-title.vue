@@ -31,4 +31,7 @@
     .mdc-textfield__label {
         @include mdc-theme-prop(color, text-hint-on-primary);
     }
+    .mdc-textfield__label--float-above {
+        @include mdc-theme-prop(color, text-primary-on-primary);
+    }
 </style>
