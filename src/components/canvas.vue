@@ -1,5 +1,5 @@
 <template>
-    <canvas></canvas>
+    <canvas @mousemove="onmove" @mousedown="ondown" @mouseup="onup"></canvas>
 </template>
 
 <script>
@@ -18,7 +18,9 @@
             return {
                 camera: null,
                 renderer: null,
-                scene: null
+                scene: null,
+                dragMode: "",
+                prevPos: null
             }
         },
         methods: {
@@ -26,6 +28,29 @@
                 this.renderer.setSize(this.$el.clientWidth, this.$el.clientHeight, false);
                 this.camera.aspect = this.$el.clientWidth / this.$el.clientHeight;
                 this.camera.updateProjectionMatrix();
+            },
+            ondown(e) {
+                if (!e.button) {
+                    this.dragMode = e.shiftKey ? "pan": "rotate";
+                    this.prevPos = [e.clientX, e.clientY];
+                }
+            },
+            onmove(e) {
+                switch (this.dragMode) {
+                    case "rotate":
+                        this.scene.rotation.z -= (e.clientX - this.prevPos[0]) * 0.1;
+                        this.scene.rotation.x += (e.clientY - this.prevPos[1]) * 0.1;
+                        break;
+                    case "pan":
+
+                        break;
+                }
+                this.prevPos = [e.clientX, e.clientY];
+            },
+            onup(e) {
+                if(!e.button) {
+                    this.dragMode = "";
+                }
             }
         },
         mounted() {
@@ -61,10 +86,6 @@
                 this.scene.add(points);
             });
 
-            setInterval(()=>{
-                this.scene.rotation.x += 0.08;
-                this.scene.rotation.z += 0.03;
-            }, 15);
 
             addEventListener("resize", this.resize);
             this.$store.watch(state => state.componentStates.splitPosition, this.resize, {
