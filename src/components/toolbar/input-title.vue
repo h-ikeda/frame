@@ -21,10 +21,6 @@
 
 <style scoped lang="scss">
     @import "@material/theme/mixins";
-    .mdc-textfield {
-        margin-top: 0;
-        top: -18px;
-    }
     .mdc-textfield__input {
         @include mdc-theme-prop(color, text-primary-on-primary);
     }
