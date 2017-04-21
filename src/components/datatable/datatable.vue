@@ -1,17 +1,23 @@
 <template>
     <div class="data-table--wrapper">
-        <h2 class="mdc-typography--title data-table-header">Table header</h2>
+        <h2 class="mdc-typography--title data-table--header">Table header</h2>
         <div class="data-table--content">
             <table>
                 <thead>
                     <tr>
-                        <th v-for="item in columns">
+                        <td>
+                            <datatable-checkbox></datatable-checkbox>
+                        </td>
+                        <td v-for="item in columns">
                             {{item.label}}
-                        </th>
+                        </td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(record, index) in records" :class="{selected: isSelected(index)}" @click="onclick(index)">
+                        <td>
+                            <datatable-checkbox></datatable-checkbox>
+                        </td>
                         <td v-for="item in columns">
                             <span contenteditable @input="onchange(index, item.id)" @blur="onchange(index, item.id)">{{record[item.id]}}</span>
                         </td>
@@ -23,6 +29,7 @@
 </template>
 
 <script>
+    import checkbox from "./checkbox.vue";
     export default {
         data() {
             return {
@@ -115,18 +122,22 @@
             isSelected(index) {
                 return this.$store.getters.isSelectedRecord(index);
             }
+        },
+        components: {
+            "datatable-checkbox": checkbox
         }
     };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+    @import "@material/theme/mixins";
     .data-table--wrapper {
         display: flex;
         flex-direction: column;
     }
-    .data-table-header {
+    .data-table--header {
         font-weight: normal;
-        color: rgba(0, 0, 0, .87);
+        @include mdc-theme-prop(color, primary);
         line-height: 64px;
         margin: 0 24px;
     }
@@ -139,32 +150,36 @@
         width: 100%;
         border-collapse: collapse;
     }
-    th, td {
+    td {
         text-align: right;
-        padding-left: 56px;
+        padding-right: 56px;
     }
     td span {
         display: block;
+        outline: none;
     }
-    th:first-child, td:first-child {
-        padding-left: 24px;
+    td span:focus {
+        @include mdc-theme-prop(border-bottom-color, primary);
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
     }
-    th:last-child, td:last-child {
+    td:first-child {
+        padding: 0 13px;
+        width: 40px;
+    }
+    td:last-child {
         padding-right: 24px;
     }
     tr {
+        border-bottom: 1px solid rgba(0, 0, 0, .12);
         color: rgba(0, 0, 0, .87);
         font-size: .8125rem;
-        border-bottom: 1px solid rgba(0, 0, 0, .12);
         height: 48px;
-        line-height: 48px;
     }
     thead tr {
         color: rgba(0, 0, 0, .54);
-        font-weight: normal;
         font-size: .75rem;
         height: 56px;
-        line-height: 56px;
     }
     tbody tr:hover {
         background: #EEEEEE;

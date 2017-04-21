@@ -3,13 +3,14 @@ import Vuex from "vuex";
 import firebase from "./firebase";
 import componentStates from "./modules/component-states";
 import superagent from "superagent";
+import model from "./model-sample";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
         userInfo: null,
-        model: null,
+        model,
         documentTitle: ""
     },
     getters: {

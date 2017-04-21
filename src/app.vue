@@ -16,7 +16,7 @@
 import toolbar from "./components/toolbar/toolbar.vue";
 import drawer from "./components/drawer/drawer.vue";
 import datatable from "./components/datatable/datatable.vue";
-import canvas from "./components/canvas.vue";
+import canvas from "./components/canvas/canvas.vue";
 import splitter from "./components/splitter.vue";
 import dialog from "./components/dialog/dialog.vue";
 import fab from "./components/fab.vue";
@@ -36,7 +36,7 @@ export default {
                 a = innerHeight;
             }
             return {
-                [p]: a - this.$store.state.componentStates.splitPosition + "px"
+                [p]: a - this.$store.state.componentStates.splitPosition - 3 + "px"
             };
         }
     },
