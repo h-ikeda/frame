@@ -1,6 +1,7 @@
 <template>
-    <a href="javascript:void(0);" @click="signOut" v-if="this.$store.getters.signedIn">Sign Out</a>
-    <a href="javascript:void(0);" @click="showSignInDialog" v-else>Sign In</a>
+    <a href="javascript:void(0);" class="mdc-typography--subheading1" @click="toggleAuthState">
+        {{caption}}
+    </a>
 </template>
 
 <style scoped>
@@ -12,13 +13,19 @@
 
 <script>
     export default {
+        computed: {
+            caption() {
+                return this.$store.getters.signedIn ? "Sign Out": "Sign In";
+            }
+        },
         methods: {
-            showSignInDialog() {
-                this.$store.commit("setDialogMode", "signIn");
-                this.$store.commit("setDialogOpen", true);
-            },
-            signOut() {
-                this.$store.dispatch("signOut");
+            toggleAuthState() {
+                if (this.$store.getters.signedIn) {
+                    this.$store.dispatch("signOut");
+                } else {
+                    this.$store.commit("setDialogMode", "signIn");
+                    this.$store.commit("setDialogOpen", true);
+                }
             }
         }
     };
