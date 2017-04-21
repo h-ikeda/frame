@@ -19,7 +19,6 @@
                 camera: null,
                 renderer: null,
                 scene: null,
-                dragMode: "",
                 prevPos: null
             }
         },
@@ -31,25 +30,23 @@
             },
             ondown(e) {
                 if (!e.button) {
-                    this.dragMode = e.shiftKey ? "pan": "rotate";
                     this.prevPos = [e.clientX, e.clientY];
                 }
             },
             onmove(e) {
-                switch (this.dragMode) {
-                    case "rotate":
+                if (this.prevPos) {
+                    if (e.shiftKey) {
+
+                    } else {
                         this.scene.rotation.z -= (e.clientX - this.prevPos[0]) * 0.1;
                         this.scene.rotation.x += (e.clientY - this.prevPos[1]) * 0.1;
-                        break;
-                    case "pan":
-
-                        break;
+                    }
+                    this.prevPos = [e.clientX, e.clientY];
                 }
-                this.prevPos = [e.clientX, e.clientY];
             },
             onup(e) {
                 if(!e.button) {
-                    this.dragMode = "";
+                    this.prevPos = null;
                 }
             }
         },
