@@ -1,5 +1,5 @@
 <template>
-    <canvas @mousemove="onmove" @mousedown="ondown" @mouseup="onup"></canvas>
+    <canvas @mousemove="onmove" @mousedown="ondown" @mouseup="onup" @wheel.prevent="onscroll"></canvas>
 </template>
 
 <script>
@@ -48,6 +48,12 @@
                 if(!e.button) {
                     this.prevPos = null;
                 }
+            },
+            onscroll(e) {
+                const scale = 1 + e.deltaY * 0.01;
+                this.scene.scale.x *= scale;
+                this.scene.scale.y *= scale;
+                this.scene.scale.z *= scale;
             }
         },
         mounted() {
