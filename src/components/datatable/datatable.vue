@@ -1,6 +1,6 @@
 <template>
     <div class="data-table--wrapper">
-        <h2 class="mdc-typography--title data-table--header">Table header</h2>
+        <h2 class="mdc-typography--title data-table--header mdc-theme--primary">Table header</h2>
         <div class="data-table--content">
             <table>
                 <thead>
@@ -130,14 +130,12 @@
 </script>
 
 <style scoped lang="scss">
-    @import "@material/theme/mixins";
     .data-table--wrapper {
         display: flex;
         flex-direction: column;
     }
     .data-table--header {
         font-weight: normal;
-        @include mdc-theme-prop(color, primary);
         line-height: 64px;
         margin: 0 24px;
     }
@@ -159,7 +157,7 @@
         outline: none;
     }
     td span:focus {
-        @include mdc-theme-prop(border-bottom-color, primary);
+        border-bottom-color: --mdc-theme-primary;
         border-bottom-width: 1px;
         border-bottom-style: solid;
     }

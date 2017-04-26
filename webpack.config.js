@@ -19,11 +19,8 @@ module.exports = {
             }
         }, {
             test: /\.js$/,
-            loader: "babel-loader",
-            exclude: /node_modules/,
-            options: {
-                presets: ["env"]
-            }
+            loader: "babel-loader?presets[]=env",
+            exclude: /node_modules/
         }, {
             test: /\.(png|jpg|gif|svg|ico)$/,
             loader: "file-loader?name=[hash].[ext]"
@@ -38,7 +35,8 @@ module.exports = {
         }
     },
     devServer: {
-        historyApiFallback: true
+        historyApiFallback: true,
+        disableHostCheck: true
     },
     plugins: [
         new webpack.DefinePlugin({
@@ -48,3 +46,13 @@ module.exports = {
         })
     ]
 };
+
+if (process.env.NODE_ENV === "production") {
+    module.exports.plugins = [
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: "\"production\""
+            }
+        })
+    ];
+}

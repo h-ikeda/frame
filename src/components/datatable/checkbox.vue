@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import {MDCCheckbox} from "@material/checkbox";
+    import {checkbox} from "material-components-web";
     export default {
         data() {
             return {
@@ -19,7 +19,7 @@
             };
         },
         mounted() {
-            this.instance = new MDCCheckbox(this.$el);
+            this.instance = new checkbox.MDCCheckbox(this.$el);
         }
     };
 </script>
