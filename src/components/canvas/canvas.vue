@@ -71,7 +71,7 @@
             this.camera.position.y = -10;
             this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-            const model = this.$store.state.model;
+            const model = this.$store.state.databaseConnection.model;
             this.scene.add((new Lines(model.lines, model.nodes)).group);
             this.scene.add((new Nodes(model.nodes)).group);
 

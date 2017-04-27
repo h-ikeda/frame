@@ -1,5 +1,4 @@
 var path = require("path");
-var webpack = require("webpack");
 
 module.exports = {
     entry: "./src/main.js",
@@ -37,22 +36,19 @@ module.exports = {
     devServer: {
         historyApiFallback: true,
         disableHostCheck: true
-    },
-    plugins: [
-        new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: "\"" + process.env.NODE_ENV + "\""
-            }
-        })
-    ]
+    }
 };
 
+var env = require("./secrets");
+Object.keys(env).forEach(function(e) {
+    env[e] = "\"" + env[e] + "\"";
+});
 if (process.env.NODE_ENV === "production") {
-    module.exports.plugins = [
-        new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: "\"production\""
-            }
-        })
-    ];
+    env.NODE_ENV = "\"production\"";
 }
+
+module.exports.plugins = [
+    new (require("webpack").DefinePlugin)({
+        "process.env": env
+    })
+];

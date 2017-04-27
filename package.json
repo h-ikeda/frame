@@ -2,9 +2,10 @@
   "name": "frame",
   "version": "0.0.0",
   "scripts": {
-    "dev": "webpack-dev-server --content-base dist --open --hot --inline --host 0.0.0.0",
+    "dev": "webpack-dev-server --content-base dist --open --hot --host 0.0.0.0",
     "build": "cross-env NODE_ENV=production webpack",
-    "test": "karma start"
+    "devtest": "karma start --no-browsers",
+    "test": "karma start --no-auto-watch --single-run"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

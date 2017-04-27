@@ -1,29 +1,26 @@
-var browsers = require("./test/browsers");
+var browsers = require("./karma-browsers");
 Object.keys(browsers).forEach(function(key) {
     browsers[key].base = "BrowserStack";
 });
-var webpackConfig = require("./webpack.config");
 
 module.exports = function(config) {
     config.set({
         frameworks: ["mocha"],
-        files: ["!(node_modules)/test/*.js"],
+        files: ["**!(node_modules)**/test/**test_*.js"],
         preprocessors: {
-            "**/*": ["webpack"]
+            "**": ["webpack"]
         },
         webpack: {
-            module: webpackConfig.module,
-            resolve: webpackConfig.resolve
+            module: require("./webpack.config").module,
+            resolve: require("./webpack.config").resolve
         },
-        singleRun: true,
-        autoWatch: false,
         concurrency: 2,
         browsers: Object.keys(browsers),
         browserStack: {
-            username: process.env.BS_USERNAME || "hirokiikeda1",
-            accessKey: process.env.BS_AUTHKEY || "1JSwFjEmHAJzMRYtyp6q",
-            project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH,
-            build: process.env.CIRCLE_BUILD_NUM
+            username: process.env.BS_USERNAME || require("./secrets").BS_USERNAME,
+            accessKey: process.env.BS_AUTHKEY || require("./secrets").BS_AUTHKEY,
+            project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
+            build: process.env.CIRCLE_BUILD_NUM || Date.now()
         },
         customLaunchers: browsers
     });
