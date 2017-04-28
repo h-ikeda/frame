@@ -39,13 +39,20 @@ module.exports = {
     }
 };
 
-var env = require("./secrets");
-Object.keys(env).forEach(function(e) {
-    env[e] = "\"" + env[e] + "\"";
-});
-if (process.env.NODE_ENV === "production") {
-    env.NODE_ENV = "\"production\"";
+var env = {};
+try {
+    env = require("./secrets");
+} catch(e) {
+    if (e.code !== 'MODULE_NOT_FOUND') {
+        throw e;
+    }
 }
+Object.keys(process.env).forEach(function(e) {
+    env[e] = process.env[e];
+});
+Object.keys(env).forEach(function(e) {
+    env[e] = "\"" + env[e].replace(/"/gm, "\\\"").replace(/\n/gm, "\\n").replace(/\r/gm, "\\r") + "\"";
+});
 
 module.exports.plugins = [
     new (require("webpack").DefinePlugin)({

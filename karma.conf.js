@@ -6,13 +6,15 @@ Object.keys(browsers).forEach(function(key) {
 module.exports = function(config) {
     config.set({
         frameworks: ["mocha"],
-        files: ["**!(node_modules)**/test/**test_*.js"],
+        files: ["**/test/**/test_*.js"],
+        exclude: ["**/node_modules/**/test/**/test_*.js"],
         preprocessors: {
-            "**": ["webpack"]
+            "**/test/**/test_*.js": ["webpack"]
         },
         webpack: {
             module: require("./webpack.config").module,
-            resolve: require("./webpack.config").resolve
+            resolve: require("./webpack.config").resolve,
+            plugins: require("./webpack.config").plugins
         },
         concurrency: 2,
         browsers: Object.keys(browsers),
