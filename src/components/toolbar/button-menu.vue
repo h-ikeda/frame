@@ -13,7 +13,7 @@
     export default {
         methods: {
             onclick() {
-                this.$store.dispatch("openDrawerMenu");
+                this.$store.commit("setDrawerMenuOpen", true);
             }
         }
     };

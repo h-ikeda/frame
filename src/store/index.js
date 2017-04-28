@@ -13,9 +13,6 @@ export default new Vuex.Store({
         model,
         documentTitle: ""
     },
-    getters: {
-        signedIn: state => state.userInfo
-    },
     mutations: {
         updateUserInfo(state, value) {
             state.userInfo = value;
@@ -28,12 +25,6 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        openDrawerMenu({commit}) {
-            commit("setDrawerMenuOpen", true);
-        },
-        closeDrawerMenu({commit}) {
-            commit("setDrawerMenuOpen", false);
-        },
         signInAnonymously({commit}) {
             commit("updateWaitingState", true);
             firebase.auth().signInAnonymously().then(() => {
