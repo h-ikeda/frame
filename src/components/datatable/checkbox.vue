@@ -1,5 +1,5 @@
 <template>
-    <div class="mdc-checkbox">
+    <div class="mdc-checkbox frame-datatable--checkbox">
         <input type="checkbox" class="mdc-checkbox__native-control">
         <div class="mdc-checkbox__background">
             <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
@@ -25,7 +25,7 @@
 </script>
 
 <style scoped>
-    .mdc-checkbox {
+    .frame-datatable--checkbox {
         vertical-align: middle;
     }
 </style>

@@ -3,7 +3,7 @@
         <frame-toolbar></frame-toolbar>
         <frame-drawer></frame-drawer>
         <main class="mdc-toolbar-fixed-adjust" :style="mainStyle">
-            <frame-datatable class="pane1"></frame-datatable>
+            <frame-datatable class="frame-pane1"></frame-datatable>
             <frame-splitter></frame-splitter>
             <frame-canvas :style="pane2style"></frame-canvas>
         </main>
@@ -69,7 +69,7 @@ export default {
             height: calc(100vh - 56px);
         }
     }
-    .pane1 {
+    .frame-pane1 {
         flex-grow: 1;
     }
 </style>

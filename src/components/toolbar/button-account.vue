@@ -5,7 +5,7 @@
 </template>
 
 <style scoped>
-    a {
+    .mdc-typography--subheading1 {
         text-decoration: none;
         color: inherit;
     }

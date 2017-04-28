@@ -1,5 +1,5 @@
 <template>
-    <canvas @mousemove="onmove" @mousedown="ondown" @mouseup="onup" @wheel.prevent="onscroll"></canvas>
+    <canvas class="frame-canvas3d" @mousemove="onmove" @mousedown="ondown" @mouseup="onup" @wheel.prevent="onscroll"></canvas>
 </template>
 
 <script>
@@ -86,7 +86,7 @@
 </script>
 
 <style scoped>
-    canvas {
+    .frame-canvas3d {
         background-color: #9E9E9E;
     }
 </style>
