@@ -56,68 +56,75 @@ module.exports = {
         "resolution": "1024x768"
     },
     "iPhone 6S": {
-        "browserName": "iPhone",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPhone",
         "device": "iPhone 6S"
     },
     "iPhone 6S Plus": {
-        "browserName": "iPhone",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPhone",
         "device": "iPhone 6S Plus"
     },
     "iPad Air 2": {
-        "browserName": "iPad",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPad",
         "device": "iPad Air 2"
     },
     "iPad Pro": {
-        "browserName": "iPad",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPad",
         "device": "iPad Pro"
     },
     "iPad Mini 4": {
-        "browserName": "iPad",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPad",
         "device": "iPad Mini 4"
     },
     "Samsung Galaxy S5 Mini": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.4",
+        "browser": "android",
         "device": "Samsung Galaxy S5 Mini"
     },
     "Samsung Galaxy S5": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.4",
+        "browser": "android",
         "device": "Samsung Galaxy S5"
     },
     "HTC One M8": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.4",
+        "browser": "android",
         "device": "HTC One M8"
     },
     "Motorola Razr Maxx HD": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.1",
+        "browser": "android",
         "device": "Motorola Razr Maxx HD"
     },
-    "Sony Xperia Tipo": {
-        "browserName": "android",
-        "platform": "ANDROID",
-        "device": "Sony Xperia Tipo"
-    },
     "Google Nexus 5": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "5",
+        "browser": "android",
         "device": "Google Nexus 5"
     },
     "Amazon Kindle Fire HDX 7": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.3",
+        "browser": "android",
         "device": "Amazon Kindle Fire HDX 7"
     },
     "Samsung Galaxy Tab 4 10.1": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.4",
+        "browser": "android",
         "device": "Samsung Galaxy Tab 4 10.1"
     }
 };
