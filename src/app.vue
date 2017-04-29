@@ -53,7 +53,7 @@ export default {
 </script>
 
 <style lang="scss">
-    /*@import "~material-components-web/material-components-web";*/
+    @import "~material-components-web/material-components-web";
     body {
         margin: 0;
     }

@@ -36,7 +36,8 @@ module.exports = {
     devServer: {
         historyApiFallback: true,
         disableHostCheck: true
-    }
+    },
+    devtool: process.env.NODE_ENV !== "production" && "eval-source-map"
 };
 
 var env = {};

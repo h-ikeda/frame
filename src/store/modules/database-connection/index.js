@@ -1,4 +1,3 @@
-import firebase from "firebase";
 import * as state from "./state";
 import * as getters from "./getters";
 import * as mutations from "./mutations";
@@ -11,12 +10,5 @@ export default {
     state,
     getters,
     mutations,
-    actions,
-    plugins: [
-        store => {
-            firebase.auth().onAuthStateChanged(user => {
-                store.commit("updateUserInfo", user);
-            });
-        }
-    ]
-}
+    actions
+};
