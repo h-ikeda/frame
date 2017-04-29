@@ -1,11 +1,11 @@
 module.exports = {
-    /*"IE 11.0 on Windows 10 r1024x768": {
+    "IE 11.0 on Windows 10 r1024x768": {
         "os": "Windows",
         "os_version": "10",
         "browser": "IE",
         "browser_version": "11.0",
         "resolution": "1024x768"
-    },*/
+    },
     "Edge 14.0 on Windows 10 r1024x768": {
         "os": "Windows",
         "os_version": "10",
@@ -33,7 +33,7 @@ module.exports = {
         "browser": "Safari",
         "browser_version": "10.0",
         "resolution": "1024x768"
-    }/*,
+    },
     "Firefox 53.0 beta on OS X Sierra r1024x768": {
         "os": "OS X",
         "os_version": "Sierra",
@@ -56,68 +56,75 @@ module.exports = {
         "resolution": "1024x768"
     },
     "iPhone 6S": {
-        "browserName": "iPhone",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPhone",
         "device": "iPhone 6S"
     },
     "iPhone 6S Plus": {
-        "browserName": "iPhone",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPhone",
         "device": "iPhone 6S Plus"
     },
     "iPad Air 2": {
-        "browserName": "iPad",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPad",
         "device": "iPad Air 2"
     },
     "iPad Pro": {
-        "browserName": "iPad",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPad",
         "device": "iPad Pro"
     },
     "iPad Mini 4": {
-        "browserName": "iPad",
-        "platform": "MAC",
+        "os": "ios",
+        "os_version": "9.1",
+        "browser": "iPad",
         "device": "iPad Mini 4"
     },
     "Samsung Galaxy S5 Mini": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.4",
+        "browser": "Android Browser",
         "device": "Samsung Galaxy S5 Mini"
     },
     "Samsung Galaxy S5": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.4",
+        "browser": "Android Browser",
         "device": "Samsung Galaxy S5"
     },
     "HTC One M8": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.4",
+        "browser": "Android Browser",
         "device": "HTC One M8"
     },
     "Motorola Razr Maxx HD": {
-        "browserName": "android",
-        "platform": "ANDROID",
-        "device": "Motorola Razr Maxx HD"
-    },
-    "Sony Xperia Tipo": {
-        "browserName": "android",
-        "platform": "ANDROID",
-        "device": "Sony Xperia Tipo"
-    },
-    "Google Nexus 5": {
-        "browserName": "android",
-        "platform": "ANDROID",
-        "device": "Google Nexus 5"
+        "os": "android",
+        "os_version": "4.0",
+        "browser": "Android Browser",
+        "device": "Motorola Razr"
     },
     "Amazon Kindle Fire HDX 7": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.3",
+        "browser": "Android Browser",
         "device": "Amazon Kindle Fire HDX 7"
     },
     "Samsung Galaxy Tab 4 10.1": {
-        "browserName": "android",
-        "platform": "ANDROID",
+        "os": "android",
+        "os_version": "4.4",
+        "browser": "Android Browser",
         "device": "Samsung Galaxy Tab 4 10.1"
+    }/*,
+    "Google Nexus 9": {
+        "os": "android",
+        "os_version": "5.0",
+        "browser": "Android Browser",
+        "device": "Google Nexus 9"
     }*/
 };
