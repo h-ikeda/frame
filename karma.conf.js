@@ -18,8 +18,8 @@ if ((function () {
 }
 var webpackConfig = require("./webpack.config");
 var browserStackConfig = {
-    username: process.env.BS_USERNAME || /[^"|'].*[^"|']/.exec(secrets.BS_USERNAME)[0],
-    accessKey: process.env.BS_AUTHKEY || /[^"|'].*[^"|']/.exec(secrets.BS_AUTHKEY)[0],
+    username: process.env.BS_USERNAME || /["']?([^"']*)/.exec(secrets.BS_USERNAME)[1],
+    accessKey: process.env.BS_AUTHKEY || /["']?([^"']*)/.exec(secrets.BS_AUTHKEY)[1],
     project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
     build: process.env.CIRCLE_BUILD_NUM || Date.now()
 };

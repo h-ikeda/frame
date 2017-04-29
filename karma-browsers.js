@@ -88,43 +88,43 @@ module.exports = {
     "Samsung Galaxy S5 Mini": {
         "os": "android",
         "os_version": "4.4",
-        "browser": "android",
+        "browser": "Android Browser",
         "device": "Samsung Galaxy S5 Mini"
     },
     "Samsung Galaxy S5": {
         "os": "android",
         "os_version": "4.4",
-        "browser": "android",
+        "browser": "Android Browser",
         "device": "Samsung Galaxy S5"
     },
     "HTC One M8": {
         "os": "android",
         "os_version": "4.4",
-        "browser": "android",
+        "browser": "Android Browser",
         "device": "HTC One M8"
     },
     "Motorola Razr Maxx HD": {
         "os": "android",
-        "os_version": "4.1",
-        "browser": "android",
-        "device": "Motorola Razr Maxx HD"
+        "os_version": "4.0",
+        "browser": "Android Browser",
+        "device": "Motorola Razr"
     },
     "Google Nexus 5": {
         "os": "android",
-        "os_version": "5",
-        "browser": "android",
-        "device": "Google Nexus 5"
+        "os_version": "5.0",
+        "browser": "Android Browser",
+        "device": "Google Nexus 9"
     },
     "Amazon Kindle Fire HDX 7": {
         "os": "android",
         "os_version": "4.3",
-        "browser": "android",
+        "browser": "Android Browser",
         "device": "Amazon Kindle Fire HDX 7"
     },
     "Samsung Galaxy Tab 4 10.1": {
         "os": "android",
-        "os_version": "4.4",
-        "browser": "android",
+        "os_version": "4.3",
+        "browser": "Android Browser",
         "device": "Samsung Galaxy Tab 4 10.1"
     }
 };
