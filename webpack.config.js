@@ -44,7 +44,7 @@ var env = {};
 try {
     env = require("./secrets");
 } catch(e) {
-    if (e.code !== 'MODULE_NOT_FOUND') {
+    if (e.code !== "MODULE_NOT_FOUND") {
         throw e;
     }
 }
