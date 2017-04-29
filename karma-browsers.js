@@ -1,11 +1,11 @@
 module.exports = {
-    /*"IE 11.0 on Windows 10 r1024x768": {
+    "IE 11.0 on Windows 10 r1024x768": {
         "os": "Windows",
         "os_version": "10",
         "browser": "IE",
         "browser_version": "11.0",
         "resolution": "1024x768"
-    },*/
+    },
     "Edge 14.0 on Windows 10 r1024x768": {
         "os": "Windows",
         "os_version": "10",
@@ -33,7 +33,7 @@ module.exports = {
         "browser": "Safari",
         "browser_version": "10.0",
         "resolution": "1024x768"
-    }/*,
+    },
     "Firefox 53.0 beta on OS X Sierra r1024x768": {
         "os": "OS X",
         "os_version": "Sierra",
@@ -119,5 +119,5 @@ module.exports = {
         "browserName": "android",
         "platform": "ANDROID",
         "device": "Samsung Galaxy Tab 4 10.1"
-    }*/
+    }
 };
