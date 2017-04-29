@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import {MDCDialog} from "@material/dialog";
+    import {dialog} from "material-components-web";
     import accountDialog from "./dialog-account.vue";
     import messageDialog from "./dialog-message.vue";
     export default {
@@ -22,7 +22,7 @@
             }
         },
         mounted() {
-            this.instance = new MDCDialog(this.$el);
+            this.instance = new dialog.MDCDialog(this.$el);
             this.$watch("instance.open", open => {
                 this.$store.commit("setDialogOpen", open);
             });

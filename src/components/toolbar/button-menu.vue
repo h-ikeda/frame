@@ -3,7 +3,7 @@
 </template>
 
 <style scoped>
-    a {
+    material-icons {
         text-decoration: none;
         color: inherit;
     }

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import {MDCTextfield} from "@material/textfield";
+    import {textfield} from "material-components-web";
     export default {
         data() {
             return {
@@ -31,7 +31,7 @@
         },
         mounted() {
             this.$el.querySelectorAll(".mdc-textfield").forEach(el => {
-                MDCTextfield.attachTo(el);
+                textfield.MDCTextfield.attachTo(el);
             });
         }
     };

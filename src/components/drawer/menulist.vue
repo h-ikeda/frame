@@ -15,7 +15,7 @@
             </i>
         </h3>
         <menulist-result v-show="resultOpen"></menulist-result>
-        <div class="menu-spacer"></div>
+        <div class="mdc-list-group__spacer"></div>
         <hr class="mdc-list-divider">
         <menulist-command></menulist-command>
     </nav>
@@ -49,11 +49,11 @@
 </script>
 
 <style scoped>
-    nav {
+    .mdc-list-group {
         display: flex;
         flex-direction: column;
     }
-    .menu-spacer {
+    .mdc-list-group__spacer {
         flex-grow: 1;
     }
     .mdc-list-group__subheader {

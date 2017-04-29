@@ -1,12 +1,12 @@
 <template>
     <label class="mdc-textfield">
-        <input type="text" class="mdc-textfield__input" v-model="title">
-        <span class="mdc-textfield__label">Document title</span>
+        <input type="text" class="mdc-textfield__input mdc-theme--text-primary-on-primary" v-model="title">
+        <span class="mdc-textfield__label mdc-theme--text-hint-on-primary">Document title</span>
     </label>
 </template>
 
 <script>
-    import {MDCTextfield} from "@material/textfield";
+    import {textfield} from "material-components-web";
     export default {
         data() {
             return {
@@ -14,20 +14,17 @@
             };
         },
         mounted() {
-            MDCTextfield.attachTo(this.$el);
+            textfield.MDCTextfield.attachTo(this.$el);
         }
     }
 </script>
 
-<style scoped lang="scss">
-    @import "@material/theme/mixins";
-    .mdc-textfield__input {
-        @include mdc-theme-prop(color, text-primary-on-primary);
-    }
-    .mdc-textfield__label {
-        @include mdc-theme-prop(color, text-hint-on-primary);
+<style scoped>
+    .mdc-textfield {
+        margin-top: 0;
+        top: -18px;
     }
     .mdc-textfield__label--float-above {
-        @include mdc-theme-prop(color, text-primary-on-primary);
+        color: --mdc-theme-text-primary-on-primary;
     }
 </style>

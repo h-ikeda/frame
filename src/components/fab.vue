@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import {MDCRipple} from "@material/ripple";
+    import {ripple} from "material-components-web";
     export default {
         methods: {
             calculate() {
@@ -15,7 +15,7 @@
             }
         },
         mounted() {
-            MDCRipple.attachTo(this.$el);
+            ripple.MDCRipple.attachTo(this.$el);
         }
     };
 </script>

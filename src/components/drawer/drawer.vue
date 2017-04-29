@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import {MDCTemporaryDrawer} from "@material/drawer";
+    import {drawer} from "material-components-web";
     import menulist from "./menulist.vue";
     export default {
         data() {
@@ -16,7 +16,7 @@
             }
         },
         mounted() {
-            this.instance = new MDCTemporaryDrawer(this.$el);
+            this.instance = new drawer.MDCTemporaryDrawer(this.$el);
             this.$watch("instance.open", open => {
                 this.$store.commit("setDrawerMenuOpen", open);
             });

@@ -1,10 +1,10 @@
 <template>
-    <div class="data-table--wrapper">
-        <h2 class="mdc-typography--title data-table--header">Table header</h2>
-        <div class="data-table--content">
-            <table>
+    <div class="frame-datatable">
+        <h2 class="mdc-typography--title frame-datatable__header mdc-theme--primary">Table header</h2>
+        <div class="frame-datatable__content">
+            <table class="frame-datatable__table">
                 <thead>
-                    <tr>
+                    <tr class="frame-datatable__header-row">
                         <td>
                             <datatable-checkbox></datatable-checkbox>
                         </td>
@@ -14,7 +14,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(record, index) in records" :class="{selected: isSelected(index)}" @click="onclick(index)">
+                    <tr v-for="(record, index) in records" :class="{selected: isSelected(index)}" @click="onclick(index)" class="frame-datatable__body-row">
                         <td>
                             <datatable-checkbox></datatable-checkbox>
                         </td>
@@ -130,23 +130,21 @@
 </script>
 
 <style scoped lang="scss">
-    @import "@material/theme/mixins";
-    .data-table--wrapper {
+    .frame-datatable {
         display: flex;
         flex-direction: column;
     }
-    .data-table--header {
+    .frame-datatable__header {
         font-weight: normal;
-        @include mdc-theme-prop(color, primary);
         line-height: 64px;
         margin: 0 24px;
     }
-    .data-table--content {
+    .frame-datatable__content {
         flex-grow: 1;
         position: relative;
         overflow-y: auto;
     }
-    table {
+    .frame-datatable__table {
         width: 100%;
         border-collapse: collapse;
     }
@@ -159,7 +157,7 @@
         outline: none;
     }
     td span:focus {
-        @include mdc-theme-prop(border-bottom-color, primary);
+        border-bottom-color: --mdc-theme-primary;
         border-bottom-width: 1px;
         border-bottom-style: solid;
     }
@@ -170,18 +168,18 @@
     td:last-child {
         padding-right: 24px;
     }
-    tr {
+    .frame-datatable__header-row, .frame-datatable__body-row {
         border-bottom: 1px solid rgba(0, 0, 0, .12);
         color: rgba(0, 0, 0, .87);
         font-size: .8125rem;
         height: 48px;
     }
-    thead tr {
+    .frame-datatable__header-row {
         color: rgba(0, 0, 0, .54);
         font-size: .75rem;
         height: 56px;
     }
-    tbody tr:hover {
+    .frame-datatable__body-row:hover {
         background: #EEEEEE;
     }
     .selected {

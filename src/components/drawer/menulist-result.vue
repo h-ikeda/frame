@@ -8,7 +8,7 @@
 </template>
 
 <script>
-    import {MDCRipple} from "@material/ripple";
+    import {ripple} from "material-components-web";
     export default {
         data() {
             return {
@@ -33,7 +33,7 @@
         },
         mounted() {
             this.$el.querySelectorAll(".mdc-list-item").forEach(el => {
-                MDCRipple.attachTo(el);
+                ripple.MDCRipple.attachTo(el);
             });
         }
     };

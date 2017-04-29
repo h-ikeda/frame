@@ -1,5 +1,4 @@
 var path = require("path");
-var webpack = require("webpack");
 
 module.exports = {
     entry: "./src/main.js",
@@ -19,11 +18,8 @@ module.exports = {
             }
         }, {
             test: /\.js$/,
-            loader: "babel-loader",
-            exclude: /node_modules/,
-            options: {
-                presets: ["env"]
-            }
+            loader: "babel-loader?presets[]=env",
+            exclude: /node_modules/
         }, {
             test: /\.(png|jpg|gif|svg|ico)$/,
             loader: "file-loader?name=[hash].[ext]"
@@ -38,13 +34,29 @@ module.exports = {
         }
     },
     devServer: {
-        historyApiFallback: true
+        historyApiFallback: true,
+        disableHostCheck: true
     },
-    plugins: [
-        new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: "\"" + process.env.NODE_ENV + "\""
-            }
-        })
-    ]
+    devtool: process.env.NODE_ENV !== "production" && "eval-source-map"
 };
+
+var env = {};
+try {
+    env = require("./secrets");
+} catch(e) {
+    if (e.code !== "MODULE_NOT_FOUND") {
+        throw e;
+    }
+}
+Object.keys(process.env).forEach(function(e) {
+    env[e] = process.env[e];
+});
+Object.keys(env).forEach(function(e) {
+    env[e] = "\"" + env[e].replace(/"/gm, "\\\"").replace(/\n/gm, "\\n").replace(/\r/gm, "\\r") + "\"";
+});
+
+module.exports.plugins = [
+    new (require("webpack").DefinePlugin)({
+        "process.env": env
+    })
+];

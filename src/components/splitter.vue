@@ -1,6 +1,6 @@
 <template>
-    <div :style="outerStyle" class="display">
-        <div :style="innerStyle" class="surface" @mousemove="onMove" @mousedown="onDown" @mouseup="onUp"></div>
+    <div :style="outerStyle" class="frame-splitter">
+        <div :style="innerStyle" class="frame-splitter__surface" @mousemove="onMove" @mousedown="onDown" @mouseup="onUp"></div>
     </div>
 </template>
 
@@ -55,11 +55,11 @@
 </script>
 
 <style scoped>
-    .display {
+    .frame-splitter {
         background-color: black;
         display: flex;
     }
-    .surface {
+    .frame-splitter__surface {
         flex-grow: 1;
     }
 </style>
