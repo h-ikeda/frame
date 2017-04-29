@@ -8,7 +8,7 @@ if ((function () {
         if (e.code !== "MODULE_NOT_FOUND") {
             throw e;
         }
-        return false;
+        return process.env.BS_USERNAME && process.env.BS_AUTHKEY;
     }
 })()) {
     browsers = require("./karma-browsers");
