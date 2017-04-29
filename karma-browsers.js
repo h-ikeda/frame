@@ -123,7 +123,7 @@ module.exports = {
     },
     "Samsung Galaxy Tab 4 10.1": {
         "os": "android",
-        "os_version": "4.3",
+        "os_version": "4.4",
         "browser": "Android Browser",
         "device": "Samsung Galaxy Tab 4 10.1"
     }
