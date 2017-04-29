@@ -5,7 +5,7 @@ if ((function () {
         secrets = require("./secrets");
         return true;
     } catch(e) {
-        if (e.code !== 'MODULE_NOT_FOUND') {
+        if (e.code !== "MODULE_NOT_FOUND") {
             throw e;
         }
         return false;
@@ -17,6 +17,12 @@ if ((function () {
     });
 }
 var webpackConfig = require("./webpack.config");
+var browserStackConfig = {
+    username: process.env.BS_USERNAME || secrets.BS_USERNAME,
+    accessKey: process.env.BS_AUTHKEY || secrets.BS_AUTHKEY,
+    project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
+    build: process.env.CIRCLE_BUILD_NUM || Date.now()
+};
 
 module.exports = function(config) {
     config.set({
@@ -33,12 +39,7 @@ module.exports = function(config) {
         },
         concurrency: 2,
         browsers: Object.keys(browsers),
-        browserStack: {
-            username: process.env.BS_USERNAME || secrets.BS_USERNAME,
-            accessKey: process.env.BS_AUTHKEY || secrets.BS_AUTHKEY,
-            project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
-            build: process.env.CIRCLE_BUILD_NUM || Date.now()
-        },
+        browserStack: browserStackConfig,
         customLaunchers: browsers
     });
 };
