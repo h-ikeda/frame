@@ -109,12 +109,6 @@ module.exports = {
         "browser": "Android Browser",
         "device": "Motorola Razr"
     },
-    "Google Nexus 5": {
-        "os": "android",
-        "os_version": "5.0",
-        "browser": "Android Browser",
-        "device": "Google Nexus 9"
-    },
     "Amazon Kindle Fire HDX 7": {
         "os": "android",
         "os_version": "4.3",
@@ -126,5 +120,11 @@ module.exports = {
         "os_version": "4.4",
         "browser": "Android Browser",
         "device": "Samsung Galaxy Tab 4 10.1"
-    }
+    }/*,
+    "Google Nexus 9": {
+        "os": "android",
+        "os_version": "5.0",
+        "browser": "Android Browser",
+        "device": "Google Nexus 9"
+    }*/
 };
