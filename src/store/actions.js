@@ -9,7 +9,8 @@ export function closeDrawerMenu({commit}) {
 };
 
 export function calculate({commit, state}) {
-    var model = state.model;
+    var model = state.databaseConnection.model;
+    console.log(model);
     superagent.post("https://nameless-falls-59671.herokuapp.com")
     .send(JSON.stringify({
         jsonrpc: "2.0",
