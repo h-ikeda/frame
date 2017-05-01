@@ -14,7 +14,7 @@ export function calculate({commit, state}) {
     .send(JSON.stringify({
         jsonrpc: "2.0",
         id: require("uuid/v4")(),
-        method: "calculate",
+        method: "frame.calculate",
         params: [model]
     }))
     .end(function(err, res) {
