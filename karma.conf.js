@@ -30,6 +30,13 @@ var browserStackConfig = {
     project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
     build: process.env.CIRCLE_BUILD_NUM || Date.now()
 };
+
+var fbUrl = /^.*:\/\/(.*):(\d+)$/.exec(process.env.FB_DATABASEURL);
+var fbData = {
+
+};
+var firebaseServer = new(require("firebase-server"))(fbUrl[2], fbUrl[1], fbData);
+
 module.exports = function(config) {
     config.set({
         frameworks: ["mocha"],
