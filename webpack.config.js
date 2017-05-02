@@ -57,7 +57,8 @@ var env = {};
     "FB_DATABASEURL",
     "FB_PROJECTID",
     "FB_STORAGEBUCKET",
-    "FB_MESSAGINGSENDERID"
+    "FB_MESSAGINGSENDERID",
+    "NODE_ENV"
 ].forEach(function(e) {
     var t = process.env[e] || tEnv[e];
     if (typeof t !== "undefined") {
