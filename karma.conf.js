@@ -1,5 +1,6 @@
 var browsers = {};
 var secrets = {};
+var browserNames = [];
 if ((function () {
     try {
         secrets = require("./secrets");
@@ -12,7 +13,13 @@ if ((function () {
     }
 })()) {
     browsers = require("./karma-browsers");
-    Object.keys(browsers).forEach(function(key) {
+    browserNames = Object.keys(browsers);
+    if (process.env.CIRCLE_NODE_TOTAL > 1) {
+        browserNames.sort();
+        var num = Math.ceil(browserNames.length / process.env.CIRCLE_NODE_TOTAL);
+        browserNames = browserNames.slice(num * process.env.CIRCLE_NODE_INDEX, num * (process.env.CIRCLE_NODE_INDEX + 1));
+    }
+    browserNames.forEach(function(key) {
         browsers[key].base = "BrowserStack";
     });
 }
@@ -36,8 +43,8 @@ module.exports = function(config) {
             resolve: webpackConfig.resolve,
             plugins: webpackConfig.plugins
         },
-        concurrency: 2,
-        browsers: Object.keys(browsers),
+        concurrency: 1,
+        browsers: browserNames,
         browserStack: browserStackConfig,
         customLaunchers: browsers
     });

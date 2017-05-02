@@ -40,16 +40,30 @@ module.exports = {
     devtool: process.env.NODE_ENV !== "production" && "eval-source-map"
 };
 
-var env = {};
+var tEnv = {};
 try {
-    env = require("./secrets");
+    tEnv = require("./secrets");
 } catch(e) {
     if (e.code !== "MODULE_NOT_FOUND") {
         throw e;
     }
 }
-Object.keys(process.env).forEach(function(e) {
-    env[e] = process.env[e];
+var env = {};
+[
+    "BS_USERNAME",
+    "BS_AUTHKEY",
+    "FB_APIKEY",
+    "FB_AUTHDOMAIN",
+    "FB_DATABASEURL",
+    "FB_PROJECTID",
+    "FB_STORAGEBUCKET",
+    "FB_MESSAGINGSENDERID",
+    "NODE_ENV"
+].forEach(function(e) {
+    var t = process.env[e] || tEnv[e];
+    if (typeof t !== "undefined") {
+        env[e] = t;
+    }
 });
 Object.keys(env).forEach(function(e) {
     env[e] = "\"" + env[e].replace(/"/gm, "\\\"").replace(/\n/gm, "\\n").replace(/\r/gm, "\\r") + "\"";
