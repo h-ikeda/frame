@@ -30,12 +30,7 @@ var browserStackConfig = {
     project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
     build: process.env.CIRCLE_BUILD_NUM || Date.now()
 };
-
-var fbUrl = /^.*:\/\/(.*):(\d+)$/.exec(process.env.FB_DATABASEURL);
-var fbData = {
-
-};
-var firebaseServer = new(require("firebase-server"))(fbUrl[2], fbUrl[1], fbData);
+var fbServer = {};
 
 module.exports = function(config) {
     config.set({
@@ -45,11 +40,14 @@ module.exports = function(config) {
         preprocessors: {
             "**/test/**/test_*.js": ["webpack"]
         },
+        autoWatchBatchDelay: 500,
         webpack: {
             module: webpackConfig.module,
             resolve: webpackConfig.resolve,
-            plugins: webpackConfig.plugins
+            plugins: webpackConfig.plugins,
+            devtool: webpackConfig.devtool
         },
+        middleware: ["firebaseServer"],
         concurrency: 1,
         browsers: browserNames,
         browserStack: browserStackConfig,
