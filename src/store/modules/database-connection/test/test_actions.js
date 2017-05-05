@@ -9,14 +9,20 @@ describe("databaseConnectionモジュールのactions - ", function() {
     let fbPort, observer;
     before("firebase-serverを起動", function (done) {
         this.timeout(10000);
-        superagent.get("http://localhost:9876/firebase-server/start").then(res => {
+        superagent.get("http://localhost:9876/firebase-server/start").end((err, res) => {
+            if (err) {
+                throw err.error;
+            }
             fbPort = res.text;
             done();
         });
     });
     after("firebase-serverを終了", function(done) {
         this.timeout(10000);
-        superagent.get("http://localhost:9876/firebase-server/close/" + fbPort).then(() => {
+        superagent.get("http://localhost:9876/firebase-server/close/" + fbPort).end((err, res) => {
+            if (err) {
+                throw err.error;
+            }
             done();
         });
     });
