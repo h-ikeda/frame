@@ -35,6 +35,11 @@ var fbServer = {};
 module.exports = function(config) {
     config.set({
         frameworks: ["mocha"],
+        client: {
+            mocha: {
+                timeout: 10000
+            }
+        },
         files: ["**/test/**/test_*.js"],
         exclude: ["**/node_modules/**/test/**/test_*.js"],
         preprocessors: {
