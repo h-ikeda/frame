@@ -54,6 +54,7 @@ module.exports = function(config) {
         },
         middleware: ["firebaseServer"],
         concurrency: 1,
+        browserNoActivityTimeout: 20000,
         browsers: browserNames,
         browserStack: browserStackConfig,
         customLaunchers: browsers
