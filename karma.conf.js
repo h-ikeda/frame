@@ -1,10 +1,11 @@
 var browsers = {};
 var secrets = {};
-var browserNames = [];
+var browserNames = ["PhantomJS"];
+var concurrency = Infinity;
 if ((function () {
     try {
         secrets = require("./secrets");
-        return true;
+        return secrets.BS_USERNAME && secrets.BS_AUTHKEY;
     } catch(e) {
         if (e.code !== "MODULE_NOT_FOUND") {
             throw e;
@@ -22,6 +23,7 @@ if ((function () {
     browserNames.forEach(function(key) {
         browsers[key].base = "BrowserStack";
     });
+    concurrency = 1;
 }
 var webpackConfig = require("./webpack.config");
 var browserStackConfig = {
@@ -30,7 +32,6 @@ var browserStackConfig = {
     project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
     build: process.env.CIRCLE_BUILD_NUM || Date.now()
 };
-var fbServer = {};
 
 module.exports = function(config) {
     config.set({
@@ -53,7 +54,7 @@ module.exports = function(config) {
             devtool: webpackConfig.devtool
         },
         middleware: ["firebaseServer"],
-        concurrency: 1,
+        concurrency: concurrency,
         browserNoActivityTimeout: 20000,
         browsers: browserNames,
         browserStack: browserStackConfig,

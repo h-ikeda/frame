@@ -4,8 +4,8 @@
   "scripts": {
     "dev": "webpack-dev-server --open --hot --host 0.0.0.0",
     "build": "cross-env NODE_ENV=production webpack",
-    "devtest": "cross-env FB_DATABASEURL=ws://test.firebase.localhost:5678 karma start --no-browsers",
-    "test": "cross-env FB_DATABASEURL=ws://test.firebase.localhost:5678 karma start --no-auto-watch --single-run"
+    "devtest": "karma start",
+    "test": "karma start --no-auto-watch --single-run"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",
@@ -15,16 +15,15 @@
     "css-loader": "^0.28.1",
     "file-loader": "^0.11.0",
     "firebase": "^3.7.8",
-    "firebase-server": "^0.9.1",
     "karma": "^1.6.0",
     "karma-browserstack-launcher": "^1.2.0",
     "karma-firebase-server": "^0.0.9",
     "karma-mocha": "^1.3.0",
+    "karma-phantomjs-launcher": "^1.0.4",
     "karma-webpack": "^2.0.3",
     "material-components-web": "^0.10.0",
     "mocha": "^3.3.0",
     "node-sass": "^4.5.0",
-    "portscanner": "^2.1.1",
     "sass-loader": "^6.0.0",
     "superagent": "^3.5.2",
     "three": "^0.85.2",
