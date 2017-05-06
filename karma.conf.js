@@ -30,19 +30,29 @@ var browserStackConfig = {
     project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
     build: process.env.CIRCLE_BUILD_NUM || Date.now()
 };
+var fbServer = {};
+
 module.exports = function(config) {
     config.set({
         frameworks: ["mocha"],
+        client: {
+            mocha: {
+                timeout: 10000
+            }
+        },
         files: ["**/test/**/test_*.js"],
         exclude: ["**/node_modules/**/test/**/test_*.js"],
         preprocessors: {
             "**/test/**/test_*.js": ["webpack"]
         },
+        autoWatchBatchDelay: 500,
         webpack: {
             module: webpackConfig.module,
             resolve: webpackConfig.resolve,
-            plugins: webpackConfig.plugins
+            plugins: webpackConfig.plugins,
+            devtool: webpackConfig.devtool
         },
+        middleware: ["firebaseServer"],
         concurrency: 1,
         browsers: browserNames,
         browserStack: browserStackConfig,
