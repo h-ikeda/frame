@@ -2,25 +2,19 @@ import {
     firebaseInitialize
 } from "../actions";
 import assert from "assert";
-import superagent from "superagent";
+import server from "karma-firebase-server/control";
 import firebase from "firebase";
 
 describe("databaseConnectionモジュールのactions - ", function() {
     let fbPort, observer;
     before("firebase-serverを起動", function (done) {
-        superagent.get("http://localhost:9876/firebase-server/start").end((err, res) => {
-            if (err) {
-                throw err.error;
-            }
-            fbPort = res.text;
+        server.start(port => {
+            fbPort = port;
             done();
         });
     });
     after("firebase-serverを終了", function(done) {
-        superagent.get("http://localhost:9876/firebase-server/close/" + fbPort).end((err, res) => {
-            if (err) {
-                throw err.error;
-            }
+        server.close(fbPort, () => {
             done();
         });
     });
