@@ -2,7 +2,7 @@
     <div class="mdc-typography">
         <frame-toolbar></frame-toolbar>
         <frame-drawer></frame-drawer>
-        <main class="mdc-toolbar-fixed-adjust" :style="mainStyle">
+        <main class="mdc-toolbar-fixed-adjust frame-spreadbox-fixed" :style="mainStyle">
             <frame-datatable class="frame-pane1"></frame-datatable>
             <frame-splitter></frame-splitter>
             <frame-canvas :style="pane2style"></frame-canvas>
@@ -52,22 +52,18 @@ export default {
 };
 </script>
 
-<style lang="scss">
-    @import "~material-components-web/material-components-web";
-    body {
-        margin: 0;
-    }
+<style>
+    @import "~material-components-web/dist/material-components-web.css";
 </style>
 
 <style scoped>
-    .mdc-toolbar-fixed-adjust {
+    .frame-spreadbox-fixed {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        top: 0;
         display: flex;
-        height: calc(100vh - 64px);
-    }
-    @media (max-width: 599px) {
-        .mdc-toolbar-fixed-adjust {
-            height: calc(100vh - 56px);
-        }
     }
     .frame-pane1 {
         flex-grow: 1;
