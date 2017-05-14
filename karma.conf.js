@@ -13,8 +13,8 @@ module.exports = function(config) {
         browsers: process.env.BS_USERNAME && process.env.BS_AUTHKEY ? (function(keys) {
             keys.sort();
             return keys;
-        })(Object.keys(this.customLaunchers)).filter(function(value, index) {
-            return process.env.CIRCLE_NODE_TOTAL < 2 || index % process.env.CIRCLE_NODE_TOTAL == process.env.CIRCLE_NODE_INDEX;
+        }(Object.keys(this.customLaunchers))).filter(function(value, index) {
+            return process.env.CIRCLE_NODE_TOTAL < 2 || index % process.env.CIRCLE_NODE_TOTAL === parseInt(process.env.CIRCLE_NODE_INDEX);
         }): [],
         browserStack: {
             username: process.env.BS_USERNAME,
@@ -34,7 +34,7 @@ module.exports = function(config) {
                 launchers[name] = obj;
             });
             return launchers;
-        })(require("./karma-browsers").map(function(obj) {
+        }(require("./karma-browsers")).map(function(obj) {
             obj.base = "BrowserStack";
             return obj;
         }))
