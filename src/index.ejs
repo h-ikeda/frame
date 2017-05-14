@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<!--
+    サイトにアクセスしたときに最初に読み込まれるHTMLのテンプレートです。
+    HTML Webpack Plugin の機能により、EJS (Effective JavaScript templating) エンジンで解析された結果が配信されます。
+
+    https://github.com/jantimon/html-webpack-plugin
+    http://ejs.co/
+
+
+    また、Copy Webpack Plugin と Include Assets extension for the HTML Webpack Plugin の機能により、javascriptファイルと cssファイルへのリンク（<script>タグまたは<link>タグ）が挿入されます。
+    さらに、Favicons Webpack Plugin の機能により自動生成されたfaviconへのリンクも挿入されます。
+
+    https://github.com/kevlened/copy-webpack-plugin
+    https://github.com/jharris4/html-webpack-include-assets-plugin
+    https://github.com/jantimon/favicons-webpack-plugin
+
+
+    このテンプレートには主に、vuejsのコンポーネントがロードされるまでの間に表示したいコンテンツ（起動画面的なもの）を記述します。
+-->
+
+<head>
+    <meta charset="utf-8">
+
+    <title>
+        Frame | 1stop-st.org
+    </title>
+
+    <style>
+        .frame-root, .frame-preload, .frame-preload__content {
+            /* 画面いっぱいに表示 */
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        .frame-preload {
+            /* ロード画面の背景 */
+            background: #e0e0e0;
+        }
+        .frame-preload__content {
+            /* 上下左右中央に配置 */
+            width: min-content;
+            height: min-content;
+            margin: auto;
+        }
+        .frame-preload-blink {
+            animation: frame-preload-animation-blink 1.5s ease-out 0s infinite;
+        }
+        @keyframes frame-preload-animation-blink {
+            from, to {opacity: 0;}
+            75% {opacity: 1;}
+        }
+    </style>
+
+    <!-- 外部リソースへのリンク。 -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+
+    <!--
+        Favicons Webpack Pluginにより生成されたfaviconを参照するリンクがここに挿入されます。
+    -->
+
+    <!--
+        Include Assets extension for the HTML Webpack Pluginにより、Copy Webpack Plugin でコピーされた css ファイルを参照する<link>タグがここに挿入されます。
+    -->
+</head>
+
+<body class="mdc-typography">
+    <!--
+        .frame-root要素は、vuejsによりvueのコンポーネント（vue-component/index.vue）に置き換えられます。
+        スクリプトのロードが完了するまでの間、下記のコンテンツ（.frame-preload要素）が表示されます。
+    -->
+    <div class="frame-root">
+        <div class="frame-preload">
+            <div class="frame-preload__content">
+                <p class="frame-preload-blink mdc-typography--caption">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <!--
+        スクリプトロード後にinit()関数を呼び出してvuejsのコンポーネントをレンダリングします。
+        global.init()は、src/index.jsで定義されています。
+    -->
+    <script>
+        addEventListener("DOMContentLoaded", function() {
+            init(querySelector(".frame-root"));
+        });
+    </script>
+    <!--
+        HTML Webpack Pluginにより、webpackでビルドされたjavascriptファイルを参照する<script>タグがここに挿入されます。
+    -->
+</body>

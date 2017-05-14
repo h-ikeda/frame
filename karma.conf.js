@@ -1,63 +1,42 @@
-var browsers = {};
-var secrets = {};
-var browserNames = ["PhantomJS"];
-var concurrency = Infinity;
-if ((function () {
-    try {
-        secrets = require("./secrets");
-        return secrets.BS_USERNAME && secrets.BS_AUTHKEY;
-    } catch(e) {
-        if (e.code !== "MODULE_NOT_FOUND") {
-            throw e;
-        }
-        return process.env.BS_USERNAME && process.env.BS_AUTHKEY;
-    }
-})()) {
-    browsers = require("./karma-browsers");
-    browserNames = Object.keys(browsers);
-    if (process.env.CIRCLE_NODE_TOTAL > 1) {
-        browserNames.sort();
-        var num = Math.ceil(browserNames.length / process.env.CIRCLE_NODE_TOTAL);
-        browserNames = browserNames.slice(num * process.env.CIRCLE_NODE_INDEX, num * (process.env.CIRCLE_NODE_INDEX + 1));
-    }
-    browserNames.forEach(function(key) {
-        browsers[key].base = "BrowserStack";
-    });
-    concurrency = 1;
-}
-var webpackConfig = require("./webpack.config");
-var browserStackConfig = {
-    username: process.env.BS_USERNAME || /["']?([^"']*)/.exec(secrets.BS_USERNAME)[1],
-    accessKey: process.env.BS_AUTHKEY || /["']?([^"']*)/.exec(secrets.BS_AUTHKEY)[1],
-    project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
-    build: process.env.CIRCLE_BUILD_NUM || Date.now()
-};
-
 module.exports = function(config) {
     config.set({
         frameworks: ["mocha"],
-        client: {
-            mocha: {
-                timeout: 10000
-            }
-        },
-        files: ["**/test/**/test_*.js"],
-        exclude: ["**/node_modules/**/test/**/test_*.js"],
+        reporters: ["mocha"],
+        files: ["test/test_index.js"],
         preprocessors: {
-            "**/test/**/test_*.js": ["webpack"]
+            "test/test_index.js": ["webpack", "sourcemap"]
         },
-        autoWatchBatchDelay: 500,
-        webpack: {
-            module: webpackConfig.module,
-            resolve: webpackConfig.resolve,
-            plugins: webpackConfig.plugins,
-            devtool: webpackConfig.devtool
-        },
+        beforeMiddleware: ["webpackBlocker"],
         middleware: ["firebaseServer"],
-        concurrency: concurrency,
-        browserNoActivityTimeout: 20000,
-        browsers: browserNames,
-        browserStack: browserStackConfig,
-        customLaunchers: browsers
+        webpack: require("./webpack.config"),
+        concurrency: process.env.BS_USERNAME && process.env.BS_AUTHKEY ? 1: Infinity,
+        browsers: process.env.BS_USERNAME && process.env.BS_AUTHKEY ? (function(keys) {
+            keys.sort();
+            return keys;
+        })(Object.keys(this.customLaunchers)).filter(function(value, index) {
+            return process.env.CIRCLE_NODE_TOTAL < 2 || index % process.env.CIRCLE_NODE_TOTAL == process.env.CIRCLE_NODE_INDEX;
+        }): [],
+        browserStack: {
+            username: process.env.BS_USERNAME,
+            accessKey: process.env.BS_AUTHKEY,
+            project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
+            build: process.env.CIRCLE_BUILD_NUM || Date.now()
+        },
+        customLaunchers: (function(arr) {
+            var launchers = {};
+            arr.forEach(function(obj) {
+                var name = "device" in obj ? obj.device:
+                    obj.browser + " " +
+                    obj.browser_version + " on " +
+                    obj.os + " " +
+                    obj.os_version + " resolution:" +
+                    obj.resolution;
+                launchers[name] = obj;
+            });
+            return launchers;
+        })(require("./karma-browsers").map(function(obj) {
+            obj.base = "BrowserStack";
+            return obj;
+        }))
     });
 };
