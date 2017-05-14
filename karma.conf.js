@@ -34,9 +34,9 @@ module.exports = function(config) {
                 launchers[name] = obj;
             });
             return launchers;
-        }(require("./karma-browsers")).map(function(obj) {
+        }(require("./karma-browsers").map(function(obj) {
             obj.base = "BrowserStack";
             return obj;
-        }))
+        })))
     });
 };
