@@ -2,7 +2,6 @@ var CopyWebpackPlugin = require("copy-webpack-plugin");
 var FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 var HtmlWebpackIncludeAssetsPlugin = require("html-webpack-include-assets-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
-var NpmInstallPlugin = require("npm-install-webpack-plugin");
 var fs = require("fs");
 var interpolateName = require("loader-utils").interpolateName;
 var webpack = require("webpack");
@@ -74,7 +73,6 @@ module.exports = {
     },
     devtool: process.env.NODE_ENV !== "production" && "cheap-module-eval-source-map",
     plugins: [
-        //new NpmInstallPlugin(),
         //
         // スクリプト内の変数を環境変数で置き換えます。
         // 本番build時には、NODE_ENV=production と、FirebaseのIDやKEYが設定されます。
