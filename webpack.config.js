@@ -38,7 +38,7 @@ module.exports = {
             use: [{
                 loader: "babel-loader"
             }],
-            exclude: /node_modules\//
+            exclude: /(?:^|\/)node_modules\//
         }, {
             //
             // 画像ファイルは、url-loaderで読み込みます。
@@ -58,7 +58,12 @@ module.exports = {
     },
     resolve: {
         alias: {
-            vue$: "vue/dist/vue.esm.js" // import vue from "vue" でvue.jsのES Moduleビルドをインポートできます。
+            //
+            // 各モジュールのビルドされたファイルへのエイリアスを設定します。
+            // ex.) import vue from "vue" は import vue from "vue/dist/vue.esm" と同じです。
+            //
+            vue$: "vue/dist/vue.esm.js",
+            "material-components-web$": "material-components-web/dist/material-components-web.js"
         }
     },
     node: {
