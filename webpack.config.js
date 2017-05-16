@@ -32,13 +32,11 @@ module.exports = {
             //
             // .js拡張子のファイルは、babel-loaderで読み込みます。
             // 最新の構文で書かれたスクリプトを、現行のブラウザで解釈できるスクリプトに変換してくれます。
+            // babelの設定は、package.json内の"babel": {...}にあります。
             //
             test: /\.js$/,
             use: [{
-                loader: "babel-loader",
-                options: {
-                    presets: ["env"]
-                }
+                loader: "babel-loader"
             }],
             exclude: /node_modules\//
         }, {
@@ -85,7 +83,7 @@ module.exports = {
             FB_DATABASEURL: "",
             FB_PROJECTID :"",
             FB_STORAGEBUCKET: "",
-            FB_MESSAGINGSENDERID: "",
+            FB_MESSAGINGSENDERID: ""
         }),
         //
         // EJSテンプレートからindex.htmlを作成します。
