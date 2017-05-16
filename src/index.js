@@ -5,9 +5,9 @@ import vuexStore from "./vuex-store";
 
 Vue.use(Vuex);
 
-global.init = (dom) => {
+global.init = () => {
     new Vue({
-        el: dom,
+        el: ".frame-root",
         store: new Vuex.Store(vuexStore),
         render: h => h(vueComponent)
     });

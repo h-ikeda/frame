@@ -86,9 +86,16 @@
     -->
     <script>
         addEventListener("DOMContentLoaded", function() {
-            init(document.querySelector(".frame-root"));
+            init();
         });
     </script>
+
+    <!--
+        ブラウザに適したPolyfillを読み込みます。
+        Polyfillは、ブラウザでサポートされていないグローバルオブジェクトを定義します。
+    -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+
     <!--
         HTML Webpack Pluginにより、webpackでビルドされたjavascriptファイルを参照する<script>タグがここに挿入されます。
     -->
