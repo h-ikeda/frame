@@ -8,7 +8,7 @@ module.exports = config => {
     let customLaunchers = {};
     config.set({
         frameworks: ["mocha"],
-        reporters: ["progress", "BrowserStack"].slice(0, bsCaps ? 2: 1),
+        reporters: ["coverage-istanbul", "progress", "BrowserStack"].slice(0, bsCaps ? 3: 2),
         files: ["test/test_index.js"],
         preprocessors: {
             "test/test_index.js": ["webpack", "sourcemap"]
