@@ -16,7 +16,7 @@ module.exports = config => {
         webpack: require("./webpack.config"),
         beforeMiddleware: ["webpackBlocker"],
         concurrency: bsCaps ? 1: Infinity,
-        browsers: bsCaps ? bsCaps({
+        browsers: bsCaps ? bsCaps.create({
             browser: "ie",
             browser_version: "latest"
         }).map(cap => {
