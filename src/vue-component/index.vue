@@ -1,14 +1,29 @@
 <template>
-    <div class="frame-root">
-        <frame-toolbar></frame-toolbar>
-        <frame-drawer></frame-drawer>
-        <main class="mdc-toolbar-fixed-adjust frame-spreadbox-fixed" :style="mainStyle">
-            <frame-datatable class="frame-pane1"></frame-datatable>
-            <frame-splitter></frame-splitter>
-            <frame-canvas :style="pane2style"></frame-canvas>
-        </main>
-        <frame-fab></frame-fab>
-        <frame-dialog></frame-dialog>
+    <div>
+        <mu-flexbox orient="vertical" :gutter="0" class="frame-main">
+            <mu-flexbox-item grow=0>
+                <frame-toolbar />
+            </mu-flexbox-item>
+            <mu-flexbox-item class="frame-main__content-wrapper">
+                <mu-flexbox align="stretch" class="frame-main__content">
+                    <mu-flexbox-item class="frame-main__content-wrapper">
+                        <mu-flexbox orient="vertical" :gutter="0" class="frame-main__content">
+                            <mu-flexbox-item grow=0>
+                                <mu-sub-header>Input Nodes</mu-sub-header>
+                            </mu-flexbox-item>
+                            <mu-flexbox-item class="frame-main__content-wrapper">
+                                <frame-datatable class="frame-main__content" />
+                            </mu-flexbox-item>
+                        </mu-flexbox>
+                    </mu-flexbox-item>
+                    <mu-flexbox-item>
+                        <frame-canvas />
+                    </mu-flexbox-item>
+                </mu-flexbox>
+            </mu-flexbox-item>
+        </mu-flexbox>
+        <frame-drawer />
+        <frame-fab class="frame-fab" />
     </div>
 </template>
 
@@ -17,51 +32,39 @@ import toolbar from "./toolbar/index.vue";
 import drawer from "./drawer/index.vue";
 import datatable from "./datatable/index.vue";
 import canvas from "./canvas/index.vue";
-import splitter from "./splitter/index.vue";
-import dialog from "./dialog/index.vue";
 import fab from "./fab/index.vue";
 
 export default {
-    computed: {
-        mainStyle() {
-            return this.$store.state.componentStates.splitVertical ? {
-                flexDirection: "column"
-            }: {};
-        },
-        pane2style() {
-            var p = "width";
-            var a = innerWidth;
-            if (this.$store.state.componentStates.splitVertical) {
-                p = "height";
-                a = innerHeight;
-            }
-            return {
-                [p]: a - this.$store.state.componentStates.splitPosition - 3 + "px"
-            };
-        }
-    },
     components: {
         "frame-toolbar": toolbar,
         "frame-drawer": drawer,
         "frame-datatable": datatable,
         "frame-canvas": canvas,
-        "frame-splitter": splitter,
-        "frame-fab": fab,
-        "frame-dialog": dialog
+        "frame-fab": fab
     }
 };
 </script>
 
+<style>
+    @import "~material-design-icons/iconfont/material-icons.css";
+    @import "~muse-ui/dist/muse-ui.css";
+</style>
+
 <style scoped>
-    .frame-spreadbox-fixed {
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        top: 0;
-        display: flex;
+    .frame-main {
+        height: 100vh;
     }
-    .frame-pane1 {
-        flex-grow: 1;
+    .frame-main__content-wrapper {
+        position: relative;
+    }
+    .frame-main__content {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+    }
+    .frame-fab {
+        position: fixed;
+        right: 1rem;
+        bottom: 1rem;
     }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <canvas class="frame-canvas3d" @mousemove="onmove" @mousedown="ondown" @mouseup="onup" @wheel.prevent="onscroll"></canvas>
+    <canvas @mousemove="onmove" @mousedown="ondown" @mouseup="onup" @wheel.prevent="onscroll"></canvas>
 </template>
 
 <script>
@@ -71,7 +71,7 @@
             this.camera.position.y = -10;
             this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-            const model = this.$store.state.databaseConnection.model;
+            const model = this.$store.state.modeldataInput;
             this.scene.add((new Lines(model.lines, model.nodes)).group);
             this.scene.add((new Nodes(model.nodes)).group);
 
@@ -86,7 +86,9 @@
 </script>
 
 <style scoped>
-    .frame-canvas3d {
+    canvas {
         background-color: #9E9E9E;
+        width: 100%;
+        height: 100%;
     }
 </style>

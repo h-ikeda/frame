@@ -1,31 +1,32 @@
 <template>
-    <aside class="mdc-temporary-drawer mdc-typography">
-        <nav class="mdc-temporary-drawer__drawer">
-            <drawer-menulist></drawer-menulist>
-        </nav>
-    </aside>
+    <mu-drawer :open="$store.state.componentStates.drawerOpen" :docked="false" @close="close">
+        <mu-list>
+            <mu-list-item title="Input" toggleNested>
+                <mu-list-item slot="nested" title="Nodes" />
+                <mu-list-item slot="nested" title="Lines" />
+                <mu-list-item slot="nested" title="Sections" />
+                <mu-list-item slot="nested" title="Materials" />
+                <mu-list-item slot="nested" title="Boundaries" />
+                <mu-list-item slot="nested" title="Node Loads" />
+            </mu-list-item>
+            <mu-list-item title="Result" toggleNested>
+                <mu-list-item slot="nested" title="Displacements" />
+                <mu-list-item slot="nested" title="Reactions" />
+                <mu-list-item slot="nested" title="Stresses" />
+            </mu-list-item>
+            <mu-divider />
+            <mu-list-item title="Settings" />
+            <mu-list-item title="Feedback" />
+        </mu-list>
+    </mu-drawer>
 </template>
 
 <script>
-    import {drawer} from "material-components-web";
-    import menulist from "./menulist.vue";
     export default {
-        data() {
-            return {
-                instance: null
+        methods: {
+            close() {
+                this.$store.commit("setDrawerOpen", false);
             }
-        },
-        mounted() {
-            this.instance = new drawer.MDCTemporaryDrawer(this.$el);
-            this.$watch("instance.open", open => {
-                this.$store.commit("setDrawerMenuOpen", open);
-            });
-            this.$store.watch(({componentStates}) => componentStates.drawerMenuOpen, open => {
-                this.instance.open = open;
-            });
-        },
-        components: {
-            "drawer-menulist": menulist
         }
     };
 </script>

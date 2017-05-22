@@ -1,6 +1,6 @@
 import assert from "assert";
 
-const src = require.context("../src/", true, /\.(?:vue|js)$/);
+const src = require.context("istanbul-instrumenter-loader!../src/", true, /\.(?:vue|js)$/);
 const test = require.context("./test_src/", true, /\.js$/);
 
 global.requireSrc = (path, ext) => src(
