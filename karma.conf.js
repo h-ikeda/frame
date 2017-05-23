@@ -36,7 +36,7 @@ if (process.env.CIRCLECI) {
     const browserNum = Math.ceil(browsers.length / process.env.CIRCLE_NODE_TOTAL);
     browsers.splice(0, browserNum * process.env.CIRCLE_NODE_INDEX);
     browsers.splice(browserNum * (process.env.CIRCLE_NODE_INDEX + 1));
-    browserStack.project = process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH
+    browserStack.project = process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH;
 }
 
 module.exports = (config) => {
