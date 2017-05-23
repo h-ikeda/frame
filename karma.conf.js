@@ -40,7 +40,6 @@ if (process.env.CIRCLECI) {
 }
 
 module.exports = (config) => {
-    let customLaunchers = {};
     config.set({
         frameworks,
         reporters,
