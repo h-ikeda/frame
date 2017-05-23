@@ -1,63 +1,55 @@
-var browsers = {};
-var secrets = {};
-var browserNames = ["PhantomJS"];
-var concurrency = Infinity;
-if ((function () {
-    try {
-        secrets = require("./secrets");
-        return secrets.BS_USERNAME && secrets.BS_AUTHKEY;
-    } catch(e) {
-        if (e.code !== "MODULE_NOT_FOUND") {
-            throw e;
-        }
-        return process.env.BS_USERNAME && process.env.BS_AUTHKEY;
-    }
-})()) {
-    browsers = require("./karma-browsers");
-    browserNames = Object.keys(browsers);
-    if (process.env.CIRCLE_NODE_TOTAL > 1) {
-        browserNames.sort();
-        var num = Math.ceil(browserNames.length / process.env.CIRCLE_NODE_TOTAL);
-        browserNames = browserNames.slice(num * process.env.CIRCLE_NODE_INDEX, num * (process.env.CIRCLE_NODE_INDEX + 1));
-    }
-    browserNames.forEach(function(key) {
-        browsers[key].base = "BrowserStack";
-    });
-    concurrency = 1;
-}
-var webpackConfig = require("./webpack.config");
-var browserStackConfig = {
-    username: process.env.BS_USERNAME || /["']?([^"']*)/.exec(secrets.BS_USERNAME)[1],
-    accessKey: process.env.BS_AUTHKEY || /["']?([^"']*)/.exec(secrets.BS_AUTHKEY)[1],
-    project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH || "frame_local",
-    build: process.env.CIRCLE_BUILD_NUM || Date.now()
+"use strict";
+
+const frameworks = ["mocha"];
+const reporters = ["coverage-istanbul", "progress"];
+const files = ["test/test_index.js"];
+const preprocessors = {
+    "test/test_index.js": ["webpack", "sourcemap"]
+};
+const webpack = require("./webpack.config");
+const beforeMiddleware = ["webpackBlocker"];
+let concurrency = Infinity;
+const browsers = [];
+const customLaunchers = {};
+const browserStack = {
+    project: "frame_" + require("child_process").execSync("git branch | grep \\* | cut -d \" \" -f2-")
 };
 
-module.exports = function(config) {
+if (process.env.BROWSER_STACK_USERNAME) {
+    reporters.push("BrowserStack");
+    concurrency = 1;
+    const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
+    const capabilities = bsCaps.create({
+        "browser": ["chrome", "firefox"],
+        "browser_version": "latest"
+    });
+    capabilities.forEach((capability) => {
+        const browser = Object.keys(capability).map((key) => capability[key]).filter((str) => str).join();
+        browsers.push(browser);
+        capability.base = "BrowserStack";
+        customLaunchers[browser] = capability;
+    });
+}
+
+if (process.env.CIRCLECI) {
+    browsers.sort();
+    const browserNum = Math.ceil(browsers.length / process.env.CIRCLE_NODE_TOTAL);
+    browsers.splice(0, browserNum * process.env.CIRCLE_NODE_INDEX);
+    browsers.splice(browserNum * (process.env.CIRCLE_NODE_INDEX + 1));
+    browserStack.project = process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH;
+}
+
+module.exports = (config) => {
     config.set({
-        frameworks: ["mocha"],
-        client: {
-            mocha: {
-                timeout: 10000
-            }
-        },
-        files: ["**/test/**/test_*.js"],
-        exclude: ["**/node_modules/**/test/**/test_*.js"],
-        preprocessors: {
-            "**/test/**/test_*.js": ["webpack"]
-        },
-        autoWatchBatchDelay: 500,
-        webpack: {
-            module: webpackConfig.module,
-            resolve: webpackConfig.resolve,
-            plugins: webpackConfig.plugins,
-            devtool: webpackConfig.devtool
-        },
-        middleware: ["firebaseServer"],
-        concurrency: concurrency,
-        browserNoActivityTimeout: 20000,
-        browsers: browserNames,
-        browserStack: browserStackConfig,
-        customLaunchers: browsers
+        frameworks,
+        reporters,
+        files,
+        preprocessors,
+        webpack,
+        beforeMiddleware,
+        concurrency,
+        browsers,
+        browserStack,
+        customLaunchers
     });
 };

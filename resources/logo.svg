@@ -1,0 +1,16 @@
+<svg width="260" height="260" opacity="0.87">
+<circle cx="15" cy="65" r="15"/>
+<circle cx="65" cy="15" r="15"/>
+<circle cx="245" cy="15" r="15"/>
+<circle cx="195" cy="65" r="15"/>
+<circle cx="15" cy="245" r="15"/>
+<circle cx="65" cy="195" r="15"/>
+<circle cx="245" cy="195" r="15"/>
+<circle cx="195" cy="245" r="15"/>
+<rect fill="none" stroke="black" stroke-width="10" x="15" y="65" width="180" height="180"/>
+<rect fill="none" stroke="black" stroke-width="10" x="65" y="15" width="180" height="180"/>
+<path stroke="black" stroke-width="10" d="M15,65L65,15"/>
+<path stroke="black" stroke-width="10" d="M195,65L245,15"/>
+<path stroke="black" stroke-width="10" d="M15,245L65,195"/>
+<path stroke="black" stroke-width="10" d="M195,245L245,195"/>
+</svg>
