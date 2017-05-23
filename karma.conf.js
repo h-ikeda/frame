@@ -21,7 +21,7 @@ module.exports = config => {
             browser_version: "latest"
         }).map(cap => {
             cap.base = "BrowserStack";
-            var browser = ("device" in cap) ? cap.device:
+            var browser = ("device" in cap && cap.device) ? cap.device:
                 (cap.browser + " " +
                 cap.browser_version + " on " +
                 cap.os + " " +
