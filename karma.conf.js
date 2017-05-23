@@ -4,7 +4,7 @@ if (process.env.BROWSER_STACK_USERNAME) {
     bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
 }
 
-module.exports = config => {
+module.exports = (config) => {
     let customLaunchers = {};
     config.set({
         frameworks: ["mocha"],
@@ -17,9 +17,9 @@ module.exports = config => {
         beforeMiddleware: ["webpackBlocker"],
         concurrency: bsCaps ? 1: Infinity,
         browsers: bsCaps ? bsCaps.create({
-            browser: "ie",
-            browser_version: "latest"
-        }).map(cap => {
+            browser: ["chrome", "firefox"],
+            "browser_version": "latest"
+        }).map((cap) => {
             cap.base = "BrowserStack";
             var browser = ("device" in cap && cap.device) ? cap.device:
                 (cap.browser + " " +
