@@ -3,10 +3,6 @@ const vuexStore = global.requireSrc(__dirname + "/../vuex-store/index.js").defau
 import assert from "assert";
 import Vue from "vue";
 import Vuex from "vuex";
-import MuseUI from "muse-ui";
-
-Vue.use(Vuex);
-Vue.use(MuseUI);
 
 describe("アプリの読み込みと表示", function() {
     it("rootエレメントはdiv", function () {

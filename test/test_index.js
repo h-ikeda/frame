@@ -1,4 +1,7 @@
 import assert from "assert";
+import Vue from "vue";
+import Vuex from "vuex";
+import MuseUI from "muse-ui";
 
 const src = require.context("istanbul-instrumenter-loader!../src/", true, /\.(?:vue|js)$/);
 const test = require.context("./test_src/", true, /\.js$/);
@@ -20,6 +23,13 @@ describe("全てのソースファイルに対応するテストファイルが�
         });
     });
 });
+
+//
+// src/index.js (vueインスタンスを起動するモジュール) 以外のファイルを全て読み込みます。
+// src/index.js内で読み込んでいるvuejsのプラグインは、ここでロードします。
+//
+Vue.use(Vuex);
+Vue.use(MuseUI);
 
 src.keys().filter((key) => key !== "./index.js").forEach(src);
 test.keys().forEach(test);
