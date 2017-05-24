@@ -21,5 +21,5 @@ describe("全てのソースファイルに対応するテストファイルが�
     });
 });
 
-src.keys().forEach(src);
+src.keys().filter((key) => key !== "./index.js").forEach(src);
 test.keys().forEach(test);
