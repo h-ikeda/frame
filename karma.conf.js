@@ -10,6 +10,7 @@ module.exports = (config) => {
     };
     const webpack = require("./webpack.config");
     const beforeMiddleware = ["webpackBlocker"];
+    const middleware = ["polyfill"];
     let concurrency = Infinity;
     const browsers = [];
     const customLaunchers = {};
@@ -58,6 +59,7 @@ module.exports = (config) => {
         preprocessors,
         webpack,
         beforeMiddleware,
+        middleware,
         concurrency,
         browsers,
         browserStack,
