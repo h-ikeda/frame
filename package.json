@@ -54,7 +54,7 @@
     "presets": [[
       "env", {
         "targets": {
-          "browsers": ["last 1 version", "ie 11", "safari 5"]
+          "browsers": ["last 1 version", "ie 10", "safari 9"]
         }
       }
     ]]
