@@ -49,5 +49,14 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/1stop-st/frame.git"
+  },
+  "babel": {
+    "presets": [[
+      "env", {
+        "targets": {
+          "browsers": ["last 1 version", "ie 11", "safari 5"]
+        }
+      }
+    ]]
   }
 }

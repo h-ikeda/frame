@@ -38,17 +38,7 @@ module.exports = {
             //
             test: /\.js$/,
             use: [{
-                loader: "babel-loader",
-                options: {
-                    presets: [[
-                        "env",
-                        {
-                            targets: {
-                                browsers: ["last 1 version", "ie >= 9", "safari >= 8"]
-                            }
-                        }
-                    ]]
-                }
+                loader: "babel-loader"
             }],
             exclude: /(?:^|\/)node_modules\//
         }, {
