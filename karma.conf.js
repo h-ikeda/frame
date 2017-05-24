@@ -2,7 +2,7 @@
 
 module.exports = (config) => {
 
-    const frameworks = ["mocha"];
+    const frameworks = ["polyfill", "mocha"];
     const reporters = ["coverage-istanbul", "progress"];
     const files = ["test/test_index.js"];
     const preprocessors = {
@@ -10,7 +10,6 @@ module.exports = (config) => {
     };
     const webpack = require("./webpack.config");
     const beforeMiddleware = ["webpackBlocker"];
-    const middleware = ["polyfill"];
     let concurrency = Infinity;
     const browsers = [];
     const customLaunchers = {};
@@ -59,7 +58,6 @@ module.exports = (config) => {
         preprocessors,
         webpack,
         beforeMiddleware,
-        middleware,
         concurrency,
         browsers,
         browserStack,
