@@ -40,7 +40,14 @@ module.exports = {
             use: [{
                 loader: "babel-loader",
                 options: {
-                    presets: ["env"],
+                    presets: [[
+                        "env",
+                        {
+                            targets: {
+                                browsers: ["last 1 version", "ie 11"]
+                            }
+                        }
+                    ]]
                 }
             }],
             exclude: /(?:^|\/)node_modules\//
