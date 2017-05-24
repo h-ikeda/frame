@@ -22,12 +22,17 @@ module.exports = (config) => {
         reporters.push("BrowserStack");
         concurrency = 1;
         const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
-        const capabilities = bsCaps.create({
-            "browser": ["chrome", "firefox", "ie", "opera", "edge", "safari"],
+        const capabilities = bsCaps.create([{
+            "browser": ["chrome", "firefox", "ie", "opera", "edge"],
             "browser_version": "latest",
-            "os": ["Windows", "OS X"],
-            "os_version": ["10", "8.1", "8", "7", "El Capitan", "Sierra"]
-        }).filter((capability) => capability);
+            "os": "Windows",
+            "os_version": ["10", "7"]
+        }, {
+            "browser": ["chrome", "firefox", "opera", "safari"],
+            "browser_version": "latest",
+            "os": "OS X",
+            "os_version": ["Sierra", "El Capitan", "Yosemite"]
+        }]).filter((capability) => capability);
         capabilities.forEach((capability) => {
             const browser = [
                 "os",
