@@ -44,7 +44,7 @@ module.exports = {
                         "env",
                         {
                             targets: {
-                                browsers: ["last 1 version", "ie >= 11"]
+                                browsers: ["last 1 version", "ie >= 11", "safari >= 5"]
                             }
                         }
                     ]]
