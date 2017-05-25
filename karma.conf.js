@@ -2,7 +2,7 @@
 
 module.exports = (config) => {
 
-    const frameworks = ["polyfill", "mocha"];
+    const frameworks = ["polyfill", "mocha", "sinon"];
     const reporters = ["coverage-istanbul", "progress"];
     const polyfill = ["Promise"];
     const files = ["test/test_index.js"];

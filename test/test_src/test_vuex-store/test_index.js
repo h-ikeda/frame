@@ -1,6 +1,6 @@
 const vuexStore = global.requireSrc(__filename).default;
 import {Store} from "vuex";
-import sinon from "sinon";
+import xhr from "xhr";
 import assert from "assert";
 
 describe("Vuexストアオプションのテスト", function() {
@@ -16,35 +16,37 @@ describe("Vuexストアオプションのテスト", function() {
             state = {};
         });
         describe("calculateのテスト", function() {
-            let xhr;
+            let fakeXhr, requests;
             beforeEach(function() {
-                xhr = sinon.useFakeXMLHttpRequest();
+                fakeXhr = sinon.useFakeXMLHttpRequest();
+                requests = [];
+                fakeXhr.onCreate = (req) => {
+                    requests.push(req);
+                };
+                xhr.XMLHttpRequest = global.XMLHttpRequest;
             });
             afterEach(function() {
-                xhr.restore();
+                fakeXhr.restore();
+                xhr.XMLHttpRequest = global.XMLHttpRequest;
             });
-            describe("modeldataInputをJSONRPC形式でPOSTし、応答結果をmodeldataResultに格納する", function() {
-                it("setXhrIdが1回だけ呼び出される", function() {
-                    actions.calculate({commit, state});
-                    assert(commit.withArgs("setXhrId", sinon.match.string).calledOnce);
-                });
-                it("modeldataInputの内容がPOSTされる", function() {
-                    const input = {model: {data: "Mocked input"}};
-                    state.modeldataInput = input;
-                    let method, postedData;
-                    const stubXhr = sinon.stub();
-                    xhr.onCreate = (req) => {
-                        method = req.method;
-                        postedData = JSON.parse(req.body);
-                        stubXhr();
-                    };
-                    actions.calculate({commit, state});
-                    assert(stubXhr.calledOnce);
-                    assert.equal(method, "POST");
-                    assert.deepStrictEqual(postedData, input);
-                });
-                it("サーバーから返された内容がmodeldataResultに格納される", function() {
-                    
+            it("setXhrIdが1回だけ呼び出される", function() {
+                actions.calculate({commit, state});
+                assert(commit.withArgs("setXhrId", sinon.match.string).calledOnce);
+            });
+            it("modeldataInputの内容がPOSTされる", function() {
+                const input = {model: {data: "Mocked input"}};
+                state.xhrId = "test-id";
+                state.modeldataInput = input;
+                actions.calculate({commit, state});
+                assert.equal(requests.length, 1);
+                assert.equal(requests[0].method, "POST");
+                assert.equal(requests[0].url, "https://nameless-falls-59671.herokuapp.com");
+                let body = JSON.parse(requests[0].requestBody);
+                assert.deepStrictEqual(body, {
+                    jsonrpc: "2.0",
+                    id: state.xhrId,
+                    method: "frame.calculate",
+                    params: [input]
                 });
             });
         });
