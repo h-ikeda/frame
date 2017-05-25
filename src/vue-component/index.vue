@@ -9,7 +9,7 @@
                     <mu-flexbox-item class="frame-main__content-wrapper">
                         <mu-flexbox orient="vertical" :gutter="0" class="frame-main__content">
                             <mu-flexbox-item grow=0>
-                                <mu-sub-header>Input Nodes</mu-sub-header>
+                                <mu-sub-header>{{$store.state.componentStates.datatableSubheader}}</mu-sub-header>
                             </mu-flexbox-item>
                             <mu-flexbox-item class="frame-main__content-wrapper">
                                 <frame-datatable class="frame-main__content" />

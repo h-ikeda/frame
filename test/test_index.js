@@ -15,7 +15,7 @@ global.requireSrc = (path, ext) => src(
 );
 
 describe("全てのソースファイルに対応するテストファイルが存在することを確認", function() {
-    src.keys().forEach(srcPath => {
+    src.keys().filter((key) => key !== "./index.js").forEach((srcPath) => {
         const testPath = srcPath.replace(/\//g, "/test_").replace(/\.vue$/, ".js");
         const testPathDisp = testPath.replace(/^\.\//, "test/test_src/");
         it("ソース: " + srcPath.replace(/^\.\//, "src/") + " テスト: " + testPathDisp, function() {

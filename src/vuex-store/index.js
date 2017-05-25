@@ -1,5 +1,6 @@
 import modules from "./modules";
-import request from "superagent";
+import uuid from "uuid/v4";
+import xhr from "xhr";
 
 import modeldataInput from "../../test/model-sample";
 
@@ -9,6 +10,7 @@ export default {
         dataName: "Untitled",
         modeldataInput,
         modeldataResult: null,
+        xhrId: "",
         databaseUser: null
     },
     mutations: {
@@ -21,31 +23,36 @@ export default {
         setModeldataResult(state, newResult) {
             state.modeldataResult = newResult;
         },
+        setXhrId(state, newId) {
+            state.xhrId = newId;
+        },
         setDatabaseUser(state, newUser) {
             state.databaseUser = newUser;
         }
     },
     actions: {
         calculate({commit, state}) {
-            request.post("https://nameless-falls-59671.herokuapp.com")
-                .send(JSON.stringify({
+            commit("setXhrId", uuid());
+            xhr({
+                url: "https://nameless-falls-59671.herokuapp.com",
+                method: "POST",
+                json: {
                     jsonrpc: "2.0",
-                    id: require("uuid/v4")(),
+                    id: state.xhrId,
                     method: "frame.calculate",
                     params: [state.modeldataInput]
-                }))
-                .end(function(err, res) {
-                    if (err) {
-                        var msg = "";
-                        Object.keys(err.response).forEach(function(key) {
-                            msg += key + ": " + err.response[key];
-                        });
-                        alert(msg);
+                }
+            }, (err, res, body) => {
+                if (err) {
+                    throw err;
+                } else if (body.error) {
+                    throw body.error;
+                } else {
+                    if (state.xhrId === body.id) {
+                        commit("setModeldataResult", body.result);
                     }
-                    else {
-                        alert(res.text);
-                    }
-                });
+                }
+            });
         }
     },
     modules
