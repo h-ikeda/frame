@@ -3,44 +3,53 @@ import Vue from "vue";
 export default {
     state: {
         drawerOpen: false,
-        dialogOpen: false,
-        dialogMode: "",
-        splitterVertical: false,
-        splitterPosition: innerWidth * 0.5 + "px",
-        datatableSelectedRecords: [],
-        indicatorState: false
+        datatableSubheader: "",
+        datatableColumns: [],
+        datatableContent: {}
     },
     mutations: {
         setDrawerOpen(state, open) {
             state.drawerOpen = open;
         },
-        setDialogOpen(state, open) {
-            if (!state.dialogOpen !== !open) {
-                state.dialogOpen = open;
+        setDatatableSubheader(state, subheader) {
+            // 開発モードでは、データ型をチェックします。
+            if (process.env.NODE_ENV !== "production" && typeof subheader !== "string") {
+                throw "Datatable subheader should be a string.";
             }
+            state.datatableSubheader = subheader;
         },
-        setDialogMode(state, mode) {
-            state.dialogMode = mode;
-        },
-        setSplitterVertical(state, vertical) {
-            state.splitterVertical = vertical;
-        },
-        setSplitterPosition(state, pos) {
-            state.splitterPosition = pos;
-        },
-        setIndicatorState(state, percentage) {
-            state.indicatorState = percentage;
-        },
-        datatableSelectRecord(state, index) {
-            if (state.datatableSelectedRecords.indexOf(index) < 0) {
-                state.datatableSelectedRecords.push(index);
+        setDatatableColumns(state, columns) {
+            // 開発モードでは、データ型をチェックします。
+            if (process.env.NODE_ENV !== "production") {
+                if (!Array.isArray(columns)) {
+                    throw "Datatable columns should be an array.";
+                } else {
+                    columns.forEach((column) => {
+                        if (!("propertyName" in column)) {
+                            throw "Each items of datatable columns should have the \"propertyName\" property.";
+                        }
+                        if (!("caption" in column)) {
+                            throw "Each item of datatable columns should have the \"caption\" property.";
+                        }
+                    });
+                }
             }
+            state.datatableColumns = columns;
         },
-        datatableUnselectRecord(state, index) {
-            const i = state.datatableSelectedRecords.indexOf(index);
-            if (i >= 0) {
-                state.datatableSelectedRecords.splice(i, 1);
+        setDatatableContent(state, content) {
+            // 開発モードでは、データ型をチェックします。
+            if (process.env.NODE_ENV !== "production") {
+                if (typeof content !== "object") {
+                    throw "Datatable content should be an object.";
+                } else {
+                    Object.keys(content).forEach((key) => {
+                        if (typeof content[key] !== "object") {
+                            throw "Each item of datatable content should be an object.";
+                        }
+                    });
+                }
             }
+            state.datatableContent = content;
         }
     }
 };

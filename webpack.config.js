@@ -38,10 +38,7 @@ module.exports = {
             //
             test: /\.js$/,
             use: [{
-                loader: "babel-loader",
-                options: {
-                    presets: ["env"],
-                }
+                loader: "babel-loader"
             }],
             exclude: /(?:^|\/)node_modules\//
         }, {
@@ -123,6 +120,10 @@ module.exports = {
         //
         new HtmlWebpackDisplayLoaderPlugin({
             id: "frame-root"
-        })
+        }),
+        //
+        // 開発用サーバーでHot Module Replacement (モジュール単位で変更を反映)を有効にします。
+        //
+        new webpack.HotModuleReplacementPlugin()
     ]
 };

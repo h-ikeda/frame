@@ -9,11 +9,11 @@
             </mu-tr>
         </mu-thead>
         <mu-tbody>
-            <mu-tr v-for="key, index in keys" :key="key">
+            <mu-tr v-for="key, index in Object.keys($store.state.componentStates.datatableContent)" :key="key">
                 <mu-td>{{index}}</mu-td>
-                <mu-td>{{tableData[key].x}}</mu-td>
-                <mu-td>{{tableData[key].y}}</mu-td>
-                <mu-td>{{tableData[key].z}}</mu-td>
+                <mu-td>{{$store.state.componentStates.datatableContent[key].x}}</mu-td>
+                <mu-td>{{$store.state.componentStates.datatableContent[key].y}}</mu-td>
+                <mu-td>{{$store.state.componentStates.datatableContent[key].z}}</mu-td>
             </mu-tr>
         </mu-tbody>
     </mu-table>
