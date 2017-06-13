@@ -124,6 +124,10 @@ module.exports = {
         //
         // 開発用サーバーでHot Module Replacement (モジュール単位で変更を反映)を有効にします。
         //
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        //
+        // 開発中に変更されたモジュール名をコンソールに表示します。
+        //
+        new webpack.NamedModulesPlugin()
     ]
 };

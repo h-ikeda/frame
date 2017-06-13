@@ -1,5 +1,7 @@
-import componentStates from "./component-states";
+import component from "./component";
+import model from "./model";
 
 export default {
-    componentStates
+    component,
+    model
 };
