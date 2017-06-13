@@ -15,6 +15,7 @@ global.requireSrc = (path, ext) => src(
 );
 
 describe("全てのソースファイルに対応するテストファイルが存在することを確認", function() {
+    // Vueのインスタンスを起動するルートindex.jsファイルを除く。
     src.keys().filter((key) => key !== "./index.js").forEach((srcPath) => {
         const testPath = srcPath.replace(/\//g, "/test_").replace(/\.vue$/, ".js");
         const testPathDisp = testPath.replace(/^\.\//, "test/test_src/");

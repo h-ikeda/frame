@@ -10,5 +10,5 @@ Vue.use(MuseUI);
 new Vue({
     el: "#frame-root",
     store: new Vuex.Store(vuexStore),
-    render: h => h(vueComponent)
+    render: (h) => h(vueComponent)
 });

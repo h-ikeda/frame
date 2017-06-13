@@ -9,7 +9,7 @@
                     <mu-flexbox-item class="frame-main__content-wrapper">
                         <mu-flexbox orient="vertical" :gutter="0" class="frame-main__content">
                             <mu-flexbox-item grow=0>
-                                <mu-sub-header>{{$store.state.componentStates.datatableSubheader}}</mu-sub-header>
+                                <mu-sub-header>Table title</mu-sub-header>
                             </mu-flexbox-item>
                             <mu-flexbox-item class="frame-main__content-wrapper">
                                 <frame-datatable class="frame-main__content" />
@@ -33,15 +33,16 @@ import drawer from "./drawer/index.vue";
 import datatable from "./datatable/index.vue";
 import canvas from "./canvas/index.vue";
 import fab from "./fab/index.vue";
+import prefixed from "prefix-keys";
 
 export default {
-    components: {
-        "frame-toolbar": toolbar,
-        "frame-drawer": drawer,
-        "frame-datatable": datatable,
-        "frame-canvas": canvas,
-        "frame-fab": fab
-    }
+    components: prefixed("frame-", {
+        toolbar,
+        drawer,
+        datatable,
+        canvas,
+        fab
+    })
 };
 </script>
 

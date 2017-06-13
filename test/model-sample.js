@@ -189,7 +189,7 @@ export default {
             "G" : 1
         }
     },
-    "nodeLoads" : {
+    "nodeloads" : {
         "a": {
             "node" : "d",
             "rx" : 0.0,
