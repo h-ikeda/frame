@@ -72,7 +72,7 @@ export default {
         this.$parent.$emit("add", this.instance);
     },
     destroyed() {
-        this.$emit("remove", this.instance);
+        this.$parent.$emit("remove", this.instance);
     },
     watch: {
         lookAtX(x) {

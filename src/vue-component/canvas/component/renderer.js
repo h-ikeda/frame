@@ -1,66 +1,60 @@
 import {WebGLRenderer} from "three";
 
+// WebGLRendererに渡されるオプション。
+const props = [
+    "precision",
+    "alpha",
+    "premultipliedAlpha",
+    "antialias",
+    "stencil",
+    "preserveDrawingBuffer",
+    "depth",
+    "logarithmicDepthBuffer"
+];
+
 export default {
-    props: [
-        // rendererに渡すオプション
-        "precision",
-        "alpha",
-        "premultipliedAlpha",
-        "antialias",
-        "stencil",
-        "preserveDrawingBuffer",
-        "depth",
-        "logarithmicDepthBuffer"
-    ],
+    props,
     computed: {
-        renderer() {
+        // プロパティが変更されると、WebGLRendererは再インスタンス化されます。
+        // コンポーネントのマウント後(mountedフック以降)にcallできます。
+        rdr() {
             const options = {canvas: this.$el};
-            Object.keys(this.$props).forEach((prop) => {
-                if (typeof prop !== "undefined") {
+            props.forEach((prop) => {
+                if (typeof this[prop] !== "undefined") {
                     options[prop] = this[prop];
                 }
             });
             return new WebGLRenderer(options);
+        },
+        // 算出プロパティはキャッシュされるので、依存するリアクティブな変数が無ければ1度しか評価されません。
+        bus() {return {};}
+    },
+    methods: {
+        // 描画を更新します。
+        // コンポーネントのマウント後(mountedフック以降)にcallできます。
+        render() {
+            this.rdr.render(this.bus.scene, this.bus.camera);
+        },
+        // Canvas要素のStyledサイズをWebGLRendererのサイズにします。
+        // コンポーネントのマウント後(mountedフック以降)にcallできます。
+        resize() {
+            this.rdr.setSize(this.$el.clientWidth, this.$el.clientHeight, false);
+            this.bus.camera.aspect = this.$el.clientWidth / this.$el.clientHeight;
+            this.bus.camera.updateProjectionMatrix();
         }
     },
     beforeCreate() {
-        //
-        // THREE.jsオブジェクトの受け渡しとレンダリング。
-        // これらの変数は監視される必要はありませんが、インスタンス毎に保持したいので、
-        // カスタムイベントにより実行する仕組みになっています。
-        // このコンポーネント内からはthis.$emit("イベント名", 渡すもの)で、
-        // 子コンポーネントからはthis.$parent.$emit("イベント名", 渡すもの)で呼び出します。
-        //
-        let scene, camera;
-        
-        // 子コンポーネントからオブジェクトを受け取って代入します。
-        // THREE.Cameraのサブクラスであればobj.isCamera === trueです。
+        // カメラはCamera、それ以外はSceneとして登録します。
         this.$on("add", (obj) => {
-            if (obj.isCamera) {
-                camera = obj;
-            } else {
-                scene = obj;
-            }
-        });
-
-        // canvas要素へのレンダリングを実行します。
-        this.$on("render", () => {
-            this.renderer.render(scene, camera);
-        });
-        
-        // canvasのサイズが変更された時に呼び出します。
-        this.$on("resize", () => {
-            this.renderer.setSize(this.$el.clientWidth, this.$el.clientHeight, false);
-            camera.aspect = this.$el.clientWidth / this.$el.clientHeight;
-            camera.updateProjectionMatrix();
+            this.bus[obj.isCamera ? "camera": "scene"] = obj;
         });
     },
     mounted() {
-        this.$emit("resize");
-        this.$emit("render");
+        this.resize();
+        this.render();
     },
     updated() {
-        this.$emit("render");
+        this.render();
     },
     render(h) {
         return h("canvas", this.$slots.default);
