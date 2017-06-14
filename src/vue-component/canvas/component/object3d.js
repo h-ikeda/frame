@@ -1,4 +1,4 @@
-import {Object3D} from "three";
+import {Object3D, Vector3} from "three";
 
 // 変数がundefinedならfalse, それ以外はtrue。
 function isDef(variable) {
@@ -28,6 +28,9 @@ function setIfDef(obj, key, value) {
 
 export default {
     props: [
+        "lookAtX",
+        "lookAtY",
+        "lookAtZ",
         "positionX",
         "positionY",
         "positionZ",
@@ -82,6 +85,7 @@ export default {
             setIfDef(this.instance, ["scale", "x"], this.scaleX);
             setIfDef(this.instance, ["scale", "y"], this.scaleY);
             setIfDef(this.instance, ["scale", "z"], this.scaleZ);
+            this.instance.lookAt(new Vector3(this.lookAtX, this.lookAtY, this.lookAtZ));
 
             // 親コンポーネントにオブジェクトを登録します。
             this.$parent.$emit("add", this.instance);
@@ -99,6 +103,15 @@ export default {
         this.$emit("destroyObject");
     },
     watch: {
+        lookAtX(x) {
+            this.instance.lookAt(new Vector3(x, this.lookAtY, this.lookAtZ));
+        },
+        lookAtY(y) {
+            this.instance.lookAt(new Vector3(this.lookAtX, y, this.lookAtZ));
+        },
+        lookAtZ(z) {
+            this.instance.lookAt(new Vector3(this.lookAtX, this.lookAtY, z));
+        },
         positionX(x) {
             this.instance.position.x = x;
         },
