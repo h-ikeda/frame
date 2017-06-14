@@ -14,8 +14,10 @@ function lookAt(camera, {x, y, z}) {
 export default {
     mixins: [object3d],
     props: ["position", "lookAt"],
-    methods: {
-        createInstance: () => new PerspectiveCamera()
+    computed: {
+        instance() {
+            return new PerspectiveCamera();
+        }
     },
     watch: {
         position(p) {

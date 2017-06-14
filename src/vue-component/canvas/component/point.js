@@ -4,8 +4,8 @@ import {PointsMaterial, Geometry, Points, Vector3} from "three";
 export default {
     mixins: [object3d],
     props: ["x", "y", "z", "color", "size"],
-    methods: {
-        createInstance() {
+    computed: {
+        instance() {
             const material = new PointsMaterial();
             if (typeof this.color !== "undefined") {
                 material.color.set(this.color);

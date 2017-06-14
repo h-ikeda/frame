@@ -4,8 +4,8 @@ import {LineBasicMaterial, Geometry, Line, Vector3} from "three";
 export default {
     mixins: [object3d],
     props: ["x1", "y1", "z1", "x2", "y2", "z2", "color", "linewidth"],
-    methods: {
-        createInstance() {
+    computed: {
+        instance() {
             const material = new LineBasicMaterial();
             if (typeof this.color !== "undefined") {
                 material.color.set(this.color);

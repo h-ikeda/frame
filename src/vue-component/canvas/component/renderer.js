@@ -20,7 +20,6 @@ export default {
                     options[prop] = this[prop];
                 }
             });
-            console.log("renderer created.");
             return new WebGLRenderer(options);
         }
     },

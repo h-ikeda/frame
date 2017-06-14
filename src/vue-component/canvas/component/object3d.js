@@ -36,10 +36,8 @@ export default {
         "scaleY",
         "scaleZ"
     ],
-    methods: {
-        // THREE.Object3Dのインスタンスを生成します。
-        // mixinコンポーネントでは、createInstanceメソッドをオーバーライドすることで生成するインスタンスを変更できます。
-        createInstance() {
+    computed: {
+        instance() {
             return new Object3D();
         }
     },
@@ -73,7 +71,7 @@ export default {
         // THREE.Object3Dインスタンスを代入し、親コンポーネントに渡します。
         // インスタンス生成を、methodsに定義したcreateInstance()関数で行うことで、mixinに対応しています。
         this.$on("createObject", () => {
-            _obj = this.createInstance();
+            _obj = this.instance;
 
             // プロパティが宣言されていたら、設定します。
             setIfDef(_obj, ["rotation", "x"], this.rotationX);
