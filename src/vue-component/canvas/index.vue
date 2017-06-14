@@ -4,7 +4,7 @@
             <canvas-line v-for="line, id in linesInCoodinateSystem" :key="id" :x1="line.x1" :y1="line.y1" :z1="line.z1" :x2="line.x2" :y2="line.y2" :z2="line.z2" :color="lineColor" />
             <canvas-point v-for="node, id in nodes" :key="id" :x="node.x" :y="node.y" :z="node.z" :color="nodeColor" :size="nodeSize" />
         </canvas-scene>
-        <canvas-camera :position="{x:0, y:-10, z:0}" :lookAt="{x: 0, y: 0, z: 0}" />
+        <canvas-camera :positionX="0" :positionY="-10" :positionZ="0" :lookAt="{x: 0, y: 0, z: 0}" />
     </canvas-renderer>
 </template>
 

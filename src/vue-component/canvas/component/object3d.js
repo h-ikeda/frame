@@ -28,6 +28,9 @@ function setIfDef(obj, key, value) {
 
 export default {
     props: [
+        "positionX",
+        "positionY",
+        "positionZ",
         "rotationX",
         "rotationY",
         "rotationZ",
@@ -42,53 +45,51 @@ export default {
         }
     },
     beforeCreate() {
-        //
-        // THREE.Object3Dのインスタンスをコンポーネントのインスタンス毎に生成します。
-        //
-        let _obj;
 
         // コールバック関数でTHREE.Object3Dインスタンスにアクセスできるようにします。
         this.$on("handleObject", (fn) => {
-            fn(_obj);
+            fn(this.instance);
         });
 
         // THREE.Object3Dインスタンスのプロパティをセットします。
         // keyを配列で渡すと、ネストしたプロパティを設定できます。
         this.$on("setProperty", (key, value) => {
-            setNestedProperty(_obj, key, value);
+            setNestedProperty(this.instance, key, value);
         });
 
         // 子コンポーネントから渡されたオブジェクトをaddします。
         this.$on("add", (obj) => {
-            _obj.add(obj);
+            this.instance.add(obj);
         });
 
         // 子コンポーネントから指定されたオブジェクトをremoveします。
         this.$on("remove", (obj) => {
-            _obj.remove(obj);
+            this.instance.remove(obj);
         });
 
         // THREE.Object3Dインスタンスを代入し、親コンポーネントに渡します。
         // インスタンス生成を、methodsに定義したcreateInstance()関数で行うことで、mixinに対応しています。
         this.$on("createObject", () => {
-            _obj = this.instance;
 
             // プロパティが宣言されていたら、設定します。
-            setIfDef(_obj, ["rotation", "x"], this.rotationX);
-            setIfDef(_obj, ["rotation", "y"], this.rotationY);
-            setIfDef(_obj, ["rotation", "z"], this.rotationZ);
-            setIfDef(_obj, ["rotation", "order"], this.rotationOrder);
-            setIfDef(_obj, ["scale", "x"], this.scaleX);
-            setIfDef(_obj, ["scale", "y"], this.scaleY);
-            setIfDef(_obj, ["scale", "z"], this.scaleZ);
+            setIfDef(this.instance, ["position", "x"], this.positionX);
+            setIfDef(this.instance, ["position", "y"], this.positionY);
+            setIfDef(this.instance, ["position", "z"], this.positionZ);
+            setIfDef(this.instance, ["rotation", "x"], this.rotationX);
+            setIfDef(this.instance, ["rotation", "y"], this.rotationY);
+            setIfDef(this.instance, ["rotation", "z"], this.rotationZ);
+            setIfDef(this.instance, ["rotation", "order"], this.rotationOrder);
+            setIfDef(this.instance, ["scale", "x"], this.scaleX);
+            setIfDef(this.instance, ["scale", "y"], this.scaleY);
+            setIfDef(this.instance, ["scale", "z"], this.scaleZ);
 
             // 親コンポーネントにオブジェクトを登録します。
-            this.$parent.$emit("add", _obj);
+            this.$parent.$emit("add", this.instance);
         });
 
         // 親コンポーネントにaddしたTHREE.Object3Dインスタンスをremoveします。
         this.$on("destroyObject", () => {
-            this.$parent.$emit("remove", _obj);
+            this.$parent.$emit("remove", this.instance);
         });
     },
     created() {
@@ -98,26 +99,35 @@ export default {
         this.$emit("destroyObject");
     },
     watch: {
+        positionX(x) {
+            this.instance.position.x = x;
+        },
+        positionY(y) {
+            this.instance.position.y = y;
+        },
+        positionZ(z) {
+            this.instance.position.z = z;
+        },
         rotationX(x) {
-            this.$emit("setProperty", ["rotation", "x"], x);
+            this.instance.rotation.x = x;
         },
         rotationY(y) {
-            this.$emit("setProperty", ["rotation", "y"], y);
+            this.instance.rotation.y = y;
         },
         rotationZ(z) {
-            this.$emit("setProperty", ["rotation", "z"], z);
+            this.instance.rotation.z = z;
         },
         rotationOrder(order) {
-            this.$emit("setProperty", ["rotation", "order"], order);
+            this.instance.rotation.order = order;
         },
         scaleX(x) {
-            this.$emit("setProperty", ["scale", "x"], x);
+            this.instance.scale.x = x;
         },
         scaleY(y) {
-            this.$emit("setProperty", ["scale", "y"], y);
+            this.instance.scale.y = y;
         },
         scaleZ(z) {
-            this.$emit("setProperty", ["scale", "z"], z);
+            this.instance.scale.z = z;
         }
     },
     render(h) {
