@@ -48,53 +48,31 @@ export default {
         }
     },
     beforeCreate() {
-        // THREE.Object3Dインスタンスのプロパティをセットします。
-        // keyを配列で渡すと、ネストしたプロパティを設定できます。
-        this.$on("setProperty", (key, value) => {
-            setNestedProperty(this.instance, key, value);
-        });
-
         // 子コンポーネントから渡されたオブジェクトをaddします。
-        this.$on("add", (obj) => {
-            this.instance.add(obj);
+        this.$on("add", (child) => {
+            this.instance.add(child);
         });
-
         // 子コンポーネントから指定されたオブジェクトをremoveします。
-        this.$on("remove", (obj) => {
-            this.instance.remove(obj);
-        });
-
-        // THREE.Object3Dインスタンスを代入し、親コンポーネントに渡します。
-        // インスタンス生成を、methodsに定義したcreateInstance()関数で行うことで、mixinに対応しています。
-        this.$on("createObject", () => {
-
-            // プロパティが宣言されていたら、設定します。
-            setIfDef(this.instance, ["position", "x"], this.positionX);
-            setIfDef(this.instance, ["position", "y"], this.positionY);
-            setIfDef(this.instance, ["position", "z"], this.positionZ);
-            setIfDef(this.instance, ["rotation", "x"], this.rotationX);
-            setIfDef(this.instance, ["rotation", "y"], this.rotationY);
-            setIfDef(this.instance, ["rotation", "z"], this.rotationZ);
-            setIfDef(this.instance, ["rotation", "order"], this.rotationOrder);
-            setIfDef(this.instance, ["scale", "x"], this.scaleX);
-            setIfDef(this.instance, ["scale", "y"], this.scaleY);
-            setIfDef(this.instance, ["scale", "z"], this.scaleZ);
-            this.instance.lookAt(new Vector3(this.lookAtX, this.lookAtY, this.lookAtZ));
-
-            // 親コンポーネントにオブジェクトを登録します。
-            this.$parent.$emit("add", this.instance);
-        });
-
-        // 親コンポーネントにaddしたTHREE.Object3Dインスタンスをremoveします。
-        this.$on("destroyObject", () => {
-            this.$parent.$emit("remove", this.instance);
+        this.$on("remove", (child) => {
+            this.instance.remove(child);
         });
     },
     created() {
-        this.$emit("createObject");
+        setIfDef(this.instance, ["position", "x"], this.positionX);
+        setIfDef(this.instance, ["position", "y"], this.positionY);
+        setIfDef(this.instance, ["position", "z"], this.positionZ);
+        setIfDef(this.instance, ["rotation", "x"], this.rotationX);
+        setIfDef(this.instance, ["rotation", "y"], this.rotationY);
+        setIfDef(this.instance, ["rotation", "z"], this.rotationZ);
+        setIfDef(this.instance, ["rotation", "order"], this.rotationOrder);
+        setIfDef(this.instance, ["scale", "x"], this.scaleX);
+        setIfDef(this.instance, ["scale", "y"], this.scaleY);
+        setIfDef(this.instance, ["scale", "z"], this.scaleZ);
+        this.instance.lookAt(new Vector3(this.lookAtX, this.lookAtY, this.lookAtZ));
+        this.$parent.$emit("add", this.instance);
     },
     destroyed() {
-        this.$emit("destroyObject");
+        this.$emit("remove", this.instance);
     },
     watch: {
         lookAtX(x) {
