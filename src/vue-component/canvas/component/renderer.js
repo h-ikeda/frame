@@ -60,15 +60,13 @@ export default {
             camera.aspect = this.$el.clientWidth / this.$el.clientHeight;
             camera.updateProjectionMatrix();
         });
-        
-        // オブジェクトの内容が変更されたら、再レンダリングを予約します。
-        this.$on("update", () => {
-            this.$emit("render");
-        });
     },
     mounted() {
         this.$emit("createRenderer");
         this.$emit("resize");
+        this.$emit("render");
+    },
+    updated() {
         this.$emit("render");
     },
     render(h) {

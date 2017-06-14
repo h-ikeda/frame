@@ -58,13 +58,11 @@ export default {
         // keyを配列で渡すと、ネストしたプロパティを設定できます。
         this.$on("setProperty", (key, value) => {
             setNestedProperty(_obj, key, value);
-            this.$emit("update");
         });
 
         // 子コンポーネントから渡されたオブジェクトをaddします。
         this.$on("add", (obj) => {
             _obj.add(obj);
-            this.$emit("update");
         });
 
         // 子コンポーネントから指定されたオブジェクトをremoveします。
@@ -93,11 +91,6 @@ export default {
         // 親コンポーネントにaddしたTHREE.Object3Dインスタンスをremoveします。
         this.$on("destroyObject", () => {
             this.$parent.$emit("remove", _obj);
-        });
-
-        // 親コンポーネントにオブジェクトが変更されたことを知らせます。
-        this.$on("update", () => {
-            this.$parent.$emit("update");
         });
     },
     created() {
