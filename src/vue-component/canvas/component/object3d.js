@@ -48,12 +48,6 @@ export default {
         }
     },
     beforeCreate() {
-
-        // コールバック関数でTHREE.Object3Dインスタンスにアクセスできるようにします。
-        this.$on("handleObject", (fn) => {
-            fn(this.instance);
-        });
-
         // THREE.Object3Dインスタンスのプロパティをセットします。
         // keyを配列で渡すと、ネストしたプロパティを設定できます。
         this.$on("setProperty", (key, value) => {
