@@ -24,6 +24,7 @@
         </mu-flexbox>
         <frame-drawer />
         <frame-fab class="frame-fab" />
+        <mu-float-button style="position:fixed;bottom:10px" icon="toll" @click="$store.commit('component/canvas/setLineStyle',{color: 0x00ffff});$store.commit('component/canvas/setNodeStyle',{color: 0x00ffff});$store.commit('component/canvas/three/toggleCameraMode');" secondary />
     </div>
 </template>
 
