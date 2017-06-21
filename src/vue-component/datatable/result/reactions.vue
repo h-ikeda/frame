@@ -13,7 +13,7 @@
         </mu-thead>
         <mu-tbody>
             <mu-tr v-for="reaction, id in reactions" :key="id">
-                <mu-td>{{id}}</mu-td>
+                <mu-td>{{indexOf("nodes", id)}}</mu-td>
                 <mu-td>{{reaction.x}}</mu-td>
                 <mu-td>{{reaction.y}}</mu-td>
                 <mu-td>{{reaction.z}}</mu-td>
@@ -26,8 +26,11 @@
 </template>
 
 <script>
-    import {mapState} from "vuex";
+    import {mapState, mapGetters} from "vuex";
     export default {
-        computed: mapState("model/result", ["reactions"])
+        computed: {
+            ...mapState("model/result", ["reactions"]),
+            ...mapGetters("model/input", ["indexOf"])
+        }
     };
 </script>

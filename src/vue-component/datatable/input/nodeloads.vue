@@ -14,8 +14,8 @@
         </mu-thead>
         <mu-tbody>
             <mu-tr v-for="nodeload, id in nodeloads" :key="id">
-                <mu-td>{{id}}</mu-td>
-                <mu-td>{{nodeload.node}}</mu-td>
+                <mu-td>{{indexOf("nodeloads", id)}}</mu-td>
+                <mu-td>{{indexOf("nodes", nodeload.node)}}</mu-td>
                 <mu-td>{{nodeload.x}}</mu-td>
                 <mu-td>{{nodeload.y}}</mu-td>
                 <mu-td>{{nodeload.z}}</mu-td>
@@ -28,8 +28,11 @@
 </template>
 
 <script>
-    import {mapState} from "vuex";
+    import {mapState, mapGetters} from "vuex";
     export default {
-        computed: mapState("model/input", ["nodeloads"])
+        computed: {
+            ...mapState("model/input", ["nodeloads"]),
+            ...mapGetters("model/input", ["indexOf"])
+        }
     };
 </script>

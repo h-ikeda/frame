@@ -14,8 +14,8 @@
         </mu-thead>
         <mu-tbody>
             <mu-tr v-for="boundary, id in boundaries" :key="id">
-                <mu-td>{{id}}</mu-td>
-                <mu-td>{{boundary.node}}</mu-td>
+                <mu-td>{{indexOf("boundaries", id)}}</mu-td>
+                <mu-td>{{indexOf("nodes", boundary.node)}}</mu-td>
                 <mu-td>{{boundary.x}}</mu-td>
                 <mu-td>{{boundary.y}}</mu-td>
                 <mu-td>{{boundary.z}}</mu-td>
@@ -28,8 +28,11 @@
 </template>
 
 <script>
-    import {mapState} from "vuex";
+    import {mapState, mapGetters} from "vuex";
     export default {
-        computed: mapState("model/input", ["boundaries"])
+        computed: {
+            ...mapState("model/input", ["boundaries"]),
+            ...mapGetters("model/input", ["indexOf"])
+        }
     };
 </script>

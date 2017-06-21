@@ -15,16 +15,22 @@ const struct = [{
 export default {
     namespaced: true,
     state() {
-        const t = {};
+        const idMap = {};
+        const t = {idMap};
         struct.forEach((item) => {
             t[item.name] = {};
+            idMap[item.name] = [];
         });
         return t;
+    },
+    getters: {
+        indexOf: (state) => (type, id) => state.idMap[type].indexOf(id)
     },
     mutations: {
         setData(state, data) {
             struct.forEach((item) => {
                 state[item.name] = data[item.name];
+                state.idMap[item.name] = Object.keys(state[item.name]);
             });
         }
     }

@@ -10,7 +10,7 @@
         </mu-thead>
         <mu-tbody>
             <mu-tr v-for="node, id in nodes" :key="id">
-                <mu-td>{{id}}</mu-td>
+                <mu-td>{{indexOf("nodes", id)}}</mu-td>
                 <mu-td>{{node.x}}</mu-td>
                 <mu-td>{{node.y}}</mu-td>
                 <mu-td>{{node.z}}</mu-td>
@@ -20,8 +20,11 @@
 </template>
 
 <script>
-    import {mapState} from "vuex";
+    import {mapState, mapGetters} from "vuex";
     export default {
-        computed: mapState("model/input", ["nodes"])
+        computed: {
+            ...mapState("model/input", ["nodes"]),
+            ...mapGetters("model/input", ["indexOf"])
+        }
     };
 </script>
