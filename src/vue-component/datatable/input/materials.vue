@@ -9,7 +9,7 @@
         </mu-thead>
         <mu-tbody>
             <mu-tr v-for="material, id in materials" :key="id">
-                <mu-td>{{id}}</mu-td>
+                <mu-td>{{indexOf("materials", id)}}</mu-td>
                 <mu-td>{{material.G}}</mu-td>
                 <mu-td>{{material.E}}</mu-td>
             </mu-tr>
@@ -18,8 +18,11 @@
 </template>
 
 <script>
-    import {mapState} from "vuex";
+    import {mapState, mapGetters} from "vuex";
     export default {
-        computed: mapState("model/input", ["materials"])
+        computed: {
+            ...mapState("model/input", ["materials"]),
+            ...mapGetters("model/input", ["indexOf"])
+        }
     };
 </script>
