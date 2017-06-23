@@ -1,5 +1,5 @@
 <template>
-    <canvas class="frame-canvas" @mousemove="onmove" @mousedown="ondown" @mouseup="onup" @wheel.prevent="onscroll" :style="{backgroundColor}" />
+    <canvas class="frame-canvas" @mousemove="dragged" @mousedown="pressed" @mouseup="released" @wheel.prevent="wheeled" :style="{backgroundColor}" />
 </template>
 
 <script>
@@ -20,13 +20,98 @@
         LineBasicMaterial
     } from "three";
 
+    function initializeCamera(camera, position, rotation) {
+        setPosition(camera, position);
+        setRotation(camera, rotation);
+    }
+
+    function initializeScene(scene, position, rotation, scale) {
+        setPosition(scene, position);
+        setRotation(scene, rotation);
+        setScale(scene, scale);
+    }
+
+    function setPosition(obj, position) {
+        obj.position.x = position.x;
+        obj.position.y = position.y;
+        obj.position.z = position.z;
+    }
+
+    function setRotation(obj, rotation) {
+        obj.rotation.x = rotation.x;
+        obj.rotation.y = rotation.y;
+        obj.rotation.z = rotation.z;
+    }
+
+    function setScale(obj, scale) {
+        obj.scale.x = scale;
+        obj.scale.y = scale;
+        obj.scale.z = scale;
+    }
+
+    function setCameraSize(camera, domElement) {
+        const width = domElement.clientWidth;
+        const height = domElement.clientHeight;
+        if (camera.isPerspectiveCamera) {
+            camera.aspect = width / height;
+        } else {
+            camera.left = -0.5 * width;
+            camera.right = 0.5 * width;
+            camera.top = 0.5 * height;
+            camera.bottom = -0.5 * height;
+        }
+        camera.updateProjectionMatrix();
+    }
+
+    function setRendererSize(renderer) {
+        const domElement = renderer.domElement;
+        renderer.setSize(domElement.clientWidth, domElement.clientHeight, false);
+    }
+
+    function initializeMaterial(material, options) {
+        if ("color" in options) {
+            material.color.set(options.color);
+        }
+        if ("size" in options) {
+            material.size = options.size;
+        }
+    }
+
+    function addLinesToLineGroup(group, lines, nodes, material) {
+        Object.keys(lines).forEach((l) => {
+            const obj = group.getObjectByName(l);
+            if (!obj) {
+                const n1 = nodes[lines[l].n1], n2 = nodes[lines[l].n2];
+                const geo = new Geometry();
+                geo.vertices.push(new Vector3(n1.x, n1.y, n1.z), new Vector3(n2.x, n2.y, n2.z));
+                const ln = new Line(geo, material);
+                ln.name = l;
+                group.add(ln);
+            }
+        });
+    }
+
+    function addNodesToNodeGroup(group, nodes, material) {
+        Object.keys(nodes).forEach((n) => {
+            const obj = group.getObjectByName(n);
+            if (!obj) {
+                const geo = new Geometry();
+                geo.vertices.push(new Vector3(nodes[n].x, nodes[n].y, nodes[n].z));
+                const pts = new Points(geo, material);
+                pts.name = n;
+                group.add(pts);
+            }
+        });
+    }
+
     export default {
         data() {
             return {
-                prevPos: null,
-                width: 300,
-                height: 150,
-                modified: false
+                mouseX: 0,
+                mouseY: 0,
+                mouseLeft: false,
+                mouseMiddle: false,
+                mouseRight: false
             };
         },
         computed: {
@@ -38,7 +123,8 @@
             ...mapState("component/canvas", [
                 "lineStyle",
                 "nodeStyle",
-                "backgroundColor"
+                "backgroundColor",
+                "antialias"
             ]),
             ...mapState("component/canvas/three", [
                 "perspective",
@@ -48,246 +134,235 @@
                 "rotation",
                 "scale"
             ]),
-            //
-            // Three.jsのオブジェクトを生成します。
-            // 算出プロパティは計算結果をキャッシュするので、
-            // 初期化用プロパティが変更されない限り既に生成したインスタンスが返されます。
-            //
-            // WebGLRendererを生成・設定します。
-            initRenderer() {
+            renderer() {
+                const vm = this;
                 return new WebGLRenderer({
-                    canvas: this.$el,
+                    canvas: vm.$el,
                     alpha: true,
-                    antialias: true,
+                    antialias: vm.antialias,
                     logarithmicDepthBuffer: true
                 });
             },
-            renderer() {
-                this.initRenderer.setSize(this.width, this.height, false);
-                return this.initRenderer;
-            },
-            // Sceneを生成・設定します。
-            roterScene() {
-                const rsc = new Scene();
-                const line = new LineSegments();
-                line.geometry.addAttribute("position", new BufferAttribute(new Float32Array([-100, 0, 0, 100, 0, 0, 0, -100, 0, 0, 100, 0]), 3));
-                rsc.add(line);
-                return rsc;
-            },
-            localScene() {
-                const scn = new Scene();
-                const line = new LineSegments();
-                line.geometry.addAttribute("position", new BufferAttribute(new Float32Array([-100, 0, 0, 100, 0, 0, 0, -100, 0, 0, 100, 0]), 3));
-                scn.add(line);
-                this.roterScene.add(scn);
-                return scn;
-            },
-            // Cameraを生成・設定します。
-            initCamera() {
+            camera() {
                 return this.perspective ? new PerspectiveCamera(): new OrthographicCamera();
             },
-            positionedCamera() {
-                this.initCamera.position.x = this.cameraPosition.x;
-                this.initCamera.position.y = this.cameraPosition.y;
-                this.initCamera.position.z = this.cameraPosition.z;
-                return this.initCamera;
-            },
-            rotatedCamera() {
-                this.initCamera.rotation.x = this.cameraRotation.x;
-                this.initCamera.rotation.y = this.cameraRotation.y;
-                this.initCamera.rotation.z = this.cameraRotation.z;
-                return this.initCamera;
-            },
-            resizedCamera() {
-                if (this.perspective) {
-                    this.initCamera.aspect = this.width / this.height;
-                } else {
-                    this.initCamera.left = -0.5 * this.width;
-                    this.initCamera.right = 0.5 * this.width;
-                    this.initCamera.top = 0.5 * this.height;
-                    this.initCamera.bottom = -0.5 * this.height;
-                }
-                this.initCamera.updateProjectionMatrix();
-                return this.initCamera;
-            },
-            camera() {
-                return this.positionedCamera && this.rotatedCamera && this.resizedCamera;
-            },
-            // 要素種別毎のグループを生成し、sceneに追加します。
-            lineGroup() {
-                const g = new Group();
-                this.localScene.add(g);
-                return g;
-            },
-            nodeGroup() {
-                const g = new Group();
-                this.localScene.add(g);
-                return g;
-            },
-            // 要素種別毎にスタイルを生成します。
+            scene: () => new Scene(),
+            lineGroup: () => new Group(),
+            nodeGroup: () => new Group(),
             nodeMaterial: () => new PointsMaterial(),
             lineMaterial: () => new LineBasicMaterial()
         },
         watch: {
-            // 変数の変更時にスタイルを即時反映します。
-            "nodeStyle.color": {
-                handler(color) {
-                    this.nodeMaterial.color.set(color);
-                    this.render();
-                },
-                immediate: true
-            },
-            "nodeStyle.size": {
-                handler(size) {
-                    this.nodeMaterial.size = size;
-                    this.render();
-                },
-                immediate: true
-            },
-            "lineStyle.color": {
-                handler(color) {
-                    this.lineMaterial.color.set(color);
-                    this.render();
-                },
-                immediate: true
-            },
-            "rotation.z": {
-                handler(z) {
-                    this.roterScene.rotation.z = z;
-                },
-                immediate: true
-            },
-            "rotation.x": {
-                handler(x) {
-                    this.roterScene.rotation.x = x;
-                },
-                immediate: true
-            },
-            "position.x": {
-                handler(x) {
-                    this.localScene.position.x = x;
-                },
-                immediate: true
-            },
-            "position.y": {
-                handler(y) {
-                    this.localScene.position.y = y;
-                },
-                immediate: true
-            },
-            "position.z": {
-                handler(z) {
-                    this.localScene.position.z = z;
-                },
-                immediate: true
-            },
-            scale: {
-                handler(scale) {
-                    this.localScene.scale.x = scale;
-                    this.localScene.scale.y = scale;
-                    this.localScene.scale.z = scale;
-                },
-                immediate: true
-            },
-            perspective() {
+            "nodeStyle.color": function(color) {
+                this.nodeMaterial.color.set(color);
                 this.render();
             },
-            nodes: {
-                handler(nodes) {
-                    Object.keys(nodes).forEach((n) => {
-                        const obj = this.nodeGroup.getObjectByName(n);
-                        if (!obj) {
-                            const geo = new Geometry();
-                            geo.vertices.push(new Vector3(nodes[n].x, nodes[n].y, nodes[n].z));
-                            const pts = new Points(geo, this.nodeMaterial);
-                            pts.name = n;
-                            this.nodeGroup.add(pts);
-                        }
-                    });
-                },
-                immediate: true
+            "nodeStyle.size": function(size) {
+                this.nodeMaterial.size = size;
+                this.render();
             },
-            lines: {
-                handler(lines) {
-                    Object.keys(lines).forEach((l) => {
-                        const obj = this.lineGroup.getObjectByName(l);
-                        if (!obj) {
-                            const n1 = this.nodes[lines[l].n1], n2 = this.nodes[lines[l].n2];
-                            const geo = new Geometry();
-                            geo.vertices.push(new Vector3(n1.x, n1.y, n1.z), new Vector3(n2.x, n2.y, n2.z));
-                            const ln = new Line(geo, this.lineMaterial);
-                            ln.name = l;
-                            this.lineGroup.add(ln);
-                        }
-                    });
-                },
-                immediate: true
+            "lineStyle.color": function(color) {
+                this.lineMaterial.color.set(color);
+                this.render();
+            },
+            "rotation.x": function(x) {
+                this.scene.rotation.x = x;
+                this.render();
+            },
+            "rotation.y": function(y) {
+                this.scene.rotation.y = y;
+                this.render();
+            },
+            "rotation.z": function(z) {
+                this.scene.rotation.z = z;
+                this.render();
+            },
+            "position.x": function(x) {
+                this.scene.position.x = x;
+                this.render();
+            },
+            "position.y": function(y) {
+                this.scene.position.y = y;
+                this.render();
+            },
+            "position.z": function(z) {
+                this.scene.position.z = z;
+                this.render();
+            },
+            scale(scale) {
+                setScale(this.scene, scale);
+                this.render();
+            },
+            perspective() {
+                const vm = this;
+                initializeCamera(vm.camera, vm.cameraPosition, vm.cameraRotation);
+                setCameraSize(vm.camera, vm.$el);
+                vm.render();
+            },
+            "cameraRotation.x": function(x) {
+                this.camera.rotation.x = x;
+                this.render();
+            },
+            "cameraRotation.y": function(y) {
+                this.camera.rotation.y = y;
+                this.render();
+            },
+            "cameraRotation.z": function(z) {
+                this.camera.rotation.z = z;
+                this.render();
+            },
+            "cameraPosition.x": function(x) {
+                this.camera.position.x = x;
+                this.render();
+            },
+            "cameraPosition.y": function(y) {
+                this.camera.position.y = y;
+                this.render();
+            },
+            "cameraPosition.z": function(z) {
+                this.camera.position.z = z;
+                this.render();
+            },
+            antialias() {
+                setRendererSize(this.renderer);
+                this.render();
             }
         },
-        mounted() {
-            addEventListener("resize", this.resize);
-            // 初期描画
-            this.resize();
+        beforeCreate() {
+            const vm = this;
+            let reserved = false;
+            vm.$on("render", () => {
+                // レンダリングは更新時に1度だけ行います。
+                if (!reserved) {
+                    reserved = true;
+                    vm.$nextTick(() => {
+                        vm.renderer.render(vm.scene, vm.camera);
+                        reserved = false;
+                    });
+                }
+            });
         },
-        updated() {
-            this.render();
+        created() {
+            const vm = this;
+            initializeScene(vm.scene, vm.position, vm.rotation, vm.scale);
+            initializeMaterial(vm.nodeMaterial, vm.nodeStyle);
+            initializeMaterial(vm.lineMaterial, vm.lineStyle);
+            addLinesToLineGroup(vm.lineGroup, vm.lines, vm.nodes, vm.lineMaterial);
+            addNodesToNodeGroup(vm.nodeGroup, vm.nodes, vm.nodeMaterial);
+            vm.scene.add(vm.lineGroup);
+            vm.scene.add(vm.nodeGroup);
+        },
+        mounted() {
+            const vm = this;
+            initializeCamera(vm.camera, vm.cameraPosition, vm.cameraRotation);
+            addEventListener("resize", vm.resize);
+            vm.resize();
         },
         beforeDestroy() {
             removeEventListener("resize", this.resize);
         },
         methods: {
             ...mapMutations("component/canvas/three", [
-                "offsetPosition",
-                "offsetRotation",
-                "multiplyScale"
+                "offset",
+                "rotate",
+                "zoom",
+                "offsetCamera",
+                "rotateCamera",
+                "setCameraRotation"
             ]),
             render() {
-                // レンダリングはDOM更新時に1度だけ行います。
-                if (!this.modified) {
-                    this.modified = true;
-                    this.$nextTick(() => {
-                        this.renderer.render(this.roterScene, this.camera);
-                        this.modified = false;
-                    });
-                }
+                this.$emit("render");
             },
             resize() {
-                this.width = this.$el.clientWidth;
-                this.height = this.$el.clientHeight;
-                this.render();
+                const vm = this;
+                setCameraSize(vm.camera, vm.$el);
+                setRendererSize(vm.renderer);
+                vm.render();
             },
-            ondown(e) {
-                if (!e.button) {
-                    this.prevPos = [e.clientX, e.clientY];
+            lookAt(x, y, z) {
+                if (process.env.NODE_ENV !== "production") {
+                    if (typeof x !== "number") {
+                        throw "Argument x shold be a number.";
+                    }
+                    if (typeof y !== "number") {
+                        throw "Argument y should be a number.";
+                    }
+                    if (typeof z !== "number") {
+                        throw "Argument z shold be a number.";
+                    }
                 }
+                this.camera.lookAt(new Vector3(x, y, z));
+                this.setCameraRotation(this.camera.rotation);
             },
-            onmove(e) {
-                if (this.prevPos) {
+            pressed(e) {
+                // canvas要素上でマウスボタンが押されたときに呼ばれます。
+                const vm = this;
+                switch (e.button) {
+                    case 0:
+                        vm.mouseLeft = true;
+                        break;
+                    case 1:
+                        vm.mouseMiddle = true;
+                        break;
+                    case 2:
+                        vm.mouseRight = true;
+                }
+                vm.mouseX = e.clientX;
+                vm.mouseY = e.clientY;
+            },
+            dragged(e) {
+                const vm = this;
+                if (vm.mouseLeft) {
+                    // 左ドラッグ時の動作
+                    // canvas要素 (画面) 上でのマウスの移動距離x, y
+                    const x = (e.clientX - vm.mouseX) * 0.1;
+                    const y = (e.clientY - vm.mouseY) * 0.1;
+
+                    // 下記のコマンドでオブジェクトを移動、回転できる。
+                    // 移動の場合はユークリッド空間の座標、
+                    // 回転の場合はオイラー角[単位:rad] (x: x軸周りの回転角, y: y軸周りの回転角, z: z軸周りの回転角)
+
+                    // vm.rotate({x, y, z}) -> sceneオブジェクトをsceneオブジェクトの原点を中心に回転。
+                    // vm.rotateCamera({x, y, z}) -> cameraオブジェクトの視線方向を回転。
+                    // vm.offset({x, y, z}) -> sceneオブジェクトをグローバル座標系で平行移動。
+                    // vm.offsetCamera({x, y, z}) -> cameraオブジェクトをグローバル座標系で平行移動。
+
+                    // vm.lookAt(x, y, z) -> cameraオブジェクトの視線を点(x, y, z)に向ける。
+
                     if (e.shiftKey) {
-                        const localX = (e.clientX - this.prevPos[0]) * 0.1;
-                        const localZ = (this.prevPos[1] - e.clientY) * 0.1;
-                        this.offsetPosition({
-                            x: localX * Math.cos(this.rotation.z) + localZ * Math.sin(this.rotation.x) * Math.sin(this.rotation.z),
-                            y: -localX * Math.sin(this.rotation.x) + localZ * Math.sin(this.rotation.x) * Math.cos(this.rotation.z),
-                            z: localZ * Math.cos(this.rotation.x)
+                        // Shiftキー + ドラッグ -> 移動 (Pan)
+                        vm.offset({
+                            x: x * Math.cos(vm.rotation.z) - y * Math.sin(vm.rotation.x) * Math.sin(vm.rotation.z),
+                            y: -x * Math.sin(vm.rotation.x) - y * Math.sin(vm.rotation.x) * Math.cos(vm.rotation.z),
+                            z: -y * Math.cos(vm.rotation.x)
                         });
                     } else {
-                        this.offsetRotation({
-                            x: (e.clientY - this.prevPos[1]) * 0.1,
-                            z: (e.clientX - this.prevPos[0]) * 0.1
+                        // 単純にドラッグ -> 回転 (Rotate)
+                        vm.rotate({
+                            x: y,
+                            z: x
                         });
                     }
-                    this.render();
-                    this.prevPos = [e.clientX, e.clientY];
+                    vm.render();
+                    vm.mouseX = e.clientX;
+                    vm.mouseY = e.clientY;
                 }
             },
-            onup(e) {
-                if(!e.button) {
-                    this.prevPos = null;
+            released(e) {
+                const vm = this;
+                switch (e.button) {
+                    case 0:
+                        vm.mouseLeft = false;
+                        break;
+                    case 1:
+                        vm.mouseMiddle = false;
+                        break;
+                    case 2:
+                        vm.mouseRight = false;
                 }
             },
-            onscroll(e) {
-                this.multiplyScale(1 + e.deltaY * 0.001);
+            wheeled(e) {
+                this.zoom(1 + e.deltaY * 0.001);
                 this.render();
             }
         }
