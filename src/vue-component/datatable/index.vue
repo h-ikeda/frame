@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3 class="mdc-typography--subheading2">
+        <h3 class="mdc-typography--subheading2 frame-datatable__subheader">
             {{title}}
         </h3>
         <component :is="name" />
@@ -36,3 +36,13 @@
         }
     };
 </script>
+
+<style scoped>
+    .frame-datatable__subheader {
+        height: 3rem;
+        line-height: 3rem;
+        margin: 0;
+        padding: 0;
+        padding-left: 1rem;
+    }
+</style>
