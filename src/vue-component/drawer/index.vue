@@ -224,3 +224,10 @@
         }
     };
 </script>
+
+<style scoped>
+    .mdc-temporary-drawer__header {
+        background-image: url("background.png");
+        background-size: cover;
+    }
+</style>

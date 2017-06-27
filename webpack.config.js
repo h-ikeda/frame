@@ -48,7 +48,7 @@ module.exports = {
             // 32kB以上のファイルは、file-loaderで読み込みます。
             // ファイル名はハッシュ文字列に置き換えて配信されます。
             //
-            test: /\.(?:ttf|woff2?|eot)$/,
+            test: /\.(?:ttf|woff2?|eot|png)$/,
             use: [{
                 loader: "url-loader",
                 options: {

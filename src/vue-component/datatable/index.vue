@@ -3,7 +3,7 @@
         <h3 class="mdc-typography--subheading2 frame-datatable__subheader">
             {{title}}
         </h3>
-        <component :is="name" />
+        <component :is="name" class="frame-datatable__table" />
     </div>
 </template>
 
