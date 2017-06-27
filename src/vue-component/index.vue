@@ -1,34 +1,22 @@
 <template>
-    <div>
-        <mu-flexbox orient="vertical" :gutter="0" class="frame-main">
-            <mu-flexbox-item grow=0>
-                <frame-toolbar />
-            </mu-flexbox-item>
-            <mu-flexbox-item class="frame-main__content-wrapper">
-                <mu-flexbox align="stretch" class="frame-main__content">
-                    <mu-flexbox-item class="frame-main__content-wrapper">
-                        <mu-flexbox orient="vertical" :gutter="0" class="frame-main__content">
-                            <mu-flexbox-item grow=0>
-                                <mu-sub-header>Table title</mu-sub-header>
-                            </mu-flexbox-item>
-                            <mu-flexbox-item class="frame-main__content-wrapper">
-                                <frame-datatable class="frame-main__content" />
-                            </mu-flexbox-item>
-                        </mu-flexbox>
-                    </mu-flexbox-item>
-                    <mu-flexbox-item>
-                        <frame-canvas />
-                    </mu-flexbox-item>
-                </mu-flexbox>
-            </mu-flexbox-item>
-        </mu-flexbox>
+    <div class="mdc-typography">
         <frame-drawer />
+        <frame-toolbar />
+        <main class="frame-main">
+            <section>
+                <h3 class="mdc-typography--subheading2">Table title</h3>
+                <frame-datatable class="frame-main__content" />
+            </section>
+            <section>
+                <frame-canvas />
+            </section>
+        </main>
         <frame-fab class="frame-fab" />
 
         <!-- 仮テストボタン　動作確認のために一時的に配置しました。 -->
-        <mu-float-button style="position:fixed;bottom:1rem;right:7.5rem;" @click="test">
+        <button style="position:fixed;bottom:1rem;right:7.5rem;" @click="test">
             仮
-        </mu-float-button>
+        </button>
 
     </div>
 </template>
@@ -66,23 +54,18 @@ export default {
 
 <style>
     @import "~material-design-icons/iconfont/material-icons.css";
-    @import "~muse-ui/dist/muse-ui.css";
+    @import "~material-components-web/dist/material-components-web.css";
 </style>
 
 <style scoped>
     .frame-main {
-        height: 100vh;
+        display: flex;
     }
-    .frame-main__content-wrapper {
-        position: relative;
-    }
-    .frame-main__content {
-        position: absolute;
-        top: 0;
-        bottom: 0;
+    .frame-main>* {
+        flex: 1;
     }
     .frame-fab {
-        position: fixed;
+        position: fixed !important;
         right: 1rem;
         bottom: 1rem;
     }

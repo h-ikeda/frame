@@ -1,5 +1,9 @@
 <template>
-    <mu-float-button icon="navigate_next" @click="calculate" secondary />
+    <button class="mdc-fab material-icons" @click="calculate">
+        <span class="mdc-fab__icon">
+            navigate_next
+        </span>
+    </button>
 </template>
 
 <script>

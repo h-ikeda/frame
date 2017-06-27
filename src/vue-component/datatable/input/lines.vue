@@ -1,24 +1,24 @@
 <template>
-    <mu-table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
-        <mu-thead slot="header">
-            <mu-tr>
-                <mu-th>ID</mu-th>
-                <mu-th>Node 1</mu-th>
-                <mu-th>Node 2</mu-th>
-                <mu-th>Section</mu-th>
-                <mu-th>Material</mu-th>
-            </mu-tr>
-        </mu-thead>
-        <mu-tbody>
-            <mu-tr v-for="line, id in lines" :key="id">
-                <mu-td>{{indexOf("lines", id)}}</mu-td>
-                <mu-td>{{indexOf("nodes", line.n1)}}</mu-td>
-                <mu-td>{{indexOf("nodes", line.n2)}}</mu-td>
-                <mu-td>{{indexOf("sections", line.section)}}</mu-td>
-                <mu-td>{{indexOf("materials", line.material)}}</mu-td>
-            </mu-tr>
-        </mu-tbody>
-    </mu-table>
+    <table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
+        <thead slot="header">
+            <tr>
+                <th>ID</th>
+                <th>Node 1</th>
+                <th>Node 2</th>
+                <th>Section</th>
+                <th>Material</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="line, id in lines" :key="id">
+                <td>{{indexOf("lines", id)}}</td>
+                <td>{{indexOf("nodes", line.n1)}}</td>
+                <td>{{indexOf("nodes", line.n2)}}</td>
+                <td>{{indexOf("sections", line.section)}}</td>
+                <td>{{indexOf("materials", line.material)}}</td>
+            </tr>
+        </tbody>
+    </table>
 </template>
 
 <script>

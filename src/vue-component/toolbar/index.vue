@@ -1,8 +1,21 @@
 <template>
-    <mu-appbar :title="title">
-        <mu-icon-button icon="menu" @click="toggleOpen" slot="left" />
-        <mu-flat-button label="Sign In" slot="right" />
-    </mu-appbar>
+    <header class="mdc-toolbar">
+        <div class="mdc-toolbar__row">
+            <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+                <a href="#" class="material-icons mdc-toolbar__icon--menu" @click="toggleOpen">
+                    menu
+                </a>
+                <span class="mdc-toolbar__title">
+                    {{title}}
+                </span>
+            </section>
+            <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
+                <a href="#">
+                    Sign In
+                </a>
+            </section>
+        </div>
+    </header>
 </template>
 
 <script>

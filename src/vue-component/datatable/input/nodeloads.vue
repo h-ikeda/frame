@@ -1,30 +1,30 @@
 <template>
-    <mu-table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
-        <mu-thead slot="header">
-            <mu-tr>
-                <mu-th>ID</mu-th>
-                <mu-th>Node</mu-th>
-                <mu-th>PX</mu-th>
-                <mu-th>PY</mu-th>
-                <mu-th>PZ</mu-th>
-                <mu-th>MX</mu-th>
-                <mu-th>MY</mu-th>
-                <mu-th>MZ</mu-th>
-            </mu-tr>
-        </mu-thead>
-        <mu-tbody>
-            <mu-tr v-for="nodeload, id in nodeloads" :key="id">
-                <mu-td>{{indexOf("nodeloads", id)}}</mu-td>
-                <mu-td>{{indexOf("nodes", nodeload.node)}}</mu-td>
-                <mu-td>{{nodeload.x}}</mu-td>
-                <mu-td>{{nodeload.y}}</mu-td>
-                <mu-td>{{nodeload.z}}</mu-td>
-                <mu-td>{{nodeload.rx}}</mu-td>
-                <mu-td>{{nodeload.ry}}</mu-td>
-                <mu-td>{{nodeload.rz}}</mu-td>
-            </mu-tr>
-        </mu-tbody>
-    </mu-table>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Node</th>
+                <th>PX</th>
+                <th>PY</th>
+                <th>PZ</th>
+                <th>MX</th>
+                <th>MY</th>
+                <th>MZ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="nodeload, id in nodeloads" :key="id">
+                <td>{{indexOf("nodeloads", id)}}</td>
+                <td>{{indexOf("nodes", nodeload.node)}}</td>
+                <td>{{nodeload.x}}</td>
+                <td>{{nodeload.y}}</td>
+                <td>{{nodeload.z}}</td>
+                <td>{{nodeload.rx}}</td>
+                <td>{{nodeload.ry}}</td>
+                <td>{{nodeload.rz}}</td>
+            </tr>
+        </tbody>
+    </table>
 </template>
 
 <script>

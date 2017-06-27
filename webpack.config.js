@@ -64,8 +64,7 @@ module.exports = {
             // 各モジュールのビルドされたファイルへのエイリアスを設定します。
             // ex.) import vue from "vue" は import vue from "vue/dist/vue.esm" と同じです。
             //
-            "vue$": "vue/dist/vue.esm.js",
-            "material-components-web$": "material-components-web/dist/material-components-web.js"
+            "vue$": "vue/dist/vue.esm.js"
         }
     },
     node: {

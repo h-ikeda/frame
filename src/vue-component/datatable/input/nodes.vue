@@ -1,22 +1,22 @@
 <template>
-    <mu-table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
-        <mu-thead slot="header">
-            <mu-tr>
-                <mu-th>ID</mu-th>
-                <mu-th>X</mu-th>
-                <mu-th>Y</mu-th>
-                <mu-th>Z</mu-th>
-            </mu-tr>
-        </mu-thead>
-        <mu-tbody>
-            <mu-tr v-for="node, id in nodes" :key="id">
-                <mu-td>{{indexOf("nodes", id)}}</mu-td>
-                <mu-td>{{node.x}}</mu-td>
-                <mu-td>{{node.y}}</mu-td>
-                <mu-td>{{node.z}}</mu-td>
-            </mu-tr>
-        </mu-tbody>
-    </mu-table>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Z</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="node, id in nodes" :key="id">
+                <td>{{indexOf("nodes", id)}}</td>
+                <td>{{node.x}}</td>
+                <td>{{node.y}}</td>
+                <td>{{node.z}}</td>
+            </tr>
+        </tbody>
+    </table>
 </template>
 
 <script>
