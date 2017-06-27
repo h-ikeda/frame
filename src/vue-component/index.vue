@@ -4,7 +4,6 @@
         <frame-toolbar />
         <main class="frame-main">
             <section>
-                <h3 class="mdc-typography--subheading2">Table title</h3>
                 <frame-datatable class="frame-main__content" />
             </section>
             <section>

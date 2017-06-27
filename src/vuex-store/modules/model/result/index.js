@@ -1,9 +1,12 @@
 const struct = [{
-    name: "displacements"
+    name: "displacements",
+    display: "Displacements"
 }, {
-    name: "reactions"
+    name: "reactions",
+    display: "Reactions"
 }, {
-    name: "stresses"
+    name: "stresses",
+    display: "Streses"
 }];
 
 export default {
@@ -14,6 +17,9 @@ export default {
             t[item.name] = {};
         })
         return t;
+    },
+    getters: {
+        displayName: (state) => (type) => struct.find((obj) => obj.name === type).display
     },
     mutations: {
         setData(state, data) {

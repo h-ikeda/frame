@@ -1,28 +1,28 @@
 <template>
-    <mu-table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
-        <mu-thead slot="header">
-            <mu-tr>
-                <mu-th>Node</mu-th>
-                <mu-th>PX</mu-th>
-                <mu-th>PY</mu-th>
-                <mu-th>PZ</mu-th>
-                <mu-th>MX</mu-th>
-                <mu-th>MY</mu-th>
-                <mu-th>MZ</mu-th>
-            </mu-tr>
-        </mu-thead>
-        <mu-tbody>
-            <mu-tr v-for="reaction, id in reactions" :key="id">
-                <mu-td>{{indexOf("nodes", id)}}</mu-td>
-                <mu-td>{{reaction.x}}</mu-td>
-                <mu-td>{{reaction.y}}</mu-td>
-                <mu-td>{{reaction.z}}</mu-td>
-                <mu-td>{{reaction.rx}}</mu-td>
-                <mu-td>{{reaction.ry}}</mu-td>
-                <mu-td>{{reaction.rz}}</mu-td>
-            </mu-tr>
-        </mu-tbody>
-    </mu-table>
+    <table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
+        <thead slot="header">
+            <tr>
+                <th>Node</th>
+                <th>PX</th>
+                <th>PY</th>
+                <th>PZ</th>
+                <th>MX</th>
+                <th>MY</th>
+                <th>MZ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="reaction, id in reactions" :key="id">
+                <td>{{indexOf("nodes", id)}}</td>
+                <td>{{reaction.x}}</td>
+                <td>{{reaction.y}}</td>
+                <td>{{reaction.z}}</td>
+                <td>{{reaction.rx}}</td>
+                <td>{{reaction.ry}}</td>
+                <td>{{reaction.rz}}</td>
+            </tr>
+        </tbody>
+    </table>
 </template>
 
 <script>
