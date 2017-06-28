@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <h3 class="mdc-typography--subheading2 frame-datatable__subheader">
+    <div frame-datatable>
+        <h3 class="mdc-typography--subheading2 mdc-theme--primary mdc-elevation--z1 frame-datatable__subheader">
             {{title}}
         </h3>
         <component :is="name" class="frame-datatable__table" />
@@ -44,5 +44,8 @@
         margin: 0;
         padding: 0;
         padding-left: 1rem;
+    }
+    .frame-datatable {
+        position: relative;
     }
 </style>

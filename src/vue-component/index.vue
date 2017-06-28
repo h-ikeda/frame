@@ -2,11 +2,12 @@
     <div class="mdc-typography">
         <frame-drawer />
         <frame-toolbar />
+        <frame-progress v-if="calculating" />
         <main class="frame-main">
             <section>
                 <frame-datatable class="frame-main__content" />
             </section>
-            <section>
+            <section class="mdc-elevation--z2">
                 <frame-canvas />
             </section>
         </main>
@@ -21,14 +22,17 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
 import toolbar from "./toolbar/index.vue";
 import drawer from "./drawer/index.vue";
 import datatable from "./datatable/index.vue";
 import canvas from "./canvas/index.vue";
 import fab from "./fab/index.vue";
+import progress from "./progress/index.vue";
 import prefixed from "prefix-keys";
 
 export default {
+    computed: mapState("model", ["calculating"]),
     methods: {
         test() {
             // !!!Temporary!!! 仮テストボタンの動作をここに記述します。
@@ -46,7 +50,8 @@ export default {
         drawer,
         datatable,
         canvas,
-        fab
+        fab,
+        progress
     })
 };
 </script>
@@ -54,13 +59,16 @@ export default {
 <style>
     @import "~material-design-icons/iconfont/material-icons.css";
     @import "~material-components-web/dist/material-components-web.css";
+    body {
+        margin: 0;
+    }
 </style>
 
 <style scoped>
     .frame-main {
         display: flex;
     }
-    .frame-main>* {
+    .frame-main > section {
         flex: 1;
     }
     .frame-fab {

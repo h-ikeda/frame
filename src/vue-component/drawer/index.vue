@@ -5,17 +5,24 @@
                 <div class="mdc-temporary-drawer__header-content">
                     <div>
                         <div class="frame-drawer__avatar" :style="avtStyle"></div>
-                        <div class="mdc-typography--body2">Sample User</div>
-                        <div class="mdc-typography--body1">sample@example.com</div>
+                        <div class="mdc-typography--body2">
+                            Sample User
+                        </div>
+                        <div class="mdc-typography--body1">
+                            sample@example.com
+                            <i class="material-icons frame-drawer__header-dropdown">
+                                arrow_drop_down
+                            </i>
+                        </div>
                     </div>
                 </div>
             </header>
             <nav class="mdc-temporary-drawer__content mdc-list-group">
                 <h3 class="mdc-list-group__subheader" @click="inputOpen=!inputOpen">
                     Input
-                    <span class="material-icons frame-drawer__expand">
+                    <i class="material-icons frame-drawer__expand">
                         {{inputOpen ? "expand_less": "expand_more"}}
-                    </span>
+                    </i>
                 </h3>
                 <transition>
                     <nav class="mdc-list" v-show="inputOpen">
@@ -222,7 +229,7 @@
             ...mapMutations("component/datatable", ["setName"]),
             select(name) {
                 this.setName(name);
-                this.foundation.close();
+                this.toggleOpen();
             },
             clsSel(name) {
                 return {
@@ -260,6 +267,9 @@
         position: absolute;
         top: 2.5rem;
         background-size: cover;
+    }
+    .frame-drawer__header-dropdown {
+        vertical-align: middle;
     }
     .mdc-list-group__subheader {
         margin-left: 1rem;

@@ -9,6 +9,7 @@ export default {
         return {
             requestId: "",
             calculated: false,
+            calculating: false,
             title: "Untitled"
         };
     },
@@ -27,6 +28,12 @@ export default {
                 throw "Title should be a string.";
             }
             state.title = title;
+        },
+        setCalculating(state, calculating) {
+            if (process.env.NODE_ENV !== "production" && typeof calculating !== "boolean" && typeof calculating !== "number") {
+                throw "Calculating state should be a boolean or a number.";
+            }
+            state.calculating = calculating;
         }
     },
     actions: {
@@ -34,6 +41,7 @@ export default {
         calculate({commit, state}) {
             commit("setCalculated", false);
             commit("updateRequestId");
+            commit("setCalculating", true);
             post("https://nameless-falls-59671.herokuapp.com").send({
                 jsonrpc: "2.0",
                 id: state.requestId,
@@ -45,6 +53,9 @@ export default {
                     commit("result/setData", body.result);
                     commit("setCalculated", true);
                 }
+                commit("setCalculating", false);
+            }).catch(() => {
+                commit("setCalculating", false);
             });
         }
     },
