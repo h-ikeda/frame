@@ -3,85 +3,99 @@
         <nav class="mdc-temporary-drawer__drawer" ref="drawer" :style="{transform}" @transitionend="execTeh">
             <header class="mdc-temporary-drawer__header">
                 <div class="mdc-temporary-drawer__header-content">
-                    Header
+                    <div>
+                        <div class="frame-drawer__avatar" :style="avtStyle"></div>
+                        <div class="mdc-typography--body2">Sample User</div>
+                        <div class="mdc-typography--body1">sample@example.com</div>
+                    </div>
                 </div>
             </header>
             <nav class="mdc-temporary-drawer__content mdc-list-group">
-                <h3 class="mdc-list-group__subheader">
+                <h3 class="mdc-list-group__subheader" @click="inputOpen=!inputOpen">
                     Input
+                    <span class="material-icons frame-drawer__expand">
+                        {{inputOpen ? "expand_less": "expand_more"}}
+                    </span>
                 </h3>
-                <nav class="mdc-list">
-                    <a class="mdc-list-item" :class="clsSel('input/nodes')" @click="select('input/nodes')" href="#">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            inbox
-                        </i>
-                        Nodes
-                    </a>
-                    <a class="mdc-list-item" :class="clsSel('input/lines')" @click="select('input/lines')" href="#">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            star
-                        </i>
-                        Lines
-                    </a>
-                    <a class="mdc-list-item" :class="clsSel('input/sections')" @click="select('input/sections')" href="#">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            inbox
-                        </i>
-                        Sections
-                    </a>
-                    <a class="mdc-list-item" :class="clsSel('input/materials')" @click="select('input/materials')" href="#">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            star
-                        </i>
-                        Materials
-                    </a>
-                    <a class="mdc-list-item" :class="clsSel('input/boundaries')" @click="select('input/boundaries')" href="#">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            inbox
-                        </i>
-                        Boundaries
-                    </a>
-                    <a class="mdc-list-item" :class="clsSel('input/nodeloads')" @click="select('input/nodeloads')" href="#">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            star
-                        </i>
-                        Node Loads
-                    </a>
-                </nav>
-                <h3 class="mdc-list-group__subheader">
+                <transition>
+                    <nav class="mdc-list" v-show="inputOpen">
+                        <a class="mdc-list-item" :class="clsSel('input/nodes')" @click="select('input/nodes')" href="#">
+                            <i class="material-icons mdc-list-item__start-detail">
+                                control_point
+                            </i>
+                            Nodes
+                        </a>
+                        <a class="mdc-list-item" :class="clsSel('input/lines')" @click="select('input/lines')" href="#">
+                            <i class="material-icons mdc-list-item__start-detail">
+                                timeline
+                            </i>
+                            Lines
+                        </a>
+                        <a class="mdc-list-item" :class="clsSel('input/sections')" @click="select('input/sections')" href="#">
+                            <i class="material-icons mdc-list-item__start-detail">
+                                crop_square
+                            </i>
+                            Sections
+                        </a>
+                        <a class="mdc-list-item" :class="clsSel('input/materials')" @click="select('input/materials')" href="#">
+                            <i class="material-icons mdc-list-item__start-detail">
+                                polymer
+                            </i>
+                            Materials
+                        </a>
+                        <a class="mdc-list-item" :class="clsSel('input/boundaries')" @click="select('input/boundaries')" href="#">
+                            <i class="material-icons mdc-list-item__start-detail">
+                                change_history
+                            </i>
+                            Boundaries
+                        </a>
+                        <a class="mdc-list-item" :class="clsSel('input/nodeloads')" @click="select('input/nodeloads')" href="#">
+                            <i class="material-icons mdc-list-item__start-detail">
+                                arrow_downward
+                            </i>
+                            Node Loads
+                        </a>    
+                    </nav>
+                </transition>
+                <h3 class="mdc-list-group__subheader" @click="resultOpen=!resultOpen">
                     Result
+                    <span class="material-icons frame-drawer__expand">
+                        {{resultOpen ? "expand_less": "expand_more"}}
+                    </span>
                 </h3>
-                <nav class="mdc-list">
-                    <a class="mdc-list-item" :class="clsSel('result/displacements')" @click="select('result/displacements')" href="#">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            inbox
-                        </i>
-                        Displacements
-                    </a>
-                    <a class="mdc-list-item" :class="clsSel('result/reactions')" @click="select('result/reactions')" href="#">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            star
-                        </i>
-                        Reactions
-                    </a>
-                    <a class="mdc-list-item" :class="clsSel('result/stresses')" @click="select('result/stresses')" href="#">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            star
-                        </i>
-                        Stresses
-                    </a>
-                </nav>
+                <transition>
+                    <nav class="mdc-list" v-show="resultOpen">
+                        <a class="mdc-list-item" :class="clsSel('result/displacements')" @click="select('result/displacements')" href="#">
+                            <i class="material-icons mdc-list-item__start-detail">
+                                control_point_duplicate
+                            </i>
+                            Displacements
+                        </a>
+                        <a class="mdc-list-item" :class="clsSel('result/reactions')" @click="select('result/reactions')" href="#">
+                            <i class="material-icons mdc-list-item__start-detail">
+                                arrow_upward
+                            </i>
+                            Reactions
+                        </a>
+                            <a class="mdc-list-item" :class="clsSel('result/stresses')" @click="select('result/stresses')" href="#">
+                            <i class="material-icons mdc-list-item__start-detail">
+                                open_with
+                            </i>
+                            Stresses
+                        </a>
+                    </nav>
+                </transition>
                 <hr class="mdc-list-divider">
                 <nav class="mdc-list">
                     <a class="mdc-list-item" href="#">
                         <i class="material-icons mdc-list-item__start-detail">
-                            star
+                            settings
                         </i>
                         Settings
                     </a>
                     <a class="mdc-list-item" href="#">
                         <i class="material-icons mdc-list-item__start-detail">
-                            star
+                            feedback
                         </i>
                         Feedback
                     </a>
@@ -95,13 +109,16 @@
     import {mapState, mapMutations} from "vuex";
     import {MDCTemporaryDrawerFoundation} from "@material/drawer";
     import * as util from "@material/drawer/util";
+    import defaultAvatar from "./avatar.png";
     export default {
         data() {
             return {
                 cls: {},
                 transform: null,
                 opacity: null,
-                teh: []
+                teh: [],
+                inputOpen: true,
+                resultOpen: false
             };
         },
         computed: {
@@ -193,6 +210,11 @@
                         return vm.$el.contains(el);
                     }
                 });
+            },
+            avtStyle() {
+                return {
+                    backgroundImage: "url(\"" + defaultAvatar + "\")"
+                };
             }
         },
         methods: {
@@ -208,7 +230,7 @@
                 };
             },
             execTeh(e) {
-                this.teh.forEach((f) => {f(e);})
+                this.teh.forEach((f) => {f(e);});
             }
         },
         watch: {
@@ -229,5 +251,38 @@
     .mdc-temporary-drawer__header {
         background-image: url("background.png");
         background-size: cover;
+        color: #fff;
+    }
+    .frame-drawer__avatar {
+        width: 3.75rem;
+        height: 3.75rem;
+        border-radius: 50%;
+        position: absolute;
+        top: 2.5rem;
+        background-size: cover;
+    }
+    .mdc-list-group__subheader {
+        margin-left: 1rem;
+        color: rgba(0, 0, 0, 0.54);
+        cursor: pointer;
+    }
+    .frame-drawer__expand {
+        vertical-align: middle;
+        float: right;
+        margin-right: 1rem;
+    }
+    .v-enter-active {
+        transition: max-height 0.225s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+    }
+    .v-enter, .v-leave-to {
+        max-height: 0;
+    }
+    .v-enter-to, .v-leave {
+        max-height: 100vh;
+    }
+    .v-leave-active {
+        transition: max-height 0.195s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
     }
 </style>
