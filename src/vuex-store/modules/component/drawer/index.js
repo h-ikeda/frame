@@ -2,12 +2,23 @@ export default {
     namespaced: true,
     state() {
         return {
-            open: false
+            opened: false
         };
     },
     mutations: {
-        toggleOpen(state) {
-            state.open = !state.open;
+        setOpened(state, opened) {
+            state.opened = opened;
+        }
+    },
+    actions: {
+        open({commit}) {
+            commit("setOpened", true);
+        },
+        close({commit}) {
+            commit("setOpened", false);
+        },
+        toggle({commit, state}) {
+            commit("setOpened", !state.opened);
         }
     }
 };

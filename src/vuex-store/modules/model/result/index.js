@@ -1,12 +1,15 @@
 const struct = [{
     name: "displacements",
-    display: "Displacements"
+    display: "Displacements",
+    icon: "control_point_duplicate"
 }, {
     name: "reactions",
-    display: "Reactions"
+    display: "Reactions",
+    icon: "arrow_upward"
 }, {
     name: "stresses",
-    display: "Streses"
+    display: "Streses",
+    icon: "open_with"
 }];
 
 export default {
@@ -19,7 +22,9 @@ export default {
         return t;
     },
     getters: {
-        displayName: (state) => (type) => struct.find((obj) => obj.name === type).display
+        displayName: (state) => (type) => struct.find((obj) => obj.name === type).display,
+        displayIcon: (state) => (type) => struct.find((obj) => obj.name === type).icon,
+        dataTypes: () => struct.map((obj) => obj.name)
     },
     mutations: {
         setData(state, data) {

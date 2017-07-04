@@ -2,7 +2,7 @@ import assert from "assert";
 import Vue from "vue";
 import Vuex from "vuex";
 
-const src = require.context("istanbul-instrumenter-loader!../src/", true, /\.(?:vue|js)$/);
+const src = require.context("istanbul-instrumenter-loader?esModules!../src/", true, /\.(?:vue|js)$/);
 const test = require.context("./test_src/", true, /\.js$/);
 
 global.requireSrc = (path, ext) => src(

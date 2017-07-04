@@ -13,6 +13,23 @@ export default {
             title: "Untitled"
         };
     },
+    getters: {
+        displayName: (_, getters) => (type) => {
+            const i = type.indexOf("/");
+            if (i < 0) {
+                return type === "input" ? "Input": "Result";
+            }
+            return getters[type.slice(0, i) + "/displayName"](type.slice(i + 1));
+        },
+        displayIcon: (_, getters) => (type) => {
+            const i = type.indexOf("/");
+            if (i < 0) {
+                throw "Input or Result has no icons.";
+            }
+            return getters[type.slice(0, i) + "/displayIcon"](type.slice(i + 1));
+        },
+        dataTypes: (_, getters) => getters["input/dataTypes"].map((type) => "input/" + type).concat(getters["result/dataTypes"].map((type) => "result/" + type))
+    },
     mutations: {
         updateRequestId(state) {
             state.requestId = uuid();

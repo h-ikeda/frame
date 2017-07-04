@@ -1,6 +1,6 @@
 <template>
-    <table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
-        <thead slot="header">
+    <table>
+        <thead>
             <tr>
                 <th>ID</th>
                 <th>Node 1</th>

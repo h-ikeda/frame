@@ -1,21 +1,27 @@
 const struct = [{
     name: "nodes",
-    display: "Nodes"
+    display: "Nodes",
+    icon: "control_point"
 }, {
     name: "lines",
-    display: "Lines"
+    display: "Lines",
+    icon: "timeline"
 }, {
     name: "sections",
-    display: "Sections"
+    display: "Sections",
+    icon: "crop_square"
 }, {
     name: "materials",
-    display: "Materials"
+    display: "Materials",
+    icon: "polymer"
 }, {
     name: "boundaries",
-    display: "Boundaries"
+    display: "Boundaries",
+    icon: "change_history"
 }, {
     name: "nodeloads",
-    display: "Node Loads"
+    display: "Node Loads",
+    icon: "arrow_downward"
 }];
 
 export default {
@@ -31,7 +37,9 @@ export default {
     },
     getters: {
         indexOf: (state) => (type, id) => state.idMap[type].indexOf(id),
-        displayName: (state) => (type) => struct.find((obj) => obj.name === type).display
+        displayName: (state) => (type) => struct.find((obj) => obj.name === type).display,
+        displayIcon: (state) => (type) => struct.find((obj) => obj.name === type).icon,
+        dataTypes: () => struct.map((obj) => obj.name)
     },
     mutations: {
         setData(state, data) {

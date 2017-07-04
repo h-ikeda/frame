@@ -1,5 +1,7 @@
 <template>
-    <canvas class="frame-canvas" @mousemove="onmove" @mousedown="ondown" @mouseup="onup" @wheel.prevent="onscroll" :style="{backgroundColor}" />
+    <div @transitionend="resize">
+        <canvas ref="canvas" @mousemove="onmove" @mousedown="ondown" @mouseup="onup" @wheel.prevent="onscroll" :style="{backgroundColor}" />
+    </div>
 </template>
 
 <script>
@@ -56,7 +58,7 @@
             // WebGLRendererを生成・設定します。
             initRenderer() {
                 return new WebGLRenderer({
-                    canvas: this.$el,
+                    canvas: this.$refs.canvas,
                     alpha: true,
                     antialias: true,
                     logarithmicDepthBuffer: true
@@ -295,7 +297,7 @@
 </script>
 
 <style scoped>
-    .frame-canvas {
+    canvas {
         width: 100%;
         height: 100%;
     }
