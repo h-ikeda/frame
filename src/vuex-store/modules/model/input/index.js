@@ -24,11 +24,16 @@ const struct = [{
     icon: "arrow_downward"
 }];
 
+import nodes from "./nodes";
+
 export default {
     namespaced: true,
     state() {
         const idMap = {};
-        const t = {idMap};
+        const t = {
+            idMap,
+            selected: []
+        };
         struct.forEach((item) => {
             t[item.name] = {};
             idMap[item.name] = [];
@@ -47,6 +52,17 @@ export default {
                 state[item.name] = data[item.name];
                 state.idMap[item.name] = Object.keys(state[item.name]);
             });
+        },
+        select(state, id) {
+            if (process.env.NODE_ENV !== production) {
+                if (state.selected.indexOf(id) > -1) {
+                    throw
+                }
+            }
+            state.selected.push(id);
         }
+    },
+    modules: {
+        nodes
     }
 };

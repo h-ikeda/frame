@@ -21,7 +21,7 @@
 <script>
     import {mapState, mapGetters} from "vuex";
     import prefixed from "prefix-keys";
-    
+
     //コンポーネントのインポート
     import input from "./input";
     import result from "./result";
@@ -129,6 +129,9 @@
     }
     .frame-table /deep/ thead tr {
         height: calc(3.5rem - 1px);
+    }
+    .frame-table /deep/ tbody tr:hover {
+        background: #eeeeee;
     }
     .frame-table /deep/ th {
         color: rgba(0, 0, 0, 0.54);
