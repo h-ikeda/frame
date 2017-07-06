@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import {mapState, mapMutations} from "vuex";
+    import {mapState, mapGetters, mapMutations} from "vuex";
     import {
         WebGLRenderer,
         Scene,
@@ -33,10 +33,12 @@
         },
         computed: {
             // Vuexのステートから必要な変数を展開します。
-            ...mapState("model/input", [
-                "nodes",
-                "lines"
-            ]),
+            ...mapGetters("model/input/nodes", {
+                nodes: "data"
+            }),
+            ...mapGetters("model/input/lines", {
+                lines: "data"
+            }),
             ...mapState("component/canvas", [
                 "lineStyle",
                 "nodeStyle",

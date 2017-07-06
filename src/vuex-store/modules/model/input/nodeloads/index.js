@@ -5,8 +5,8 @@ export default {
     state() {
         return {
             ...state,
-            caption: "Nodes",
-            icon: "control_point"
+            caption: "Node Loads",
+            icon: "arrow_downward"
         };
     },
     getters: {

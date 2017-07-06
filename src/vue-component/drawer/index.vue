@@ -14,8 +14,8 @@
     import prefixed from "prefix-keys";
 
     // コンポーネントのインポート
-    import header from "./header.vue";
-    import content from "./content.vue";
+    import header from "./header/index.vue";
+    import content from "./content/index.vue";
 
     export default {
         data() {

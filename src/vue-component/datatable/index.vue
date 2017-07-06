@@ -6,12 +6,12 @@
         <div class="frame-table">
             <div class="frame-table__fixed" :class="cls">
                 <div class="frame-table__fixed-inner">
-                    <component :is="name" :style="style" />
+                    <component :is="selected.join('-')" :style="style" />
                 </div>
             </div>
             <div class="frame-table__scrollable" @scroll="scroll">
                 <div class="frame-table__scrollable-inner">
-                    <component :is="name" />
+                    <component :is="selected.join('-')" selectedClassName="frame-table-selected" />
                 </div>
             </div>
         </div>
@@ -34,19 +34,14 @@
             };
         },
         computed: {
-            ...mapState("component/datatable", ["name"]),
-            ...mapGetters("model/input", {
-                inputDisplay: "displayName"
-            }),
+            ...mapState("component/datatable", ["selected"]),
             ...mapGetters("model/result", {
                 resultDisplay: "displayName"
             }),
             title() {
-                const [category, type] = this.name.split("/");
-                if (process.env.NODE_ENV !== "production" && category !== "input" && category !== "result") {
-                    throw "Unexpected model name " + this.name;
-                }
-                return category[0].toUpperCase() + category.slice(1) + " > " + this[category + "Display"](type);
+                const modelState = this.$store.state.model;
+                const [c, m] = this.selected;
+                return modelState[c].caption + " > " + modelState[c][m].caption;
             },
             style() {
                 return {
@@ -66,8 +61,8 @@
             }
         },
         components: {
-            ...prefixed("input/", input),
-            ...prefixed("result/", result)
+            ...prefixed("input-", input),
+            ...prefixed("result-", result)
         }
     };
 </script>
@@ -133,14 +128,18 @@
     .frame-table /deep/ tbody tr:hover {
         background: #eeeeee;
     }
+    .frame-table /deep/ .frame-table-selected {
+        background: #f5f5f5;
+    }
     .frame-table /deep/ th {
         color: rgba(0, 0, 0, 0.54);
     }
     .frame-table /deep/ th, .frame-table /deep/ td {
         padding: 0 0 0 3.5rem;
     }
-    .frame-table /deep/ th:first-child, .frame-table /deep/ td:first-child {
-        padding-left: 1.5rem;
+    .frame-table /deep/ th:nth-child(-n+2), .frame-table /deep/ td:nth-child(-n+2) {
+        padding-left: .8125rem;
+        width: 1px;
     }
     .frame-table /deep/ th:last-child, .frame-table /deep/ td:last-child {
         padding-right: 1.5rem;

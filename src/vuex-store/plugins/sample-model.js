@@ -127,13 +127,23 @@ export default function(store) {
             rz: 0.0
         };
     });
-
-    store.commit("model/input/setData", {
-        boundaries,
-        lines,
-        materials,
-        nodeloads,
-        nodes,
-        sections
+    
+    store.dispatch("model/input/setData", {
+        data: {
+            nodes,
+            lines,
+            boundaries,
+            materials,
+            nodeloads,
+            sections
+        },
+        order: {
+            nodes: Object.keys(nodes),
+            lines: Object.keys(lines),
+            boundaries: Object.keys(boundaries),
+            materials: Object.keys(materials),
+            nodeloads: Object.keys(nodeloads),
+            sections: Object.keys(sections)
+        }
     });
-};
+}

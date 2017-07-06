@@ -1,68 +1,58 @@
-const struct = [{
-    name: "nodes",
-    display: "Nodes",
-    icon: "control_point"
-}, {
-    name: "lines",
-    display: "Lines",
-    icon: "timeline"
-}, {
-    name: "sections",
-    display: "Sections",
-    icon: "crop_square"
-}, {
-    name: "materials",
-    display: "Materials",
-    icon: "polymer"
-}, {
-    name: "boundaries",
-    display: "Boundaries",
-    icon: "change_history"
-}, {
-    name: "nodeloads",
-    display: "Node Loads",
-    icon: "arrow_downward"
-}];
-
 import nodes from "./nodes";
+import lines from "./lines";
+import sections from "./sections";
+import materials from "./materials";
+import boundaries from "./boundaries";
+import nodeloads from "./nodeloads";
 
 export default {
     namespaced: true,
     state() {
-        const idMap = {};
-        const t = {
-            idMap,
-            selected: []
+        return {
+            caption: "Input"
         };
-        struct.forEach((item) => {
-            t[item.name] = {};
-            idMap[item.name] = [];
-        });
-        return t;
     },
     getters: {
-        indexOf: (state) => (type, id) => state.idMap[type].indexOf(id),
-        displayName: (state) => (type) => struct.find((obj) => obj.name === type).display,
-        displayIcon: (state) => (type) => struct.find((obj) => obj.name === type).icon,
-        dataTypes: () => struct.map((obj) => obj.name)
-    },
-    mutations: {
-        setData(state, data) {
-            struct.forEach((item) => {
-                state[item.name] = data[item.name];
-                state.idMap[item.name] = Object.keys(state[item.name]);
+        data(state, getters) {
+            const t = {};
+            [
+                "nodes",
+                "lines",
+                "sections",
+                "materials",
+                "boundaries",
+                "nodeloads"
+            ]
+            .forEach((module) => {
+                t[module] = getters[module + "/data"];
             });
-        },
-        select(state, id) {
-            if (process.env.NODE_ENV !== production) {
-                if (state.selected.indexOf(id) > -1) {
-                    throw
-                }
-            }
-            state.selected.push(id);
+            return t;
+        }
+    },
+    actions: {
+        setData({dispatch}, {data, order}) {
+            [
+                "nodes",
+                "lines",
+                "sections",
+                "materials",
+                "boundaries",
+                "nodeloads"
+            ]
+            .forEach((module) => {
+                dispatch(module + "/setData", {
+                    data: data[module],
+                    order: order[module]
+                });
+            });
         }
     },
     modules: {
-        nodes
+        nodes,
+        lines,
+        sections,
+        materials,
+        boundaries,
+        nodeloads
     }
 };

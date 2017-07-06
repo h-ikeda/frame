@@ -21,7 +21,7 @@
     import {mapState} from "vuex";
     import defaultAvatar from "./avatar.png";
     import defaultBackgroundImage from "./background.png";
-    import avatar from "../avatar/index.vue";
+    import avatar from "../../avatar/index.vue";
     import prefixed from "prefix-keys";
     export default {
         data() {
