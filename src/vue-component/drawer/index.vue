@@ -1,21 +1,23 @@
 <template>
     <aside class="mdc-temporary-drawer" :class="cls" :style="stl">
         <nav class="mdc-temporary-drawer__drawer" ref="drawer" :style="dStl" @transitionend="transitionend">
-            <frame-drawer-header class="mdc-temporary-drawer__header" />
-            <frame-drawer-content class="mdc-temporary-drawer__content" />
+            <d-header class="mdc-temporary-drawer__header" />
+            <d-content class="mdc-temporary-drawer__content" />
         </nav>
     </aside>
 </template>
 
 <script>
+    // vuexヘルパー関数のインポート
     import {mapState, mapActions} from "vuex";
+    // mdcコンポーネントのインポート
     import {MDCTemporaryDrawerFoundation} from "@material/drawer";
     import {saveElementTabState, restoreElementTabState} from "@material/drawer/util";
-    import prefixed from "prefix-keys";
-
-    // コンポーネントのインポート
+    // vueコンポーネントのインポート
     import header from "./header/index.vue";
     import content from "./content/index.vue";
+
+    import prefixed from "prefix-keys";
 
     export default {
         data() {
@@ -35,7 +37,7 @@
                         vm.$set(vm.cls, className, true);
                     },
                     removeClass(className) {
-                        vm.$delete(vm.cls, className);
+                        vm.cls[className] = false;
                     },
                     hasClass: (className) => vm.$el.classList.contains(className),
                     addBodyClass(className) {
@@ -114,7 +116,7 @@
         beforeDestroy() {
             this.foundation.destroy();
         },
-        components: prefixed("frame-drawer-", {
+        components: prefixed("d-", {
             header,
             content
         })

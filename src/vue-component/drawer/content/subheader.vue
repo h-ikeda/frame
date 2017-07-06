@@ -1,24 +1,15 @@
 <template>
-    <h3 class="mdc-list-group__subheader" @click="click">
-
+    <h3 class="mdc-list-group__subheader">
         <slot />
-
-        <!-- メニュー右端に表示されるトグルボタン -->
         <i class="material-icons">
-            {{open ? "expand_less": "expand_more"}}
+            {{expanded ? "expand_less": "expand_more"}}
         </i>
-
     </h3>
 </template>
 
 <script>
     export default {
-        props: ["open"],
-        methods: {
-            click() {
-                this.$emit("click");
-            }
-        }
+        props: ["expanded"]
     };
 </script>
 

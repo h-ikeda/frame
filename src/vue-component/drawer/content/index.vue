@@ -1,63 +1,75 @@
 <template>
     <nav class="mdc-list-group">
-        <template v-for="group, groupIndex of groups">
-            <frame-drawer-subheader @click="toggleExpanded(groupIndex)" :open="expanded[groupIndex]">
-                {{displayName(group)}}
-            </frame-drawer-subheader>
-            <frame-drawer-transition>
-                <nav class="mdc-list" v-show="expanded[groupIndex]">
-                    <frame-drawer-item  v-for="type of submenus(group)" @click="select(type)" :selected="name === type" :key="type">
-                        <i class="material-icons mdc-list-item__start-detail">
-                            {{displayIcon(type)}}
-                        </i>
-                        {{displayName(type)}}
-                    </frame-drawer-item>
-                </nav>
-            </frame-drawer-transition>
-        </template>
+        <d-subheader :expanded="expanded.input" @click.native="expanded.input=!expanded.input">
+            Input
+        </d-subheader>
+        <d-menu-group :expanded="expanded.input">
+            <d-menu-item @click.native="sel(['input', 'nodes'])">
+                <span slot="icon" class="material-icons">
+                    control_point
+                </span>
+                Nodes
+            </d-menu-item>
+            <d-menu-item>
+                <span slot="icon" class="material-icons">
+                    timeline
+                </span>
+                Lines
+            </d-menu-item>
+        </d-menu-group>
+        <d-subheader :expanded="expanded.result" @click.native="expanded.result=!expanded.result">
+            Result
+        </d-subheader>
+        <d-menu-group :expanded="expanded.result">
+            <d-menu-item :disabled="calculated">
+                <span slot="icon" class="material-icons">
+                    control_point_duplicate
+                </span>
+                Displacements
+            </d-menu-item>
+        </d-menu-group>
         <hr class="mdc-list-divider">
-        <nav class="mdc-list">
-            <frame-drawer-item @click="openSettings">
-                <i class="material-icons mdc-list-item__start-detail">
+        <d-menu-group>
+            <d-menu-item @click.native="openSettings">
+                <span slot="icon" class="material-icons">
                     settings
-                </i>
+                </span>
                 Settings
-            </frame-drawer-item>
-            <frame-drawer-item @click="openFeedback">
-                <i class="material-icons mdc-list-item__start-detail">
-                    feedback
-                </i>
+            </d-menu-item>
+            <d-menu-item icon="feedback" @click.native="openFeedback">
                 Feedback
-            </frame-drawer-item>
-        </nav>
+            </d-menu-item>
+        </d-menu-group>
     </nav>
 </template>
 
 <script>
+    // vuexヘルパー関数のインポート
     import {mapGetters, mapState, mapMutations, mapActions} from "vuex";
-    import transition from "./list-transition.vue";
-    import subheader from "./list-subheader.vue";
-    import item from "./list-item.vue";
+    //vueコンポーネントのインポート
+    import subheader from "./subheader.vue";
+    import menu from "./menu";
+
     import prefixed from "prefix-keys";
+
     export default {
         data() {
             return {
-                expanded: [true, false]
+                expanded: {
+                    input: true,
+                    result: false
+                }
             };
         },
         computed: {
-            ...mapGetters("model", ["displayIcon", "displayName", "dataTypes"]),
-            ...mapState("component/datatable", ["name"]),
-            ...mapState("model", ["calculated"]),
-            groups() {
-                return this.dataTypes.map((type) => type.slice(0, type.indexOf("/"))).filter((type, i, self) => self.indexOf(type) === i);
-            }
+            ...mapState("component/datatable", ["selected"]),
+            ...mapState("model", ["calculated"])
         },
         methods: {
-            ...mapMutations("component/datatable", ["setName"]),
+            ...mapMutations("component/datatable", ["select"]),
             ...mapActions("component/drawer", ["close"]),
             select(name) {
-                this.setName(name);
+                this.select(name);
                 this.close();
             },
             openSettings() {
@@ -74,10 +86,9 @@
                 this.expanded.splice(index, 1, !this.expanded[index]);
             }
         },
-        components: prefixed("frame-drawer-", {
-            transition,
+        components: prefixed("d-", {
             subheader,
-            item
+            ...menu
         })
     };
 </script>

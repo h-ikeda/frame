@@ -1,22 +1,20 @@
 <template>
-    <a class="mdc-list-item" :class="cls" @click="onclick" href="#">
+    <a class="mdc-list-item" :class="cls" :disabled="disabled" href="#">
+        <i class="mdc-list-item__start-detail">
+            <slot name="icon"  />
+        </i>
         <slot />
     </a>
 </template>
 
 <script>
     export default {
-        props: ["selected"],
+        props: ["selected", "disabled"],
         computed: {
             cls() {
                 return {
                     "mdc-temporary-drawer--selected": this.selected
                 };
-            }
-        },
-        methods: {
-            onclick(e) {
-                this.$emit("click", e);
             }
         }
     };

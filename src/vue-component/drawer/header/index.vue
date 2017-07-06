@@ -1,8 +1,8 @@
 <template>
-    <header :style="stl">
+    <header :style="{backgroundImage: imgUrl}">
         <div class="mdc-temporary-drawer__header-content">
             <div>
-                <frame-avatar :src="avatar" size="3.75rem" />
+                <f-avatar :src="avatar" size="3.75rem" />
                 <div class="mdc-typography--body2">
                     {{username}}
                 </div>
@@ -18,11 +18,16 @@
 </template>
 
 <script>
+    // vuexヘルパー関数のインポート
     import {mapState} from "vuex";
+    // vueコンポーネントのインポート
+    import avatar from "../../avatar/index.vue";
+    //リソースの読み込み
     import defaultAvatar from "./avatar.png";
     import defaultBackgroundImage from "./background.png";
-    import avatar from "../../avatar/index.vue";
+
     import prefixed from "prefix-keys";
+
     export default {
         data() {
             return {
@@ -31,14 +36,14 @@
             };
         },
         computed: {
-            stl() {
-                return {
-                    backgroundImage: "url(\"" + this.image + "\")"
-                };
-            },
-            ...mapState("account", ["username", "email"])
+            ...mapState("account", ["username", "email"]),
+            imgUrl() {
+                return "url(\"" + this.image + "\")";
+            }
         },
-        components: prefixed("frame-", {avatar})
+        components: prefixed("f-", {
+            avatar
+        })
     };
 </script>
 
