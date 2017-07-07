@@ -14,48 +14,33 @@ export default {
         };
     },
     getters: {
-        displayName: (_, getters) => (type) => {
-            const i = type.indexOf("/");
-            if (i < 0) {
-                return type === "input" ? "Input": "Result";
-            }
-            return getters[type.slice(0, i) + "/displayName"](type.slice(i + 1));
-        },
-        displayIcon: (_, getters) => (type) => {
-            const i = type.indexOf("/");
-            if (i < 0) {
-                throw "Input or Result has no icons.";
-            }
-            return getters[type.slice(0, i) + "/displayIcon"](type.slice(i + 1));
-        },
-        dataTypes: (_, getters) => getters["input/dataTypes"].map((type) => "input/" + type).concat(getters["result/dataTypes"].map((type) => "result/" + type))
+        caption: (state) => (path, separater) => {
+            let currentPath = state;
+            return path.split("/").map((id) => {
+                currentPath = currentPath[id];
+                return currentPath.caption;
+            }).reduce((a, b) => {
+                return a + separater + b;
+            });
+        }
     },
     mutations: {
         updateRequestId(state) {
             state.requestId = uuid();
         },
         setCalculated(state, calculated) {
-            if (process.env.NODE_ENV !== "production" && typeof calculated !== "boolean") {
-                throw "Calculated state should be a boolean.";
-            }
             state.calculated = calculated;
         },
         setTitle(state, title) {
-            if (process.env.NODE_ENV !== "production" && typeof title !== "string") {
-                throw "Title should be a string.";
-            }
             state.title = title;
         },
         setCalculating(state, calculating) {
-            if (process.env.NODE_ENV !== "production" && typeof calculating !== "boolean" && typeof calculating !== "number") {
-                throw "Calculating state should be a boolean or a number.";
-            }
             state.calculating = calculating;
         }
     },
     actions: {
         // JSONRPC経由でリモートサーバーによる解析を実行します。
-        calculate({commit, state}) {
+        calculate({commit, dispatch, state, getters}) {
             commit("setCalculated", false);
             commit("updateRequestId");
             commit("setCalculating", true);
@@ -63,16 +48,27 @@ export default {
                 jsonrpc: "2.0",
                 id: state.requestId,
                 method: "frame.calculate",
-                params: [state.input]
+                params: [getters["input/data"]]
             }).then((res) => {
                 const body = JSON.parse(res.text);
                 if (body.id === state.requestId) {
-                    commit("result/setData", body.result);
+                    dispatch("result/setData", {
+                        data: Object.assign(body.result, {
+                            reactions: {},
+                            stresses: {}
+                        }),
+                        order: {
+                            displacements: state.input.nodes.ids,
+                            reactions: state.input.nodes.ids,
+                            stresses: []
+                        }
+                    });
                     commit("setCalculated", true);
                 }
                 commit("setCalculating", false);
-            }).catch(() => {
+            }).catch((err) => {
                 commit("setCalculating", false);
+                throw err;
             });
         }
     },

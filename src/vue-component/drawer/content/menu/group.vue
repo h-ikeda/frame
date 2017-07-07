@@ -1,9 +1,7 @@
 <template>
-    <transition @enter="enter" @after-enter="afterEnter" >
-        <nav class="mdc-list" v-show="expanded || start" :style="style">
-            <slot />
-        </nav>
-    </transition>
+    <nav class="mdc-list" :style="style">
+        <slot />
+    </nav>
 </template>
 
 <script>
@@ -15,51 +13,27 @@
         },
         data() {
             return {
-                start: true,
-                transition: false,
                 height: ""
             };
         },
         computed: {
             style() {
-                return this.transition ? {height: this.height}: {};
+                return this.height ? {
+                    height: this.expanded ? this.height: 0,
+                    transitionDuration: this.expanded ? "0.225s": "0.195s"
+                }: {};
             }
         },
-        methods: {
-            enter() {
-                requestAnimationFrame(() => {
-                    this.transition = true;
-                });
-            },
-            afterEnter() {
-                this.transition = false;
-            }/*,
-            beforeLeave() {
-                this.transition = true;
-            },
-            leave() {
-                requestAnimationFrame(() => {
-                    this.transition = false;
-                });
-            }*/
-        },
         mounted() {
-            this.height = this.$el.clientHeight;
-            this.start = false;
-            console.log(this.height)
+            this.height = getComputedStyle(this.$el).height;
         }
     };
 </script>
 
 <style scoped>
-    .v-enter-active, .v-leave-active {
-        transition: height 10.225s cubic-bezier(0.4, 0, 0.2, 1);
+    .mdc-list {
         overflow: hidden;
-    }
-    .v-leave-active {
-        transition-duration: 10.195s;
-    }
-    .v-enter, .v-leave-to {
-        height: 0;
+        transition-property: height;
+        transition-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
 </style>

@@ -1,43 +1,25 @@
 <template>
-    <nav class="mdc-list-group">
-        <d-subheader :expanded="expanded.input" @click.native="expanded.input=!expanded.input">
-            Input
-        </d-subheader>
-        <d-menu-group :expanded="expanded.input">
-            <d-menu-item @click.native="sel(['input', 'nodes'])">
-                <span slot="icon" class="material-icons">
-                    control_point
-                </span>
-                Nodes
-            </d-menu-item>
-            <d-menu-item>
-                <span slot="icon" class="material-icons">
-                    timeline
-                </span>
-                Lines
-            </d-menu-item>
-        </d-menu-group>
-        <d-subheader :expanded="expanded.result" @click.native="expanded.result=!expanded.result">
-            Result
-        </d-subheader>
-        <d-menu-group :expanded="expanded.result">
-            <d-menu-item :disabled="calculated">
-                <span slot="icon" class="material-icons">
-                    control_point_duplicate
-                </span>
-                Displacements
-            </d-menu-item>
-        </d-menu-group>
+    <nav class="mdc-list-group" @click="close">
+        <template v-for="item of items">
+            <d-menu-subheader :expanded="item.expanded" @click.native.stop="inv(item)">
+                {{item.caption}}
+            </d-menu-subheader>
+            <d-menu-group :expanded="item.expanded">
+                <d-menu-item v-for="menu of item.menus" :key="key(item, menu)" :disabled="menu.disabled" :selected="selected===key(item, menu)" @click.native="select(key(item, menu))">
+                    <span slot="icon" class="material-icons">
+                        {{menu.icon}}
+                    </span>
+                    {{menu.caption}}
+                </d-menu-item>
+            </d-menu-group>
+        </template>
         <hr class="mdc-list-divider">
         <d-menu-group>
-            <d-menu-item @click.native="openSettings">
+            <d-menu-item v-for="item of commands" :key="key(item)" @click.native="item.command">
                 <span slot="icon" class="material-icons">
-                    settings
+                    {{item.icon}}
                 </span>
-                Settings
-            </d-menu-item>
-            <d-menu-item icon="feedback" @click.native="openFeedback">
-                Feedback
+                {{item.caption}}
             </d-menu-item>
         </d-menu-group>
     </nav>
@@ -47,18 +29,55 @@
     // vuexヘルパー関数のインポート
     import {mapGetters, mapState, mapMutations, mapActions} from "vuex";
     //vueコンポーネントのインポート
-    import subheader from "./subheader.vue";
     import menu from "./menu";
 
     import prefixed from "prefix-keys";
 
     export default {
         data() {
+            const vm = this;
             return {
-                expanded: {
-                    input: true,
-                    result: false
-                }
+                items: [{
+                    id: "input",
+                    caption: "Input",
+                    expanded: true,
+                    menus: [{
+                        id: "nodes",
+                        icon: "control_point",
+                        caption: "Nodes"
+                    }, {
+                        id: "lines",
+                        icon: "timeline",
+                        caption: "Lines"
+                    }, {
+                        id: "sections",
+                        icon: "crop_square",
+                        caption: "Sections"
+                    }]
+                }, {
+                    id: "result",
+                    caption: "Result",
+                    expanded: false,
+                    menus: [{
+                        id: "displacements",
+                        icon: "control_point_duplicate",
+                        caption: "Displacements",
+                        get disabled() {
+                            return !vm.calculated
+                        }
+                    }]
+                }],
+                commands: [{
+                    id: "settings",
+                    icon: "settings",
+                    caption: "Settings",
+                    command: vm.settings
+                }, {
+                    id: "feedback",
+                    icon: "feedback",
+                    caption: "Feedback",
+                    command: vm.feedback
+                }]
             };
         },
         computed: {
@@ -67,28 +86,21 @@
         },
         methods: {
             ...mapMutations("component/datatable", ["select"]),
+            ...mapMutations("component/dialog", ["setMode"]),
             ...mapActions("component/drawer", ["close"]),
-            select(name) {
-                this.select(name);
-                this.close();
+            settings() {
+                this.setMode("settings");
             },
-            openSettings() {
-                this.$store.commit("component/dialog/setMode", "settings");
-                this.close();
+            feedback() {
+                this.setMode("feedback");
             },
-            openFeedback() {
-                this.close();
+            inv(item) {
+                item.expanded = !item.expanded;
             },
-            submenus(group) {
-                return this.dataTypes.filter((type) => type.startsWith(group + "/"));
-            },
-            toggleExpanded(index) {
-                this.expanded.splice(index, 1, !this.expanded[index]);
+            key() {
+                return [...arguments].map((a) => a.id).join("/");
             }
         },
-        components: prefixed("d-", {
-            subheader,
-            ...menu
-        })
+        components: prefixed("d-", menu)
     };
 </script>

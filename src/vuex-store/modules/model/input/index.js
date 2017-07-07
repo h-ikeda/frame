@@ -5,6 +5,15 @@ import materials from "./materials";
 import boundaries from "./boundaries";
 import nodeloads from "./nodeloads";
 
+const modules = {
+    nodes,
+    lines,
+    sections,
+    materials,
+    boundaries,
+    nodeloads
+};
+
 export default {
     namespaced: true,
     state() {
@@ -15,15 +24,7 @@ export default {
     getters: {
         data(state, getters) {
             const t = {};
-            [
-                "nodes",
-                "lines",
-                "sections",
-                "materials",
-                "boundaries",
-                "nodeloads"
-            ]
-            .forEach((module) => {
+            Object.keys(modules).forEach((module) => {
                 t[module] = getters[module + "/data"];
             });
             return t;
@@ -31,15 +32,7 @@ export default {
     },
     actions: {
         setData({dispatch}, {data, order}) {
-            [
-                "nodes",
-                "lines",
-                "sections",
-                "materials",
-                "boundaries",
-                "nodeloads"
-            ]
-            .forEach((module) => {
+            Object.keys(modules).forEach((module) => {
                 dispatch(module + "/setData", {
                     data: data[module],
                     order: order[module]
@@ -47,12 +40,5 @@ export default {
             });
         }
     },
-    modules: {
-        nodes,
-        lines,
-        sections,
-        materials,
-        boundaries,
-        nodeloads
-    }
+    modules
 };

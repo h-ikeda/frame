@@ -1,36 +1,38 @@
-const struct = [{
-    name: "displacements",
-    display: "Displacements",
-    icon: "control_point_duplicate"
-}, {
-    name: "reactions",
-    display: "Reactions",
-    icon: "arrow_upward"
-}, {
-    name: "stresses",
-    display: "Streses",
-    icon: "open_with"
-}];
+import displacements from "./displacements";
+import reactions from "./reactions";
+import stresses from "./stresses";
+
+const modules = {
+    displacements,
+    reactions,
+    stresses
+};
 
 export default {
     namespaced: true,
     state() {
-        const t = {};
-        struct.forEach((item) => {
-            t[item.name] = {};
-        })
-        return t;
+        return {
+            caption: "Result"
+        };
     },
     getters: {
-        displayName: (state) => (type) => struct.find((obj) => obj.name === type).display,
-        displayIcon: (state) => (type) => struct.find((obj) => obj.name === type).icon,
-        dataTypes: () => struct.map((obj) => obj.name)
+        data(state, getters) {
+            const t = {};
+            Object.keys(modules).forEach((module) => {
+                t[module] = getters[module + "/data"];
+            });
+            return t;
+        }
     },
-    mutations: {
-        setData(state, data) {
-            struct.forEach((item) => {
-                state[item.name] = data[item.name];
+    actions: {
+        setData({dispatch}, {data, order}) {
+            Object.keys(modules).forEach((module) => {
+                dispatch(module + "/setData", {
+                    data: data[module],
+                    order: order[module]
+                });
             });
         }
-    }
+    },
+    modules
 };
