@@ -10,7 +10,7 @@
                 </span>
             </section>
             <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
-                <a href="#" class="material-icons mdc-toolbar__icon--menu" @click="submenu">
+                <a href="#" v-ripple class="material-icons mdc-toolbar__icon--menu" @click="submenu">
                     more_vert
                 </a>
             </section>
@@ -20,6 +20,7 @@
 
 <script>
     import {mapState, mapActions} from "vuex";
+    import ripple from "../directives/ripple";
     export default {
         computed: mapState("model", ["title"]),
         methods: {
@@ -31,6 +32,9 @@
                 }
                 this.$store.commit("component/setSplitGrids", g);
             }
+        },
+        directives: {
+            ripple
         }
     };
 </script>

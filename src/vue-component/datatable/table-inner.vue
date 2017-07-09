@@ -1,76 +1,61 @@
 <template>
-    <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th>ID</th>
-                <th>X</th>
-                <th>Y</th>
-                <th>Z</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="id, index of ids" :key="id" :class="cls(id)" @click="toggleSelect(id)">
-                <td>
-                    <frame-checkbox :checked="isSelected(id)" />
-                </td>
-                <td>{{index}}</td>
-                <td>{{items[index].x}}</td>
-                <td>{{items[index].y}}</td>
-                <td>{{items[index].z}}</td>
-            </tr>
-        </tbody>
-    </table>
+    <component :is="selected" class="t-inner"></component>
 </template>
 
 <script>
-    import {mapState, mapGetters} from "vuex";
+    import {mapState} from "vuex";
+    import input from "./input";
+    import result from "./result";
     export default {
         computed: {
             ...mapState("component/datatable", ["selected"]),
+        },
+        components: {
+            ...input,
+            ...result
         }
     };
 </script>
 
 <style lang="scss" scoped>
-    table {
+    @import "~@material/typography/mixins";
+    .t-inner {
         border-collapse: collapse;
         color: rgba(0, 0, 0, 0.87);
         text-align: right;
         min-width: 100%;
         white-space: nowrap;
     }
-    @import "~@material/typography/mixins";
-    thead {
+    .t-inner /deep/ thead {
         @include mdc-typography(caption);
     }
-    tbody {
+    .t-inner /deep/ tbody {
         @include mdc-typography(body1);
     }
-    tr {
+    .t-inner /deep/ tr {
         height: calc(3rem - 1px);
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     }
-    thead tr {
+    .t-inner /deep/ thead tr {
         height: calc(3.5rem - 1px);
     }
-    tbody tr:hover {
+    .t-inner /deep/ tbody tr:hover {
         background: #eeeeee;
     }
-    .frame-table-selected {
+    .t-inner /deep/ .t-selected {
         background: #f5f5f5;
     }
-    th {
+    .t-inner /deep/ th {
         color: rgba(0, 0, 0, 0.54);
     }
-    th, td {
+    .t-inner /deep/ th, .t-inner /deep/ td {
         padding: 0 0 0 3.5rem;
     }
-    th:nth-child(-n+2), td:nth-child(-n+2) {
+    .t-inner /deep/ th:nth-child(-n+2), .t-inner /deep/ td:nth-child(-n+2) {
         padding-left: .8125rem;
         width: 1px;
     }
-    th:last-child, td:last-child {
+    .t-inner /deep/ th:last-child, .t-inner /deep/ td:last-child {
         padding-right: 1.5rem;
     }
 </style>

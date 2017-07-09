@@ -1,18 +1,40 @@
 import {MDCRipple} from "@material/ripple";
-import uuid from "uuid/v4";
 
 const className = "mdc-ripple-surface";
-const propertyName = uuid();
+const integratedClassNames = [
+    "mdc-list-item"
+];
+const instance = Symbol();
+
+function integrated(el) {
+    return integratedClassNames.some((cls) => el.classList.contains(cls));
+}
 
 function addRipple(el) {
-    el.classList.add(className);
-    el[propertyName] = new MDCRipple(el);
+    if (!integrated(el)) {
+        el.classList.add(className);
+    }
+    el[instance] = MDCRipple.attachTo(el);
 }
 
 function removeRipple(el) {
-    el[propertyName].destroy();
-    delete el[propertyName];
+    el[instance].destroy();
+    delete el[instance];
     el.classList.remove(className);
+}
+
+const additionalClassNames = (() => {
+    const el = document.createElement("span");
+    MDCRipple.attachTo(el);
+    return el.classList;
+})();
+
+function compare(o1, o2) {
+    if (o1 === o2) {
+        return true;
+    }
+    const t = Object.keys(o1);
+    return t.length !== Object.keys(o2).length && !t.some((value) => o1[value] !== o2[value]);
 }
 
 function effective(value) {
@@ -25,15 +47,22 @@ export default {
             addRipple(el);
         }
     },
-    update(el, binding) {
-        if (!effective(binding.oldValue) && effective(binding.value)) {
-            addRipple(el);
-        } else if (effective(binding.oldValue) && !effective(binding.value)) {
+    update(el, binding, vnode, oldVnode) {
+        if (effective(binding.value)) {
+            if (!effective(binding.oldValue)) {
+                addRipple(el);
+            } else if (compare(vnode.class, oldVnode.class)) {
+                el.classList.add(...additionalClassNames);
+                if (!integrated(el)) {
+                    el.classList.add(className);
+                }
+            }
+        } else if (effective(binding.oldValue)) {
             removeRipple(el);
         }
     },
     unbind(el) {
-        if (el[propertyName]) {
+        if (el[instance]) {
             removeRipple(el);
         }
     }

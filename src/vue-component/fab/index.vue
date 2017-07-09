@@ -1,5 +1,5 @@
 <template>
-    <button class="mdc-fab material-icons" @click="calculate">
+    <button v-ripple class="mdc-fab material-icons" @click="calculate">
         <span class="mdc-fab__icon">
             navigate_next
         </span>
@@ -8,7 +8,11 @@
 
 <script>
     import {mapActions} from "vuex";
+    import ripple from "../directives/ripple";
     export default {
-        methods: mapActions("model", ["calculate"])
+        methods: mapActions("model", ["calculate"]),
+        directives: {
+            ripple
+        }
     };
 </script>

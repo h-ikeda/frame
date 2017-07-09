@@ -5,11 +5,13 @@ import materials from "./materials.vue";
 import boundaries from "./boundaries.vue";
 import nodeloads from "./nodeloads.vue";
 
-export default {
+import prefixed from "prefix-keys";
+
+export default prefixed("input/", {
     nodes,
     lines,
     sections,
     materials,
     boundaries,
     nodeloads
-};
+});

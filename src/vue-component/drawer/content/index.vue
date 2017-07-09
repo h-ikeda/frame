@@ -53,6 +53,18 @@
                         id: "sections",
                         icon: "crop_square",
                         caption: "Sections"
+                    }, {
+                        id: "materials",
+                        icon: "polymer",
+                        caption: "Materials"
+                    }, {
+                        id: "boundaries",
+                        icon: "change_history",
+                        caption: "Boundaries"
+                    }, {
+                        id: "nodeloads",
+                        icon: "arrow_downward",
+                        caption: "Node Loads"
                     }]
                 }, {
                     id: "result",
@@ -62,6 +74,20 @@
                         id: "displacements",
                         icon: "control_point_duplicate",
                         caption: "Displacements",
+                        get disabled() {
+                            return !vm.calculated
+                        }
+                    }, {
+                        id: "reactions",
+                        icon: "arrow_upward",
+                        caption: "Reactions",
+                        get disabled() {
+                            return !vm.calculated
+                        }
+                    }, {
+                        id: "stresses",
+                        icon: "open_with",
+                        caption: "Stresses",
                         get disabled() {
                             return !vm.calculated
                         }

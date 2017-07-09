@@ -76,7 +76,7 @@ module.exports = {
         historyApiFallback: true,
         hot: true
     },
-    devtool: process.env.NODE_ENV !== "production" && "cheap-module-eval-source-map",
+    devtool: process.env.NODE_ENV !== "production" && "cheap-module-eval-source-map" && "cheap-module-source-map",
     plugins: [
         //
         // スクリプト内の変数を環境変数で置き換えます。

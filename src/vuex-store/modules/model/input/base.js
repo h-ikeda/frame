@@ -13,7 +13,8 @@ export const getters = {
         return t;
     },
     getItemById: (state) => (id) => state.items[state.ids.indexOf(id)],
-    isSelected: (state) => (id) => state.selected.indexOf(id) >= 0
+    isSelected: (state) => (id) => state.selected.indexOf(id) >= 0,
+    selectedAll: (state) => state.ids.length === state.selected.length
 };
 
 export const mutations = {
@@ -61,5 +62,8 @@ export const actions = {
     },
     toggleSelect({commit, getters}, id) {
         commit(getters.isSelected(id) ? "unselect": "select", id);
+    },
+    toggleSelectAll({commit, getters}) {
+        commit(getters.selectedAll ? "unselectAll": "selectAll");
     }
 };
