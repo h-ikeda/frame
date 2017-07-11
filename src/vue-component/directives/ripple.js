@@ -2,7 +2,8 @@ import {MDCRipple} from "@material/ripple";
 
 const className = "mdc-ripple-surface";
 const integratedClassNames = [
-    "mdc-list-item"
+    "mdc-list-item",
+    "mdc-checkbox"
 ];
 const instance = Symbol();
 

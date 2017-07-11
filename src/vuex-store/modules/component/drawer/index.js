@@ -1,24 +1,28 @@
+import defaultBgImg from "./background-default.png";
+
 export default {
     namespaced: true,
     state() {
         return {
-            opened: false
+            open: false,
+            bgImg: defaultBgImg
         };
     },
     mutations: {
-        setOpened(state, opened) {
-            state.opened = opened;
+        setOpen(state, open) {
+            state.open = open;
+        },
+        setBackgroundImage(state, url) {
+            state.bgImg = url;
         }
     },
     actions: {
-        open({commit}) {
-            commit("setOpened", true);
-        },
-        close({commit}) {
-            commit("setOpened", false);
-        },
-        toggle({commit, state}) {
-            commit("setOpened", !state.opened);
+        toggle({commit, state}, open) {
+            if (typeof open === "undefined") {
+                commit("setOpen", !state.open);
+            } else {
+                commit("setOpen", open);
+            }
         }
     }
 };

@@ -1,39 +1,38 @@
 <template>
-    <nav class="mdc-list-group" @click="close">
+    <div class="mdc-list-group">
         <template v-for="item of items">
-            <d-menu-subheader :expanded="item.expanded" @click.native.stop="inv(item)">
+            <drawer-menu-subheader :expanded="item.expanded" @click.native="inv(item)">
                 {{item.caption}}
-            </d-menu-subheader>
-            <d-menu-group :expanded="item.expanded">
-                <d-menu-item v-for="menu of item.menus" :key="key(item, menu)" :disabled="menu.disabled" :selected="selected===key(item, menu)" @click.native="select(key(item, menu))">
-                    <span slot="icon" class="material-icons">
+            </drawer-menu-subheader>
+            <nav class="mdc-list" :class="{'--collapsed': !item.expanded}">
+                <a v-for="menu of item.menus" class="mdc-list-item" :class="{[selectedClass]: selected===key(item, menu)}" @click="select(key(item, menu))" href="#">
+                    <i class="material-icons mdc-list-item__start-detail">
                         {{menu.icon}}
-                    </span>
+                    </i>
                     {{menu.caption}}
-                </d-menu-item>
-            </d-menu-group>
+                </a>
+            </nav>
         </template>
         <hr class="mdc-list-divider">
-        <d-menu-group>
-            <d-menu-item v-for="item of commands" :key="key(item)" @click.native="item.command">
-                <span slot="icon" class="material-icons">
+        <nav class="mdc-list">
+            <a v-for="item of commands" class="mdc-list-item" @click="item.command" href="#">
+                <i class="material-icons mdc-list-item__start-detail">
                     {{item.icon}}
-                </span>
+                </i>
                 {{item.caption}}
-            </d-menu-item>
-        </d-menu-group>
-    </nav>
+            </a>
+        </nav>
+    </div>
 </template>
 
 <script>
     // vuexヘルパー関数のインポート
     import {mapGetters, mapState, mapMutations, mapActions} from "vuex";
     //vueコンポーネントのインポート
-    import menu from "./menu";
-
-    import prefixed from "prefix-keys";
+    import drawerMenuSubheader from "./subheader.vue";
 
     export default {
+        props: ["selectedClass"],
         data() {
             const vm = this;
             return {
@@ -108,7 +107,12 @@
         },
         computed: {
             ...mapState("component/datatable", ["selected"]),
-            ...mapState("model", ["calculated"])
+            ...mapState("model", ["calculated"]),
+            itemHeight() {
+                const t = document.createElement("li");
+                t.classList.add("mdc-list-item");
+                return t.clientHeight;
+            }
         },
         methods: {
             ...mapMutations("component/datatable", ["select"]),
@@ -127,6 +131,16 @@
                 return [...arguments].map((a) => a.id).join("/");
             }
         },
-        components: prefixed("d-", menu)
+        components: {
+            "drawer-menu-subheader": drawerMenuSubheader
+        }
     };
 </script>
+
+<style scoped>
+    .--collapsed {
+        transition: all 1s ease;
+        height: 0;
+        overflow: hidden;
+    }
+</style>

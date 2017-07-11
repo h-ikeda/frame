@@ -1,5 +1,5 @@
 <template>
-    <component :is="selected" class="t-inner"></component>
+    <component :is="selected" class="t-inner" />
 </template>
 
 <script>
