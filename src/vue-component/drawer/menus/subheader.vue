@@ -1,5 +1,5 @@
 <template>
-    <h3 class="mdc-list-group__subheader" :class="cls">
+    <h3 class="mdc-list-group__subheader menu-subheader" :class="cls">
         <slot />
         <transition mode="out-in">
             <i class="material-icons" :key="icon">
@@ -18,7 +18,7 @@
             },
             cls() {
                 return {
-                    "--expanded": this.expanded
+                    "menu-subheader--expanded": this.expanded
                 };
             }
         }
@@ -26,7 +26,7 @@
 </script>
 
 <style scoped>
-    .mdc-list-group__subheader {
+    .menu-subheader {
         display: flex;
         justify-content: space-between;
         margin-left: 1rem;
@@ -37,7 +37,7 @@
     .v-enter-active, .v-leave-active {
         transition: transform .0975s cubic-bezier(.4, 0, .2, 1);
     }
-    .--expanded .v-enter-active, .--expanded .v-leave-active {
+    .menu-subheader--expanded .v-enter-active, .menu-subheader--expanded .v-leave-active {
         transition-duration: .1125s
     }
     .v-enter, .v-leave-to {
