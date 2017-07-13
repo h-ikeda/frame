@@ -44,7 +44,7 @@
                 this.$store.state.component.dialog.mode の値に対応するダイアログを表示します。
                 modeが空文字("")のときは描画しません。
         -->
-        <frame-dialog v-if="mode" />
+        <frame-dialog />
 
     </div>
 </template>

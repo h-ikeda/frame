@@ -6,23 +6,23 @@
             </menu-subheader>
             <menu-expandable class="menu-group" :expanded="item.expanded">
                 <nav class="mdc-list" @click="toggle()">
-                    <a class="mdc-list-item" v-for="menu of item.children" :class="{[selectedClass]: menu.selected}" @click="() => {menu.select();}" href="#">
+                    <rippled-list-item v-for="menu of item.children" :key="menu.name" :class="{[selectedClass]: menu.selected}" @click.native="() => {menu.select();}">
                         <i class="material-icons mdc-list-item__start-detail">
                             {{menu.icon}}
                         </i>
                         {{menu.caption}}
-                    </a>
+                    </rippled-list-item>
                 </nav>
             </menu-expandable>
         </template>
         <hr class="mdc-list-divider">
         <nav class="mdc-list menu-group" @click="toggle()">
-            <a v-for="item of commands" class="mdc-list-item" @click="item.command" href="#">
+            <rippled-list-item v-for="item of commands" :key="item.id" @click.native="item.command">
                 <i class="material-icons mdc-list-item__start-detail">
                     {{item.icon}}
                 </i>
                 {{item.caption}}
-            </a>
+            </rippled-list-item>
         </nav>
     </div>
 </template>
@@ -33,8 +33,7 @@
     // vueコンポーネントのインポート
     import menuSubheader from "./subheader.vue";
     import menuExpandable from "./expandable.vue";
-
-    import {MDCRipple} from "@material/ripple";
+    import rippledListItem from "./rippled-list-item.vue";
 
     export default {
         props: ["selectedClass"],
@@ -137,12 +136,6 @@
                 }]
             };
         },
-        mounted() {
-            const els = this.$el.getElementsByClassName("mdc-list-item");
-            for (let i = 0; i < els.length; ++i) {
-                MDCRipple.attachTo(els.item(i));
-            }
-        },
         computed: {
             ...mapState("component/datatable", ["selected"]),
             ...mapState("model", ["calculated"])
@@ -154,7 +147,8 @@
         },
         components: {
             "menu-subheader": menuSubheader,
-            "menu-expandable": menuExpandable
+            "menu-expandable": menuExpandable,
+            "rippled-list-item": rippledListItem
         }
     };
 </script>

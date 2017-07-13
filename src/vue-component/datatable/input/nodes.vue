@@ -31,7 +31,6 @@
     // vueコンポーネントのインポート
     import r from "../table-row.vue";
     import checkbox from "../../checkbox/index.vue";
-    import ripple from "../../directives/ripple";
 
     import prefixed from "prefix-keys";
 
@@ -46,9 +45,6 @@
         components: prefixed("t-", {
             r,
             checkbox
-        }),
-        directives: {
-            ripple
-        }
+        })
     };
 </script>
