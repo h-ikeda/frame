@@ -51,7 +51,7 @@
                         vm.$set(vm.cls, className, true);
                     },
                     removeClass(className) {
-                        vm.cls[className] = false;
+                        vm.$set(vm.cls, className, false);
                     },
                     hasClass(className) {
                         vm.$el.classList.contains(className);

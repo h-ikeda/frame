@@ -56,7 +56,7 @@
                         vm.$set(vm.cls, className, true);
                     },
                     removeClass(className) {
-                        vm.cls[className] = false;
+                        vm.$set(vm.cls, className, false);
                     },
                     registerInteractionHandler(evt, handler) {
                         if (![

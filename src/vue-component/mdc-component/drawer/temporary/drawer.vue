@@ -68,7 +68,7 @@
                         vm.$set(vm.classNames, className, true);
                     },
                     removeClass(className) {
-                        vm.classNames[className] = false;
+                        vm.$set(vm.classNames, className, false);
                     },
                     hasClass: (className) => vm.$el && vm.$el.classList.contains(className),
                     addBodyClass(className) {

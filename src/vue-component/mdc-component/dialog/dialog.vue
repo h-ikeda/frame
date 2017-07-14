@@ -65,7 +65,7 @@
                         vm.$set(vm.cls, className, true);
                     },
                     removeClass(className) {
-                        vm.cls[className] = false;
+                        vm.$set(vm.cls, className, false);
                     },
                     setStyle(propertyName, value) {
                         vm.$set(vm.style, propertyName, value);
