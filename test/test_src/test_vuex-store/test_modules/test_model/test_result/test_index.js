@@ -1,24 +1,28 @@
-import {valid} from "./mock-result-factories";
-const {mutations} = global.requireSrc(__filename).default;
+const {actions} = global.requireSrc(__filename).default;
 import assert from "assert";
 
 describe("resultモジュールのテスト", function() {
-    describe("mutationsのテスト", function() {
+    describe("actionsのテスト", function() {
         describe("setDataのテスト", function() {
-            it("オブジェクトを渡すと、有効なプロパティがステートにコピーされる。", function() {
-                const state = valid();
-                const test = valid();
-                mutations.setData(state, test);
-                assert.deepStrictEqual(state, test);
-            });
-            it("余計なプロパティはコピーされない。", function() {
-                const state = valid();
-                const expected = valid();
-                const test = Object.assign({}, expected);
-                test.waste = {should: "not be copied"};
-                mutations.setData(state, test);
-                assert(!("waste" in state));
-                assert.deepEqual(state, expected);
+            it("オブジェクトを渡すと、各モジュールのsetDataが呼ばれる。", function() {
+                let action = [], payload = [], count = 0;
+                function dispatch(_action, _payload) {
+                    action.push(_action);
+                    payload.push(_payload);
+                    ++count;
+                }
+                actions.setData({dispatch}, {
+                    data: {
+                        displacements: {},
+                        reactions: {},
+                        stresses: {}
+                    },
+                    order: {
+                        displacements: [],
+                        reactions: [],
+                        stresses: []
+                    }
+                });
             });
         });
     });

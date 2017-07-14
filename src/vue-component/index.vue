@@ -2,7 +2,6 @@
     <div class="mdc-typography">
         <!--
             ドロワーメニュー
-                インスタンスは常時維持する。
                 this.$store.state.component.drawer.open が truthy のとき、
                 メニューが表示される。
         -->
@@ -42,7 +41,6 @@
         <!--
             ダイアログボックス
                 this.$store.state.component.dialog.mode の値に対応するダイアログを表示します。
-                modeが空文字("")のときは描画しません。
         -->
         <frame-dialog />
 

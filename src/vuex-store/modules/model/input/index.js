@@ -1,3 +1,5 @@
+import {state, getters, mutations, actions} from "../base-intermediate";
+
 import nodes from "./nodes";
 import lines from "./lines";
 import sections from "./sections";
@@ -5,40 +7,43 @@ import materials from "./materials";
 import boundaries from "./boundaries";
 import nodeloads from "./nodeloads";
 
-const modules = {
-    nodes,
-    lines,
-    sections,
-    materials,
-    boundaries,
-    nodeloads
-};
+const modules = [{
+    id: "nodes",
+    module: nodes
+}, {
+    id: "lines",
+    module: lines
+}, {
+    id: "sections",
+    module: sections
+}, {
+    id: "materials",
+    module: materials
+}, {
+    id: "boundaries",
+    module: boundaries
+}, {
+    id: "nodeloads",
+    module: nodeloads
+}];
 
 export default {
     namespaced: true,
     state() {
         return {
+            ...state,
             caption: "Input"
         };
     },
     getters: {
-        data(state, getters) {
-            const t = {};
-            Object.keys(modules).forEach((module) => {
-                t[module] = getters[module + "/data"];
-            });
-            return t;
-        }
+        ...getters,
+        modules: () => modules
     },
     actions: {
-        setData({dispatch}, {data, order}) {
-            Object.keys(modules).forEach((module) => {
-                dispatch(module + "/setData", {
-                    data: data[module],
-                    order: order[module]
-                });
-            });
-        }
+        ...actions
     },
-    modules
+    modules: modules.reduce((root, {id, module}) => {
+        root[id] = module;
+        return root;
+    }, {})
 };

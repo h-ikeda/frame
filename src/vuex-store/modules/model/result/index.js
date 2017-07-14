@@ -1,38 +1,40 @@
+import {state, getters, mutations, actions} from "../base-intermediate";
+
 import displacements from "./displacements";
 import reactions from "./reactions";
 import stresses from "./stresses";
 
-const modules = {
-    displacements,
-    reactions,
-    stresses
-};
+const modules = [{
+    id: "displacements",
+    module: displacements
+}, {
+    id: "reactions",
+    module: reactions
+}, {
+    id: "stresses",
+    module: stresses
+}];
 
 export default {
     namespaced: true,
     state() {
         return {
+            ...state,
             caption: "Result"
         };
     },
     getters: {
-        data(state, getters) {
-            const t = {};
-            Object.keys(modules).forEach((module) => {
-                t[module] = getters[module + "/data"];
-            });
-            return t;
-        }
+        ...getters,
+        modules: () => modules
+    },
+    mutations: {
+        ...mutations
     },
     actions: {
-        setData({dispatch}, {data, order}) {
-            Object.keys(modules).forEach((module) => {
-                dispatch(module + "/setData", {
-                    data: data[module],
-                    order: order[module]
-                });
-            });
-        }
+        ...actions
     },
-    modules
+    modules: modules.reduce((root, {id, module}) => {
+        root[id] = module;
+        return root;
+    }, {})
 };
