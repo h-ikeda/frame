@@ -30,7 +30,7 @@
             プログレスバー
                 解析中に表示する。
         -->
-        <frame-progress v-if="calculating" class="mdc-toolbar-fixed-adjust" />
+        <frame-progress class="mdc-toolbar-fixed-adjust" />
 
         <!--
             アクションボタン
@@ -64,7 +64,6 @@
 
     export default {
         computed: {
-            ...mapState("model", ["calculating"]),
             ...mapState("component", ["splitGrids"]),
             ...mapState("component/dialog", ["mode"]),
             firstContentClass() {
