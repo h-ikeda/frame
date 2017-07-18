@@ -36,7 +36,7 @@
                     return this.open;
                 },
                 set(open) {
-                    this.toggle(open);
+                    this.toggleOpen(open);
                 }
             },
             headerStyle() {
@@ -47,7 +47,7 @@
             }
         },
         methods: {
-            ...mapActions("component/drawer", ["toggle"])
+            ...mapActions("component/drawer", ["toggleOpen"])
         },
         components: {
             ...mdcTemporaryDrawer,
