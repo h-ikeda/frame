@@ -1,15 +1,7 @@
 //
 // input / result モジュールの共通関数です。
-// 
-// getters に、
-// [{
-//     id: "モジュール名",
-//     module: { モジュールオブジェクト }
-// }, {
-//     id: "モジュール名",
-//     module: { モジュールオブジェクト }
-// }, ...]
-// 形式の配列を返す modules 関数を定義する必要があります。
+//
+// getters に、登録されているモジュール名の配列を返す modules 関数を定義する必要があります。
 //
 export const getters = {
     //
@@ -26,8 +18,8 @@ export const getters = {
     //
     data(state, getters) {
         const t = {};
-        getters["modules"].forEach(({id}) => {
-            t[id] = getters[id + "/data"];
+        getters["modules"].forEach((module) => {
+            t[module] = getters[module + "/data"];
         });
         return t;
     },
@@ -43,9 +35,9 @@ export const getters = {
     // 形式の配列を返す。
     // 主にGUI表示用データとして呼ばれます。
     //
-    dataArray: (state, getters) => getters["modules"].map(({id}) => ({
-        id,
-        dataArray: getters[id + "/dataArray"]
+    dataArray: (state, getters) => getters["modules"].map((module) => ({
+        id: module,
+        data: getters[module + "/dataArray"]
     }))
 };
 
@@ -60,9 +52,9 @@ export const actions = {
     // 旧データとマージされます。
     //
     setData({dispatch, getters}, data) {
-        getters["modules"].forEach(({id}) => {
-            if (id in data) {
-                dispatch(id + "/setData", data[id]);
+        getters["modules"].forEach((module) => {
+            if (module in data) {
+                dispatch(module + "/setData", data[module]);
             }
         });
     }

@@ -6,14 +6,15 @@
     import {mapState} from "vuex";
     import input from "./input";
     import result from "./result";
+    import prefixed from "prefix-keys";
     export default {
         computed: {
             ...mapState("component/datatable", ["selected"]),
         },
-        components: {
+        components: prefixed("model/", {
             ...input,
             ...result
-        }
+        })
     };
 </script>
 

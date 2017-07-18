@@ -1,15 +1,19 @@
 <template>
     <h2 class="mdc-theme--primary mdc-typography--subheading2">
-        {{caption(selected, " > ")}}
+        {{subhead}}
     </h2>
 </template>
 
 <script>
-    import {mapState, mapGetters} from "vuex";
+    import {mapState} from "vuex";
     export default {
         computed: {
             ...mapState("component/datatable", ["selected"]),
-            ...mapGetters("model", ["caption"])
+            subhead() {
+                return this.selected.split("/").map((_, index, self) =>
+                    this.$store.getters[self.slice(0, index + 1).join("/") + "/name"]
+                ).filter((name) => name).join(" > ");
+            }
         }
     };
 </script>

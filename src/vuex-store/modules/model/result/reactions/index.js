@@ -1,16 +1,16 @@
-import {state, getters, mutations, actions} from "../base";
+import {state, getters, mutations, actions} from "../../base-end";
 
 export default {
     namespaced: true,
     state() {
         return {
             ...state,
-            caption: "Reactions",
             icon: "arrow_upward"
         };
     },
     getters: {
-        ...getters
+        ...getters,
+        name: () => "Reactions"
     },
     mutations: {
         ...mutations

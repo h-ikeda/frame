@@ -4,28 +4,23 @@ import displacements from "./displacements";
 import reactions from "./reactions";
 import stresses from "./stresses";
 
-const modules = [{
-    id: "displacements",
-    module: displacements
-}, {
-    id: "reactions",
-    module: reactions
-}, {
-    id: "stresses",
-    module: stresses
-}];
+const modules = [
+    "displacements",
+    "reactions",
+    "stresses"
+];
 
 export default {
     namespaced: true,
     state() {
         return {
-            ...state,
-            caption: "Result"
+            ...state
         };
     },
     getters: {
         ...getters,
-        modules: () => modules
+        modules: () => modules,
+        name: () => "Result"
     },
     mutations: {
         ...mutations
@@ -33,8 +28,9 @@ export default {
     actions: {
         ...actions
     },
-    modules: modules.reduce((root, {id, module}) => {
-        root[id] = module;
-        return root;
-    }, {})
+    modules: {
+        displacements,
+        reactions,
+        stresses
+    }
 };

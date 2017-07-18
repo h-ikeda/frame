@@ -31,7 +31,7 @@ export const getters = {
     // 主にGUI表示用データとして呼ばれます。
     //
     dataArray(state) {
-        state.idArray.map((id) => {
+        return state.idArray.map((id) => {
             return {
                 id,
                 selected: state.selected[id],
@@ -45,38 +45,59 @@ export const getters = {
 export const mutations = {
     setData(state, data) {
         state.data = data;
+        state.idArray = Object.keys(data).sort();
+        state.selected = {};
     },
-    add(state, {id, item}) {
+    addData(state, data) {
         state.data = {
             ...state.data,
-            id: item
-        };
+            ...data
+        }
+        state.idArray.push(...Object.keys(data).sort());
     },
-    remove(state, id) {
-        let index = state.ids.indexOf(id);
-        state.ids.splice(index, 1);
-        state.items.splice(index, 1);
-        index = state.selected.indexOf(id);
-        if (index >= 0) {
-            state.selected.splice(index, 1);
+    removeData(state, idArray) {
+        const data = {
+            ...state.data
+        };
+        const selected = {
+            ...state.selected
+        };
+        idArray.forEach((id) => {
+            delete data[id];
+            delete selected[id];
+            state.idArray.splice(state.idArray.indexOf(id), 1);
+        });
+        state.data = data;
+        state.selected = selected;
+    },
+    select(state, idArray) {
+        const selected = {};
+        idArray.forEach((id) => {
+            selected[id] = true;
+        });
+        state.selected = {
+            ...state.selected,
+            ...selected
         }
     },
-    clear(state) {
-        state.ids = [];
-        state.items = [];
-        state.selected = [];
-    },
-    select(state, id) {
-        state.selected.push(id);
-    },
-    unselect(state, id) {
-        state.selected.splice(state.selected.indexOf(id), 1);
+    unselect(state, idArray) {
+        const selected = {
+            ...state.selected
+        };
+        idArray.forEach((id) => {
+            delete selected[id];
+        });
+        state.selected = selected;
     },
     selectAll(state) {
-        state.selected = [...state.ids];
+        const selected = {};
+        Object.keys(state.data).forEach((id) => {
+            selected[id] = true;
+        });
+        state.selected = selected;
     },
     unselectAll(state) {
-        state.selected = [];
+        state.selected = {};
     }
 };
 
@@ -84,8 +105,8 @@ export const actions = {
     setData({commit}, data) {
         commit("setData", data);
     },
-    toggleSelect({commit, getters}, id) {
-        commit(getters.isSelected(id) ? "unselect": "select", id);
+    toggleSelect({commit, state}, id) {
+        commit(state.selected[id] ? "unselect": "select", [id]);
     },
     toggleSelectAll({commit, getters}) {
         commit(getters.selectedAll ? "unselectAll": "selectAll");

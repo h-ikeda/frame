@@ -1,16 +1,16 @@
 <template>
     <div class="mdc-list-group">
-        <template v-for="item of items">
-            <menu-subheader :expanded="item.expanded" @click.native="item.toggle">
-                {{item.caption}}
+        <template v-for="m of modules.children">
+            <menu-subheader :expanded="expanded[m.id]" @click.native="toggleExpanded(m.id)">
+                {{m.name}}
             </menu-subheader>
-            <menu-expandable class="menu-group" :expanded="item.expanded">
-                <nav class="mdc-list" @click="toggle()">
-                    <rippled-list-item v-for="menu of item.children" :key="menu.name" :class="{[selectedClass]: menu.selected}" @click.native="() => {menu.select();}">
+            <menu-expandable class="menu-group" :expanded="expanded[m.id]">
+                <nav class="mdc-list" @click="toggleOpen()">
+                    <rippled-list-item v-for="c of m.children" :key="c.id" :class="{[selectedClass]: selected === c.id}" @click.native="select(c.id)">
                         <i class="material-icons mdc-list-item__start-detail">
-                            {{menu.icon}}
+                            navigation
                         </i>
-                        {{menu.caption}}
+                        {{c.name}}
                     </rippled-list-item>
                 </nav>
             </menu-expandable>
@@ -29,7 +29,7 @@
 
 <script>
     // vuexヘルパー関数のインポート
-    import {mapState, mapMutations, mapActions} from "vuex";
+    import {mapState, mapGetters, mapMutations, mapActions} from "vuex";
     // vueコンポーネントのインポート
     import menuSubheader from "./subheader.vue";
     import menuExpandable from "./expandable.vue";
@@ -39,86 +39,7 @@
         props: ["selectedClass"],
         data() {
             const vm = this;
-            class MenuItem {
-                constructor(opt) {
-                    this.id = opt.id;
-                    this.icon = opt.icon;
-                    this.caption = opt.caption;
-                }
-                append(...menuItems) {
-                    menuItems.forEach((menuItem) => {
-                        menuItem.parent = this;
-                        if (!this.children) {
-                            this.children = [];
-                            this.expanded = true;
-                        }
-                        this.children.push(menuItem);
-                    });
-                    return this;
-                }
-                get name() {
-                    let parentName = "";
-                    if (this.parent) {
-                        parentName = this.parent.name + "/";
-                    }
-                    return parentName + this.id;
-                }
-                get selected() {
-                    return vm.selected === this.name;
-                }
-                select() {
-                    vm.select(this.name);
-                }
-                toggle() {
-                    this.expanded = !this.expanded;
-                }
-            }
-            const input = new MenuItem({
-                id: "input",
-                caption: "Input"
-            }).append(new MenuItem({
-                id: "nodes",
-                icon: "control_point",
-                caption: "Nodes"
-            }), new MenuItem({
-                id: "lines",
-                icon: "timeline",
-                caption: "Lines"
-            }), new MenuItem({
-                id: "sections",
-                icon: "crop_square",
-                caption: "Sections"
-            }), new MenuItem({
-                id: "materials",
-                icon: "polymer",
-                caption: "Materials"
-            }), new MenuItem({
-                id: "boundaries",
-                icon: "change_history",
-                caption: "Boundaries"
-            }), new MenuItem({
-                id: "nodeloads",
-                icon: "arrow_downward",
-                caption: "Node Loads"
-            }));
-            const result = new MenuItem({
-                id: "result",
-                caption: "Result"
-            }).append(new MenuItem({
-                id: "displacements",
-                icon: "control_point_duplicate",
-                caption: "Displacements"
-            }), new MenuItem({
-                id: "reactions",
-                icon: "arrow_upward",
-                caption: "Reactions"
-            }), new MenuItem({
-                id: "stresses",
-                icon: "open_with",
-                caption: "Stresses"
-            }));
             return {
-                items: [input, result],
                 commands: [{
                     id: "settings",
                     icon: "settings",
@@ -138,12 +59,40 @@
         },
         computed: {
             ...mapState("component/datatable", ["selected"]),
-            ...mapState("model", ["calculated"])
+            ...mapState("component/drawer", ["expanded"]),
+            ...mapState("model", ["calculated"]),
+            modules() {
+                //
+                // [{
+                //     id: モジュール名
+                //     name: モジュールの表示名,
+                //     children: [{
+                //         id: モジュール名
+                //         name: モジュールの表示名
+                //     }, {
+                //         id: モジュール名
+                //         name: モジュールの表示名
+                //     }, ...]
+                // }, ...]
+                //
+                const vm = this;
+                return (function getModuleInfo(mdl) {
+                    const t = {
+                        id: mdl,
+                        name: vm.$store.getters[mdl + "/name"]
+                    };
+                    const childModules = vm.$store.getters[mdl + "/modules"];
+                    if (childModules) {
+                        t.children = childModules.map((m) => getModuleInfo(mdl + "/" + m));
+                    }
+                    return t;
+                })("model");
+            }
         },
         methods: {
             ...mapMutations("component/datatable", ["select"]),
             ...mapMutations("component/dialog", ["setMode"]),
-            ...mapActions("component/drawer", ["toggle"])
+            ...mapActions("component/drawer", ["toggleOpen", "toggleExpanded"])
         },
         components: {
             "menu-subheader": menuSubheader,

@@ -2,7 +2,7 @@
     <header class="mdc-toolbar">
         <div class="mdc-toolbar__row">
             <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
-                <a href="#" class="material-icons mdc-toolbar__icon--menu" @click="toggle">
+                <a href="#" class="material-icons mdc-toolbar__icon--menu" @click="toggleOpen()">
                     menu
                 </a>
                 <span class="mdc-toolbar__title">
@@ -23,7 +23,7 @@
     export default {
         computed: mapState("model", ["title"]),
         methods: {
-            ...mapActions("component/drawer", ["toggle"]),
+            ...mapActions("component/drawer", ["toggleOpen"]),
             submenu() {
                 let g = this.$store.state.component.splitGrids + 1;
                 if (g > 11) {

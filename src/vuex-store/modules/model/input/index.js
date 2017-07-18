@@ -7,43 +7,36 @@ import materials from "./materials";
 import boundaries from "./boundaries";
 import nodeloads from "./nodeloads";
 
-const modules = [{
-    id: "nodes",
-    module: nodes
-}, {
-    id: "lines",
-    module: lines
-}, {
-    id: "sections",
-    module: sections
-}, {
-    id: "materials",
-    module: materials
-}, {
-    id: "boundaries",
-    module: boundaries
-}, {
-    id: "nodeloads",
-    module: nodeloads
-}];
+const modules = [
+    "nodes",
+    "lines",
+    "sections",
+    "materials",
+    "boundaries",
+    "nodeloads",
+];
 
 export default {
     namespaced: true,
     state() {
         return {
-            ...state,
-            caption: "Input"
+            ...state
         };
     },
     getters: {
         ...getters,
-        modules: () => modules
+        modules: () => modules,
+        name: () => "Input"
     },
     actions: {
         ...actions
     },
-    modules: modules.reduce((root, {id, module}) => {
-        root[id] = module;
-        return root;
-    }, {})
+    modules: {
+        nodes,
+        lines,
+        sections,
+        materials,
+        boundaries,
+        nodeloads
+    }
 };

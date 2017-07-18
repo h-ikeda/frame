@@ -12,14 +12,14 @@
             </tr>
         </thead>
         <tbody>
-            <t-r v-for="id, index of ids" :key="id" :selected="isSelected(id)" @click.native="toggleSelect(id)">
+            <t-r v-for="item, index of dataArray" :key="item.id" :selected="item.selected" @click.native="toggleSelect(item.id)">
                 <td>
-                    <t-checkbox :checked="isSelected(id)" />
+                    <t-checkbox :checked="item.selected" />
                 </td>
                 <td>{{index}}</td>
-                <td>{{items[index].x}}</td>
-                <td>{{items[index].y}}</td>
-                <td>{{items[index].z}}</td>
+                <td>{{item.data.x}}</td>
+                <td>{{item.data.y}}</td>
+                <td>{{item.data.z}}</td>
             </t-r>
         </tbody>
     </table>
@@ -27,7 +27,7 @@
 
 <script>
     // vuexヘルパー関数のインポート
-    import {mapState, mapGetters, mapActions} from "vuex";
+    import {mapGetters, mapActions} from "vuex";
     // vueコンポーネントのインポート
     import r from "../table-row.vue";
     import checkbox from "../../checkbox/index.vue";
@@ -36,8 +36,7 @@
 
     export default {
         computed: {
-            ...mapState("model/input/nodes", ["ids", "items"]),
-            ...mapGetters("model/input/nodes", ["isSelected", "selectedAll"])
+            ...mapGetters("model/input/nodes", ["dataArray", "selectedAll"])
         },
         methods: {
             ...mapActions("model/input/nodes", ["toggleSelect", "toggleSelectAll"])

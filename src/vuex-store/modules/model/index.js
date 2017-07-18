@@ -3,6 +3,11 @@ import uuid from "uuid/v4";
 import input from "./input";
 import result from "./result";
 
+const modules = [
+    "input",
+    "result"
+];
+
 export default {
     namespaced: true,
     state() {
@@ -14,15 +19,7 @@ export default {
         };
     },
     getters: {
-        caption: (state) => (path, separater) => {
-            let currentPath = state;
-            return path.split("/").map((id) => {
-                currentPath = currentPath[id];
-                return currentPath.caption;
-            }).reduce((a, b) => {
-                return a + separater + b;
-            });
-        }
+        modules: () => modules
     },
     mutations: {
         updateRequestId(state) {

@@ -8,7 +8,11 @@
 
 <script>
     import {mapActions} from "vuex";
+    import {MDCRipple} from "@material/ripple";
     export default {
-        methods: mapActions("model", ["calculate"])
+        methods: mapActions("model", ["calculate"]),
+        mounted() {
+            MDCRipple.attachTo(this.$el);
+        }
     };
 </script>

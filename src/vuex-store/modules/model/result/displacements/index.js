@@ -1,16 +1,16 @@
-import {state, getters, mutations, actions} from "../base";
+import {state, getters, mutations, actions} from "../../base-end";
 
 export default {
     namespaced: true,
     state() {
         return {
             ...state,
-            caption: "Displacements",
             icon: "control_point_duplicate"
         };
     },
     getters: {
-        ...getters
+        ...getters,
+        name: () => "Displacements"
     },
     mutations: {
         ...mutations

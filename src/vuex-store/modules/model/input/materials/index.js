@@ -1,4 +1,4 @@
-import {state, getters, mutations, actions} from "../base";
+import {state, getters, mutations, actions} from "../../base-end";
 
 export default {
     namespaced: true,
@@ -10,7 +10,8 @@ export default {
         };
     },
     getters: {
-        ...getters
+        ...getters,
+        name: () => "Materials"
     },
     mutations: {
         ...mutations

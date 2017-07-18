@@ -2,7 +2,7 @@ export default {
     namespaced: true,
     state() {
         return {
-            selected: "input/nodes"
+            selected: "model/input/nodes"
         };
     },
     mutations: {
