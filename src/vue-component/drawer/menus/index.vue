@@ -1,16 +1,16 @@
 <template>
     <div class="mdc-list-group">
-        <template v-for="m of modules.children">
-            <menu-subheader :expanded="expanded[m.id]" @click.native="toggleExpanded(m.id)">
-                {{m.name}}
+        <template v-for="mdl of modules.children">
+            <menu-subheader :expanded="expanded[mdl.id]" @click.native="toggleExpanded(mdl.id)">
+                {{mdl.name}}
             </menu-subheader>
-            <menu-expandable class="menu-group" :expanded="expanded[m.id]">
+            <menu-expandable class="menu-group" :expanded="expanded[mdl.id]">
                 <nav class="mdc-list" @click="toggleOpen()">
-                    <rippled-list-item v-for="c of m.children" :key="c.id" :class="{[selectedClass]: selected === c.id}" @click.native="select(c.id)">
+                    <rippled-list-item v-for="child of mdl.children" :key="child.id" :class="{[selectedClass]: selected === child.id}" @click.native="select(child.id)">
                         <i class="material-icons mdc-list-item__start-detail">
                             navigation
                         </i>
-                        {{c.name}}
+                        {{child.name}}
                     </rippled-list-item>
                 </nav>
             </menu-expandable>
