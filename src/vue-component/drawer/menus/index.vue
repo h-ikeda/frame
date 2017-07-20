@@ -16,7 +16,7 @@
             </menu-expandable>
         </template>
         <hr class="mdc-list-divider">
-        <nav class="mdc-list menu-group" @click="toggle()">
+        <nav class="mdc-list menu-group" @click="toggleOpen()">
             <rippled-list-item v-for="item of commands" :key="item.id" @click.native="item.command">
                 <i class="material-icons mdc-list-item__start-detail">
                     {{item.icon}}
