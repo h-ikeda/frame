@@ -1,21 +1,12 @@
-import {state, getters, mutations, actions} from "../../base-end";
+import Base from "../../base";
 
-export default {
-    namespaced: true,
+export default new Base({
     state() {
         return {
-            ...state,
             icon: "arrow_upward"
         };
     },
     getters: {
-        ...getters,
         name: () => "Reactions"
-    },
-    mutations: {
-        ...mutations
-    },
-    actions: {
-        ...actions
     }
-};
+});
