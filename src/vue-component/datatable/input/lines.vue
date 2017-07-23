@@ -1,57 +1,59 @@
 <template>
     <table>
-        <thead>
-            <tr>
-                <th>
-                    <t-checkbox :checked="selectedAll" @click.native="toggleSelectAll" />
-                </th>
-                <th>ID</th>
-                <th>Node 1</th>
-                <th>Node 2</th>
-                <th>Section</th>
-                <th>Material</th>
-            </tr>
-        </thead>
-        <tbody>
-            <t-r v-for="id, index of ids" :key="id" :selected="isSelected(id)" @click.native="toggleSelect(id)">
-                <td>
-                    <t-checkbox :checked="isSelected(id)" />
-                </td>
-                <td>{{index}}</td>
-                <td>{{nodes.indexOf(items[index].n1)}}</td>
-                <td>{{nodes.indexOf(items[index].n2)}}</td>
-                <td>{{sections.indexOf(items[index].section)}}</td>
-                <td>{{materials.indexOf(items[index].material)}}</td>
-            </t-r>
-        </tbody>
+        <slot :header="header" :body="body" />
     </table>
 </template>
 
 <script>
-    // vuexヘルパー関数のインポート
     import {mapState, mapGetters, mapActions} from "vuex";
-    // vueコンポーネントのインポート
-    import r from "../table-row.vue";
-    import checkbox from "../../checkbox/index.vue";
-
-    import prefixed from "prefix-keys";
-
     export default {
         computed: {
-            ...mapState("model/input/lines", ["ids", "items"]),
+            header() {
+                const vm = this;
+                return {
+                    columns: [
+                        "ID",
+                        "Node 1",
+                        "Node 2",
+                        "Section",
+                        "Material"
+                    ],
+                    get selectedAll() {
+                        return vm.selectedAll;
+                    },
+                    set selectedAll(value) {
+                        if (value !== vm.selectedAll) {
+                            vm.toggleSelectAll();
+                        }
+                    }
+                }
+            },
+            body() {
+                return this.dataArray.map((item, index) => {
+                    return {
+                        columns: [
+                            index,
+                            this.nodes.indexOf(item.data.n1),
+                            this.nodes.indexOf(item.data.n2),
+                            this.sections.indexOf(item.data.section),
+                            this.materials.indexOf(item.data.material)
+                        ],
+                        selected: item.selected,
+                        toggleSelect: () => {
+                            this.toggleSelect(item.id);
+                        }
+                    };
+                });
+            },
+            ...mapGetters("model/input/lines", ["dataArray", "selectedAll"]),
             ...mapState("model/input", {
-                nodes: (state) => state.nodes.ids,
-                sections: (state) => state.sections.ids,
-                materials: (state) => state.materials.ids
-            }),
-            ...mapGetters("model/input/lines", ["isSelected", "selectedAll"])
+                nodes: (state) => state.nodes.idArray,
+                sections: (state) => state.sections.idArray,
+                materials: (state) => state.materials.idArray
+            })
         },
         methods: {
             ...mapActions("model/input/lines", ["toggleSelect", "toggleSelectAll"])
-        },
-        components: prefixed("t-", {
-            r,
-            checkbox
-        })
+        }
     };
 </script>

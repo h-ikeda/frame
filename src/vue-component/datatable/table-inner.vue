@@ -1,9 +1,29 @@
 <template>
-    <component :is="selected" class="t-inner" />
+    <component :is="selected">
+        <template scope="data">
+            <thead class="mdc-typography--caption">
+                <tr>
+                    <th>
+                        <mdc-checkbox v-model="data.header.selectedAll" />
+                    </th>
+                    <th v-for="column of data.header.columns">{{column}}</th>
+                </tr>
+            </thead>
+            <tbody class="mdc-typography--body1">
+                <tr v-for="item of data.body" :class="{selected: item.selected}" @click="item.toggleSelect">
+                    <td>
+                        <mdc-checkbox :checked="item.selected" />
+                    </td>
+                    <td v-for="value of item.columns">{{value}}</td>
+                </tr>
+            </tbody>
+        </template>
+    </component>
 </template>
 
 <script>
     import {mapState} from "vuex";
+    import mdcCheckbox from "../mdc-component/checkbox";
     import input from "./input";
     import result from "./result";
     import prefixed from "prefix-keys";
@@ -11,52 +31,48 @@
         computed: {
             ...mapState("component/datatable", ["selected"]),
         },
-        components: prefixed("model/", {
-            ...input,
-            ...result
-        })
+        components: {
+            ...prefixed("model/", {
+                ...input,
+                ...result
+            }),
+            ...mdcCheckbox
+        }
     };
 </script>
 
-<style lang="scss" scoped>
-    @import "~@material/typography/mixins";
-    .t-inner {
+<style scoped>
+    table {
         border-collapse: collapse;
         color: rgba(0, 0, 0, 0.87);
         text-align: right;
         min-width: 100%;
         white-space: nowrap;
     }
-    .t-inner /deep/ thead {
-        @include mdc-typography(caption);
-    }
-    .t-inner /deep/ tbody {
-        @include mdc-typography(body1);
-    }
-    .t-inner /deep/ tr {
+    tr {
         height: calc(3rem - 1px);
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     }
-    .t-inner /deep/ thead tr {
+    thead tr {
         height: calc(3.5rem - 1px);
     }
-    .t-inner /deep/ tbody tr:hover {
+    tbody tr:hover {
         background: #eeeeee;
     }
-    .t-inner /deep/ .t-selected {
+    .selected {
         background: #f5f5f5;
     }
-    .t-inner /deep/ th {
+    th {
         color: rgba(0, 0, 0, 0.54);
     }
-    .t-inner /deep/ th, .t-inner /deep/ td {
+    th, td {
         padding: 0 0 0 3.5rem;
     }
-    .t-inner /deep/ th:nth-child(-n+2), .t-inner /deep/ td:nth-child(-n+2) {
+    th:nth-child(-n+2), td:nth-child(-n+2) {
         padding-left: .8125rem;
         width: 1px;
     }
-    .t-inner /deep/ th:last-child, .t-inner /deep/ td:last-child {
+    th:last-child, td:last-child {
         padding-right: 1.5rem;
     }
 </style>

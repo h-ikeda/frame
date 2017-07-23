@@ -1,36 +1,61 @@
 <template>
     <table>
-        <thead>
-            <tr>
-                <th>Node</th>
-                <th>PX</th>
-                <th>PY</th>
-                <th>PZ</th>
-                <th>MX</th>
-                <th>MY</th>
-                <th>MZ</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="reaction, id in reactions" :key="id">
-                <td>{{indexOf("nodes", id)}}</td>
-                <td>{{reaction.x}}</td>
-                <td>{{reaction.y}}</td>
-                <td>{{reaction.z}}</td>
-                <td>{{reaction.rx}}</td>
-                <td>{{reaction.ry}}</td>
-                <td>{{reaction.rz}}</td>
-            </tr>
-        </tbody>
+        <slot :header="header" :body="body" />
     </table>
 </template>
 
 <script>
-    import {mapState, mapGetters} from "vuex";
+    import {mapState, mapGetters, mapActions} from "vuex";
     export default {
         computed: {
-            ...mapState("model/result", ["reactions"]),
-            ...mapGetters("model/input", ["indexOf"])
+            header() {
+                const vm = this;
+                return {
+                    columns: [
+                        "Node",
+                        "PX",
+                        "PY",
+                        "PZ",
+                        "MX",
+                        "MY",
+                        "MZ"
+                    ],
+                    get selectedAll() {
+                        return vm.selectedAll;
+                    },
+                    set selectedAll(value) {
+                        if (value !== vm.selectedAll) {
+                            vm.toggleSelectAll();
+                        }
+                    }
+                }
+            },
+            body() {
+                return this.dataArray.map((item) => {
+                    return {
+                        columns: [
+                            this.nodes.indexOf(item.id),
+                            item.data.x,
+                            item.data.y,
+                            item.data.z,
+                            item.data.rx,
+                            item.data.ry,
+                            item.data.rz
+                        ],
+                        selected: item.selected,
+                        toggleSelect: () => {
+                            this.toggleSelect(item.id);
+                        }
+                    };
+                });
+            },
+            ...mapGetters("model/result/reactions", ["dataArray", "selectedAll"]),
+            ...mapState("model/input/nodes", {
+                nodes: "idArray"
+            })
+        },
+        methods: {
+            ...mapActions("model/result/reactions", ["toggleSelect", "toggleSelectAll"])
         }
     };
 </script>

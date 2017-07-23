@@ -13,6 +13,10 @@
 <script>
     import {MDCCheckboxFoundation} from "@material/checkbox";
     export default {
+        model: {
+            prop: "checked",
+            event: "change"
+        },
         props: ["checked", "indeterminate", "disabled"],
         data() {
             return {
@@ -63,10 +67,7 @@
                 this.ch.forEach((h) => {
                     h(e);
                 });
-                this.$emit("change", {
-                    checked: this.foundation.isChecked(),
-                    indeterminate: this.foundation.isIndeterminate()
-                });
+                this.$emit("change", this.foundation.isIndeterminate() ? undefined: this.foundation.isChecked());
             }
         },
         watch: {

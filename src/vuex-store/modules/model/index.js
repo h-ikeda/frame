@@ -49,17 +49,10 @@ export default {
             }).then((res) => {
                 const body = JSON.parse(res.text);
                 if (body.id === state.requestId) {
-                    dispatch("result/setData", {
-                        data: Object.assign(body.result, {
-                            reactions: {},
-                            stresses: {}
-                        }),
-                        order: {
-                            displacements: state.input.nodes.ids,
-                            reactions: state.input.nodes.ids,
-                            stresses: []
-                        }
-                    });
+                    dispatch("result/setData", Object.assign(body.result, {
+                        reactions: {},
+                        stresses: {}
+                    }));
                     commit("setCalculated", true);
                 }
                 commit("setCalculating", false);

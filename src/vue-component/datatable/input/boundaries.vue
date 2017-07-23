@@ -1,38 +1,63 @@
 <template>
-    <table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
-        <thead slot="header">
-            <tr>
-                <th>ID</th>
-                <th>Node</th>
-                <th>DX</th>
-                <th>DY</th>
-                <th>DZ</th>
-                <th>RX</th>
-                <th>RY</th>
-                <th>RZ</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="boundary, id in boundaries" :key="id">
-                <td>{{indexOf("boundaries", id)}}</td>
-                <td>{{indexOf("nodes", boundary.node)}}</td>
-                <td>{{boundary.x}}</td>
-                <td>{{boundary.y}}</td>
-                <td>{{boundary.z}}</td>
-                <td>{{boundary.rx}}</td>
-                <td>{{boundary.ry}}</td>
-                <td>{{boundary.rz}}</td>
-            </tr>
-        </tbody>
+    <table>
+        <slot :header="header" :body="body" />
     </table>
 </template>
 
 <script>
-    import {mapState, mapGetters} from "vuex";
+    import {mapState, mapGetters, mapActions} from "vuex";
     export default {
         computed: {
-            ...mapState("model/input", ["boundaries"]),
-            ...mapGetters("model/input", ["indexOf"])
+            header() {
+                const vm = this;
+                return {
+                    columns: [
+                        "ID",
+                        "Node",
+                        "DX",
+                        "DY",
+                        "DZ",
+                        "RX",
+                        "RY",
+                        "RZ"
+                    ],
+                    get selectedAll() {
+                        return vm.selectedAll;
+                    },
+                    set selectedAll(value) {
+                        if (value !== vm.selectedAll) {
+                            vm.toggleSelectAll();
+                        }
+                    }
+                }
+            },
+            body() {
+                return this.dataArray.map((item, index) => {
+                    return {
+                        columns: [
+                            index,
+                            this.nodes.indexOf(item.data.node),
+                            item.data.x,
+                            item.data.y,
+                            item.data.z,
+                            item.data.rx,
+                            item.data.ry,
+                            item.data.rz
+                        ],
+                        selected: item.selected,
+                        toggleSelect: () => {
+                            this.toggleSelect(item.id);
+                        }
+                    };
+                });
+            },
+            ...mapGetters("model/input/boundaries", ["dataArray", "selectedAll"]),
+            ...mapState("model/input/nodes", {
+                nodes: "idArray"
+            })
+        },
+        methods: {
+            ...mapActions("model/input/boundaries", ["toggleSelect", "toggleSelectAll"])
         }
     };
 </script>

@@ -8,7 +8,7 @@
                 <nav class="mdc-list" @click="toggleOpen()">
                     <rippled-list-item v-for="child of mdl.children" :key="child.id" :class="{[selectedClass]: selected === child.id}" @click.native="select(child.id)">
                         <i class="material-icons mdc-list-item__start-detail">
-                            navigation
+                            {{child.icon}}
                         </i>
                         {{child.name}}
                     </rippled-list-item>
@@ -77,11 +77,13 @@
                 //
                 const vm = this;
                 return (function getModuleInfo(mdl) {
+                    const getters = vm.$store.getters;
                     const t = {
                         id: mdl,
-                        name: vm.$store.getters[mdl + "/name"]
+                        name: getters[mdl + "/name"],
+                        icon: getters[mdl + "/icon"]
                     };
-                    const childModules = vm.$store.getters[mdl + "/modules"];
+                    const childModules = getters[mdl + "/modules"];
                     if (childModules) {
                         t.children = childModules.map((m) => getModuleInfo(mdl + "/" + m));
                     }

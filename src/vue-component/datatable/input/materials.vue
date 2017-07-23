@@ -1,28 +1,50 @@
 <template>
     <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>E</th>
-                <th>G</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="material, id in materials" :key="id">
-                <td>{{indexOf("materials", id)}}</td>
-                <td>{{material.G}}</td>
-                <td>{{material.E}}</td>
-            </tr>
-        </tbody>
+        <slot :header="header" :body="body" />
     </table>
 </template>
 
 <script>
-    import {mapState, mapGetters} from "vuex";
+    import {mapGetters, mapActions} from "vuex";
     export default {
         computed: {
-            ...mapState("model/input", ["materials"]),
-            ...mapGetters("model/input", ["indexOf"])
+            header() {
+                const vm = this;
+                return {
+                    columns: [
+                        "ID",
+                        "E",
+                        "G"
+                    ],
+                    get selectedAll() {
+                        return vm.selectedAll;
+                    },
+                    set selectedAll(value) {
+                        if (value !== vm.selectedAll) {
+                            vm.toggleSelectAll();
+                        }
+                    }
+                }
+            },
+            body() {
+                return this.dataArray.map((item, index) => {
+                    return {
+                        columns: [
+                            index,
+                            item.data.E,
+                            item.data.G
+                        ],
+                        selected: item.selected,
+                        toggleSelect: () => {
+                            this.toggleSelect(item.id);
+                        }
+                    };
+                });
+            },
+            ...mapGetters("model/input/materials", ["dataArray", "selectedAll"])
+        },
+        methods: {
+            ...mapActions("model/input/materials", ["toggleSelect", "toggleSelectAll"])
         }
     };
 </script>

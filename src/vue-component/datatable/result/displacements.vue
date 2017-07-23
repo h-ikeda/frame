@@ -1,36 +1,61 @@
 <template>
     <table>
-        <thead>
-            <tr>
-                <th>Node</th>
-                <th>DX</th>
-                <th>DY</th>
-                <th>DZ</th>
-                <th>RX</th>
-                <th>RY</th>
-                <th>RZ</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="displacement, id in displacements" :key="id">
-                <td>{{indexOf("nodes", id)}}</td>
-                <td>{{displacement.x}}</td>
-                <td>{{displacement.y}}</td>
-                <td>{{displacement.z}}</td>
-                <td>{{displacement.rx}}</td>
-                <td>{{displacement.ry}}</td>
-                <td>{{displacement.rz}}</td>
-            </tr>
-        </tbody>
+        <slot :header="header" :body="body" />
     </table>
 </template>
 
 <script>
-    import {mapState, mapGetters} from "vuex";
+    import {mapState, mapGetters, mapActions} from "vuex";
     export default {
         computed: {
-            ...mapState("model/result", ["displacements"]),
-            ...mapGetters("model/input", ["indexOf"])
+            header() {
+                const vm = this;
+                return {
+                    columns: [
+                        "Node",
+                        "DX",
+                        "DY",
+                        "DZ",
+                        "RX",
+                        "RY",
+                        "RZ"
+                    ],
+                    get selectedAll() {
+                        return vm.selectedAll;
+                    },
+                    set selectedAll(value) {
+                        if (value !== vm.selectedAll) {
+                            vm.toggleSelectAll();
+                        }
+                    }
+                }
+            },
+            body() {
+                return this.dataArray.map((item) => {
+                    return {
+                        columns: [
+                            this.nodes.indexOf(item.id),
+                            item.data.x,
+                            item.data.y,
+                            item.data.z,
+                            item.data.rx,
+                            item.data.ry,
+                            item.data.rz
+                        ],
+                        selected: item.selected,
+                        toggleSelect: () => {
+                            this.toggleSelect(item.id);
+                        }
+                    };
+                });
+            },
+            ...mapGetters("model/result/displacements", ["dataArray", "selectedAll"]),
+            ...mapState("model/input/nodes", {
+                nodes: "idArray"
+            })
+        },
+        methods: {
+            ...mapActions("model/result/displacements", ["toggleSelect", "toggleSelectAll"])
         }
     };
 </script>
