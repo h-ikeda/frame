@@ -1,7 +1,9 @@
-const {mutations, actions} = global.requireSrc(__filename).default;
+import model from ".";
 import assert from "assert";
 import uuid from "uuid/v4";
-import {valid as validInput} from "./test_input/mock-input-factories";
+import {valid as validInput} from "./input/mock-input-factories";
+
+const {mutations, actions} = model;
 
 describe("modelモジュールのテスト", function() {
     describe("mutationsのテスト", function() {
@@ -40,8 +42,18 @@ describe("modelモジュールのテスト", function() {
     describe("actionsのテスト", function() {
         describe("calculateのテスト", function() {
             beforeEach(function() {
+                this.committed = {
+                    mutations: [],
+                    payloads: []
+                };
                 this.context = {
-                    commit: sinon.stub(),
+                    getters: {
+                        "input/data": () => validInput()
+                    },
+                    commit: (mutation, payload) => {
+                        this.committed.mutations.push(mutation);
+                        this.committed.payloads.push(payload);
+                    },
                     state: {
                         requestId: uuid(),
                         input: validInput()
@@ -50,12 +62,12 @@ describe("modelモジュールのテスト", function() {
             });
             it("calculatedがfalseに設定される", function() {
                 actions.calculate(this.context);
-                assert(this.context.commit.withArgs("setCalculated").calledOnce);
-                assert(this.context.commit.withArgs("setCalculated", false).calledOnce);
+                assert.equal(this.committed.mutations.indexOf("setCalculated"), 0);
+                assert.strictEqual(this.committed.payloads[0], false);
             });
             it("requestIdが更新される", function() {
                 actions.calculate(this.context);
-                assert(this.context.commit.withArgs("updateRequestId").calledOnce);
+                assert.strictEqual(this.committed.mutations.indexOf("updateRequestId"), 1);
             });
         });
     });

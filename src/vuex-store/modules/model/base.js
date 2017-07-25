@@ -1,6 +1,6 @@
 export default class {
     
-    constructor({state, getters, mutations, actions, modules}) {
+    constructor({state, getters, mutations, actions, modules} = {}) {
         this._state = state || {};
         this._getters = getters || {};
         this._mutations = mutations || {};

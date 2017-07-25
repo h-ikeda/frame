@@ -1,5 +1,7 @@
-const {actions} = global.requireSrc(__filename).default;
+import result from ".";
 import assert from "assert";
+
+const {actions} = result;
 
 describe("resultモジュールのテスト", function() {
     describe("actionsのテスト", function() {
@@ -11,17 +13,11 @@ describe("resultモジュールのテスト", function() {
                     payload.push(_payload);
                     ++count;
                 }
-                actions.setData({dispatch}, {
-                    data: {
-                        displacements: {},
-                        reactions: {},
-                        stresses: {}
-                    },
-                    order: {
-                        displacements: [],
-                        reactions: [],
-                        stresses: []
-                    }
+                function commit() {}
+                actions.setData({dispatch, commit}, {
+                    displacements: {},
+                    reactions: {},
+                    stresses: {}
                 });
             });
         });

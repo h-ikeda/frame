@@ -1,4 +1,4 @@
-const {mutations, actions} = global.requireSrc(__filename).default;
+import {mutations, actions} from ".";
 import assert from "assert";
 
 describe("drawerモジュールのテスト", function() {

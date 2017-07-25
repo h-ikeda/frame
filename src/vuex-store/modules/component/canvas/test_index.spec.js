@@ -1,4 +1,4 @@
-const {mutations} = global.requireSrc(__filename).default;
+import {mutations} from ".";
 import assert from "assert";
 
 describe("canvasモジュールのテスト", function() {

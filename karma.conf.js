@@ -2,12 +2,12 @@
 
 module.exports = (config) => {
 
-    const frameworks = ["polyfill", "mocha", "sinon"];
+    const frameworks = ["polyfill", "mocha"];
     const reporters = ["coverage-istanbul", "progress"];
     const polyfill = ["Promise"];
-    const files = ["test/test_index.js"];
+    const files = ["test/index.js"];
     const preprocessors = {
-        "test/test_index.js": ["webpack", "sourcemap"]
+        "test/index.js": ["webpack", "sourcemap"]
     };
     const webpack = require("./webpack.config");
     const beforeMiddleware = ["webpackBlocker"];
