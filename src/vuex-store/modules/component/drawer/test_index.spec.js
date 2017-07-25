@@ -1,49 +1,41 @@
-import {mutations, actions} from ".";
+import drawer from ".";
 import assert from "assert";
+
+const {mutations, actions} = drawer;
 
 describe("drawerモジュールのテスト", function() {
     describe("mutationsのテスト", function() {
-        describe("setOpenedのテスト", function() {
+        describe("setOpenのテスト", function() {
             it("真偽値を渡すと、ステートにセットされる", function() {
                 const state = {
-                    opened: false
+                    open: false
                 };
-                mutations.setOpened(state, true);
-                assert(state.opened);
-                mutations.setOpened(state, false);
-                assert(!state.opened);
+                mutations.setOpen(state, true);
+                assert(state.open);
+                mutations.setOpen(state, false);
+                assert(!state.open);
             });
         });
     });
     describe("actionsのテスト", function() {
-        describe("openのテスト", function() {
-            it("実行すると、setOpenedにtrueが渡される", function() {
-                const commit = sinon.stub();
-                actions.open({commit});
-                assert(commit.calledOnce);
-                assert(commit.withArgs("setOpened", true).calledOnce);
-            });
-        });
-        describe("closeのテスト", function() {
-            it("実行すると、setOpenedにfalseが渡される", function() {
-                const commit = sinon.stub();
-                actions.close({commit});
-                assert(commit.calledOnce);
-                assert(commit.withArgs("setOpened", false).calledOnce);
-            });
-        });
-        describe("toggleのテスト", function() {
+        describe("toggleOpenのテスト", function() {
             it("実行すると、setOpenedにopenedの反対が渡される", function() {
-                let commit = sinon.stub();
-                const state = {opened: false};
-                actions.toggle({commit, state});
-                assert(commit.calledOnce);
-                assert(commit.withArgs("setOpened", true).calledOnce);
-                commit = sinon.stub();
-                state.opened = true;
-                actions.toggle({commit, state});
-                assert(commit.calledOnce);
-                assert(commit.withArgs("setOpened", false).calledOnce);
+                let committedMutation, committedPayload, count = 0;
+                function commit(mutation, payload) {
+                    ++count;
+                    committedMutation = mutation;
+                    committedPayload = payload;
+                }
+                const state = {open: false};
+                actions.toggleOpen({commit, state});
+                assert.equal(count, 1);
+                assert.equal(committedMutation, "setOpen");
+                assert.equal(committedPayload, true);
+                state.open = true;
+                actions.toggleOpen({commit, state});
+                assert.equal(count, 2);
+                assert.equal(committedMutation, "setOpen");
+                assert.strictEqual(committedPayload, false);
             });
         });
     });

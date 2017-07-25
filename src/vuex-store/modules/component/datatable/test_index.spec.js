@@ -1,16 +1,18 @@
-import {mutations} from ".";
+import datatable from ".";
 import assert from "assert";
+
+const {mutations} = datatable;
 
 describe("datatableモジュールのテスト", function() {
     describe("mutationsのテスト", function() {
         describe("setNameのテスト", function() {
             it("文字列を渡すと、ステートにコピーされる", function() {
                 const state = {
-                    name: "before"
+                    selected: "before"
                 };
                 const test = "after";
-                mutations.setName(state, test);
-                assert.equal(state.name, test);
+                mutations.select(state, test);
+                assert.equal(state.selected, test);
             });
         });
     });

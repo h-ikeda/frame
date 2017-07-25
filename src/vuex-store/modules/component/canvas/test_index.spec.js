@@ -1,5 +1,7 @@
-import {mutations} from ".";
+import canvas from ".";
 import assert from "assert";
+
+const {mutations} = canvas;
 
 describe("canvasモジュールのテスト", function() {
     describe("mutationsのテスト", function() {
