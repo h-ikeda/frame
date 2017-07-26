@@ -59,8 +59,7 @@
         {
           "targets": {
             "browsers": [
-              "last 2 version",
-              "Safari 8"
+              "last 2 version"
             ]
           }
         }
