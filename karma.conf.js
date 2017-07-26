@@ -17,10 +17,12 @@ module.exports = (config) => {
     const browserStack = {
         project: "frame_" + require("child_process").execSync("git branch | grep \\* | cut -d \" \" -f2-")
     };
+    let browserNoActivityTimeout = 10000;
 
     if (config.singleRun && process.env.BROWSER_STACK_USERNAME) {
         reporters.push("BrowserStack");
         concurrency = 1;
+        browserNoActivityTimeout = 30000;
         const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
         const capabilities = bsCaps.create([{
             "browser": ["chrome", "firefox", "ie", "opera", "edge"],
@@ -68,6 +70,7 @@ module.exports = (config) => {
         concurrency,
         browsers,
         browserStack,
-        customLaunchers
+        customLaunchers,
+        browserNoActivityTimeout
     });
 };
