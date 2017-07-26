@@ -18,6 +18,7 @@ module.exports = (config) => {
         project: "frame_" + require("child_process").execSync("git branch | grep \\* | cut -d \" \" -f2-")
     };
     let browserNoActivityTimeout = 10000;
+    let port = 9876;
 
     if (config.singleRun && process.env.BROWSER_STACK_USERNAME) {
         reporters.push("BrowserStack");
@@ -54,6 +55,7 @@ module.exports = (config) => {
         browsers.splice(0, browserNum * process.env.CIRCLE_NODE_INDEX);
         browsers.splice(browserNum * (process.env.CIRCLE_NODE_INDEX + 1));
         browserStack.project = process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH;
+        port += process.env.CIRCLE_NODE_INDEX;
     }
     else {
         browserStack.build = Date.now();
@@ -71,6 +73,7 @@ module.exports = (config) => {
         browsers,
         browserStack,
         customLaunchers,
-        browserNoActivityTimeout
+        browserNoActivityTimeout,
+        port
     });
 };
