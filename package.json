@@ -59,9 +59,7 @@
         {
           "targets": {
             "browsers": [
-              "last 1 version",
-              "ie 11",
-              "safari 8"
+              "last 2 version"
             ]
           }
         }
