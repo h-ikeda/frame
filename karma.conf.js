@@ -55,7 +55,7 @@ module.exports = (config) => {
         browsers.splice(0, browserNum * process.env.CIRCLE_NODE_INDEX);
         browsers.splice(browserNum * (process.env.CIRCLE_NODE_INDEX + 1));
         browserStack.project = process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH;
-        port -= process.env.CIRCLE_NODE_INDEX;
+        port = 9999 - process.env.CIRCLE_NODE_INDEX;
     }
     else {
         browserStack.build = Date.now();
