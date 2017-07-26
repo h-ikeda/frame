@@ -128,12 +128,12 @@ export default function(store) {
         };
     });
 
-    store.commit("model/input/setData", {
-        boundaries,
+    store.dispatch("model/input/setData", {
+        nodes,
         lines,
+        boundaries,
         materials,
         nodeloads,
-        nodes,
         sections
     });
 };

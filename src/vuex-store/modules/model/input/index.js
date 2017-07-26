@@ -1,37 +1,25 @@
-const struct = [{
-    name: "nodes"
-}, {
-    name: "lines"
-}, {
-    name: "sections"
-}, {
-    name: "materials"
-}, {
-    name: "boundaries"
-}, {
-    name: "nodeloads"
-}];
+import Base from "../base";
 
-export default {
-    namespaced: true,
-    state() {
-        const idMap = {};
-        const t = {idMap};
-        struct.forEach((item) => {
-            t[item.name] = {};
-            idMap[item.name] = [];
-        });
-        return t;
-    },
-    getters: {
-        indexOf: (state) => (type, id) => state.idMap[type].indexOf(id)
-    },
-    mutations: {
-        setData(state, data) {
-            struct.forEach((item) => {
-                state[item.name] = data[item.name];
-                state.idMap[item.name] = Object.keys(state[item.name]);
-            });
-        }
-    }
+import nodes from "./nodes";
+import lines from "./lines";
+import sections from "./sections";
+import materials from "./materials";
+import boundaries from "./boundaries";
+import nodeloads from "./nodeloads";
+
+const modules = {
+    nodes,
+    lines,
+    sections,
+    materials,
+    boundaries,
+    nodeloads
 };
+
+export default new Base({
+    getters: {
+        name: () => "Input",
+        modules: () => Object.keys(modules)
+    },
+    modules
+});

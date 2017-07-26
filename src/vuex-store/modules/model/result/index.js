@@ -1,25 +1,19 @@
-const struct = [{
-    name: "displacements"
-}, {
-    name: "reactions"
-}, {
-    name: "stresses"
-}];
+import Base from "../base";
 
-export default {
-    namespaced: true,
-    state() {
-        const t = {};
-        struct.forEach((item) => {
-            t[item.name] = {};
-        })
-        return t;
-    },
-    mutations: {
-        setData(state, data) {
-            struct.forEach((item) => {
-                state[item.name] = data[item.name];
-            });
-        }
-    }
+import displacements from "./displacements";
+import reactions from "./reactions";
+import stresses from "./stresses";
+
+const modules = {
+    displacements,
+    reactions,
+    stresses
 };
+
+export default new Base({
+    getters: {
+        modules: () => Object.keys(modules),
+        name: () => "Result"
+    },
+    modules
+});

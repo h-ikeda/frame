@@ -1,18 +1,33 @@
 <template>
-    <component :is="name" />
+    <div>
+        <t-subheader class="t-subheader" />
+        <t-content class="t-content" />
+    </div>
 </template>
 
 <script>
-    import {mapState} from "vuex";
-    import input from "./input";
-    import result from "./result";
+    //コンポーネントのインポート
+    import subheader from "./subheader.vue";
+    import content from "./table.vue";
+
     import prefixed from "prefix-keys";
 
     export default {
-        computed: mapState("component/datatable", ["name"]),
-        components: {
-            ...prefixed("input/", input),
-            ...prefixed("result/", result)
-        }
+        components: prefixed("t-", {
+            subheader,
+            content
+        })
     };
 </script>
+
+<style scoped>
+    .t-subheader {
+        margin: 0 1.5rem;
+        height: 4rem;
+        line-height: 4rem;
+        white-space: nowrap;
+    }
+    .t-content {
+        height: calc(100% - 4rem);
+    }
+</style>

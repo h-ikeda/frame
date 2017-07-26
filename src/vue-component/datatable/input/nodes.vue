@@ -1,30 +1,52 @@
 <template>
-    <mu-table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
-        <mu-thead slot="header">
-            <mu-tr>
-                <mu-th>ID</mu-th>
-                <mu-th>X</mu-th>
-                <mu-th>Y</mu-th>
-                <mu-th>Z</mu-th>
-            </mu-tr>
-        </mu-thead>
-        <mu-tbody>
-            <mu-tr v-for="node, id in nodes" :key="id">
-                <mu-td>{{indexOf("nodes", id)}}</mu-td>
-                <mu-td>{{node.x}}</mu-td>
-                <mu-td>{{node.y}}</mu-td>
-                <mu-td>{{node.z}}</mu-td>
-            </mu-tr>
-        </mu-tbody>
-    </mu-table>
+    <table>
+        <slot :header="header" :body="body" />
+    </table>
 </template>
 
 <script>
-    import {mapState, mapGetters} from "vuex";
+    import {mapGetters, mapActions} from "vuex";
     export default {
         computed: {
-            ...mapState("model/input", ["nodes"]),
-            ...mapGetters("model/input", ["indexOf"])
+            header() {
+                const vm = this;
+                return {
+                    columns: [
+                        "ID",
+                        "X",
+                        "Y",
+                        "Z"
+                    ],
+                    get selectedAll() {
+                        return vm.selectedAll;
+                    },
+                    set selectedAll(value) {
+                        if (value !== vm.selectedAll) {
+                            vm.toggleSelectAll();
+                        }
+                    }
+                }
+            },
+            body() {
+                return this.dataArray.map((item, index) => {
+                    return {
+                        columns: [
+                            index,
+                            item.data.x,
+                            item.data.y,
+                            item.data.z
+                        ],
+                        selected: item.selected,
+                        toggleSelect: () => {
+                            this.toggleSelect(item.id);
+                        }
+                    };
+                });
+            },
+            ...mapGetters("model/input/nodes", ["dataArray", "selectedAll"])
+        },
+        methods: {
+            ...mapActions("model/input/nodes", ["toggleSelect", "toggleSelectAll"])
         }
     };
 </script>
