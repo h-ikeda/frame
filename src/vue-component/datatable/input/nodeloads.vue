@@ -1,38 +1,63 @@
 <template>
-    <mu-table fixedHeader enableSelectAll multiSelectable height="calc(100% - 57px)">
-        <mu-thead slot="header">
-            <mu-tr>
-                <mu-th>ID</mu-th>
-                <mu-th>Node</mu-th>
-                <mu-th>PX</mu-th>
-                <mu-th>PY</mu-th>
-                <mu-th>PZ</mu-th>
-                <mu-th>MX</mu-th>
-                <mu-th>MY</mu-th>
-                <mu-th>MZ</mu-th>
-            </mu-tr>
-        </mu-thead>
-        <mu-tbody>
-            <mu-tr v-for="nodeload, id in nodeloads" :key="id">
-                <mu-td>{{indexOf("nodeloads", id)}}</mu-td>
-                <mu-td>{{indexOf("nodes", nodeload.node)}}</mu-td>
-                <mu-td>{{nodeload.x}}</mu-td>
-                <mu-td>{{nodeload.y}}</mu-td>
-                <mu-td>{{nodeload.z}}</mu-td>
-                <mu-td>{{nodeload.rx}}</mu-td>
-                <mu-td>{{nodeload.ry}}</mu-td>
-                <mu-td>{{nodeload.rz}}</mu-td>
-            </mu-tr>
-        </mu-tbody>
-    </mu-table>
+    <table>
+        <slot :header="header" :body="body" />
+    </table>
 </template>
 
 <script>
-    import {mapState, mapGetters} from "vuex";
+    import {mapState, mapGetters, mapActions} from "vuex";
     export default {
         computed: {
-            ...mapState("model/input", ["nodeloads"]),
-            ...mapGetters("model/input", ["indexOf"])
+            header() {
+                const vm = this;
+                return {
+                    columns: [
+                        "ID",
+                        "Node",
+                        "PX",
+                        "PY",
+                        "PZ",
+                        "MX",
+                        "MY",
+                        "MZ"
+                    ],
+                    get selectedAll() {
+                        return vm.selectedAll;
+                    },
+                    set selectedAll(value) {
+                        if (value !== vm.selectedAll) {
+                            vm.toggleSelectAll();
+                        }
+                    }
+                }
+            },
+            body() {
+                return this.dataArray.map((item, index) => {
+                    return {
+                        columns: [
+                            index,
+                            this.nodes.indexOf(item.data.node),
+                            item.data.x,
+                            item.data.y,
+                            item.data.z,
+                            item.data.rx,
+                            item.data.ry,
+                            item.data.rz
+                        ],
+                        selected: item.selected,
+                        toggleSelect: () => {
+                            this.toggleSelect(item.id);
+                        }
+                    };
+                });
+            },
+            ...mapGetters("model/input/nodeloads", ["dataArray", "selectedAll"]),
+            ...mapState("model/input/nodes", {
+                nodes: "idArray"
+            })
+        },
+        methods: {
+            ...mapActions("model/input/nodeloads", ["toggleSelect", "toggleSelectAll"])
         }
     };
 </script>

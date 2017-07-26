@@ -2,12 +2,12 @@
 
 module.exports = (config) => {
 
-    const frameworks = ["polyfill", "mocha", "sinon"];
+    const frameworks = ["polyfill", "mocha"];
     const reporters = ["coverage-istanbul", "progress"];
     const polyfill = ["Promise"];
-    const files = ["test/test_index.js"];
+    const files = ["test/index.js"];
     const preprocessors = {
-        "test/test_index.js": ["webpack", "sourcemap"]
+        "test/index.js": ["webpack", "sourcemap"]
     };
     const webpack = require("./webpack.config");
     const beforeMiddleware = ["webpackBlocker"];
@@ -17,10 +17,15 @@ module.exports = (config) => {
     const browserStack = {
         project: "frame_" + require("child_process").execSync("git branch | grep \\* | cut -d \" \" -f2-")
     };
+    let browserNoActivityTimeout = 10000;
+    let port = 9876;
+    let browserDisconnectTolerance = 0;
 
     if (config.singleRun && process.env.BROWSER_STACK_USERNAME) {
         reporters.push("BrowserStack");
         concurrency = 1;
+        browserNoActivityTimeout = 30000;
+        browserDisconnectTolerance = 3;
         const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
         const capabilities = bsCaps.create([{
             "browser": ["chrome", "firefox", "ie", "opera", "edge"],
@@ -31,7 +36,7 @@ module.exports = (config) => {
             "browser": ["chrome", "firefox", "opera", "safari"],
             "browser_version": "latest",
             "os": "OS X",
-            "os_version": ["Sierra", "El Capitan", "Yosemite"]
+            "os_version": ["Sierra", "El Capitan"]
         }]).filter((capability) => capability);
         capabilities.forEach((capability) => {
             const browser = [
@@ -52,6 +57,7 @@ module.exports = (config) => {
         browsers.splice(0, browserNum * process.env.CIRCLE_NODE_INDEX);
         browsers.splice(browserNum * (process.env.CIRCLE_NODE_INDEX + 1));
         browserStack.project = process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH;
+        port = 9999 - process.env.CIRCLE_NODE_INDEX;
     }
     else {
         browserStack.build = Date.now();
@@ -68,6 +74,9 @@ module.exports = (config) => {
         concurrency,
         browsers,
         browserStack,
-        customLaunchers
+        customLaunchers,
+        browserNoActivityTimeout,
+        port,
+        browserDisconnectTolerance
     });
 };

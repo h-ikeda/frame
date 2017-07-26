@@ -39,8 +39,7 @@ module.exports = {
             test: /\.js$/,
             use: [{
                 loader: "babel-loader"
-            }],
-            exclude: /(?:^|\/)node_modules\//
+            }]
         }, {
             //
             // 画像ファイルは、url-loaderで読み込みます。
@@ -48,7 +47,7 @@ module.exports = {
             // 32kB以上のファイルは、file-loaderで読み込みます。
             // ファイル名はハッシュ文字列に置き換えて配信されます。
             //
-            test: /\.(?:ttf|woff2?|eot)$/,
+            test: /\.(?:ttf|woff2?|eot|png)$/,
             use: [{
                 loader: "url-loader",
                 options: {
@@ -64,8 +63,7 @@ module.exports = {
             // 各モジュールのビルドされたファイルへのエイリアスを設定します。
             // ex.) import vue from "vue" は import vue from "vue/dist/vue.esm" と同じです。
             //
-            "vue$": "vue/dist/vue.esm.js",
-            "material-components-web$": "material-components-web/dist/material-components-web.js"
+            "vue$": "vue/dist/vue.esm.js"
         }
     },
     node: {
@@ -77,7 +75,7 @@ module.exports = {
         historyApiFallback: true,
         hot: true
     },
-    devtool: process.env.NODE_ENV !== "production" && "cheap-module-eval-source-map",
+    devtool: process.env.NODE_ENV !== "production" && "cheap-module-eval-source-map" && "cheap-module-source-map",
     plugins: [
         //
         // スクリプト内の変数を環境変数で置き換えます。

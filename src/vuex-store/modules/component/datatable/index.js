@@ -2,12 +2,12 @@ export default {
     namespaced: true,
     state() {
         return {
-            name: "input/nodes"
+            selected: "model/input/nodes"
         };
     },
     mutations: {
-        setName(state, name) {
-            state.name = name;
+        select(state, selected) {
+            state.selected = selected;
         }
     }
 };
