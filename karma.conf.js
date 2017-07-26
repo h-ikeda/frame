@@ -31,7 +31,7 @@ module.exports = (config) => {
             "browser": ["chrome", "firefox", "opera", "safari"],
             "browser_version": "latest",
             "os": "OS X",
-            "os_version": ["Sierra", "El Capitan"]
+            "os_version": ["Sierra", "El Capitan", "Yosemite"]
         }]).filter((capability) => capability);
         capabilities.forEach((capability) => {
             const browser = [
