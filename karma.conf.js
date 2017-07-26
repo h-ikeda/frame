@@ -19,11 +19,13 @@ module.exports = (config) => {
     };
     let browserNoActivityTimeout = 10000;
     let port = 9876;
+    let browserDisconnectTolerance = 0;
 
     if (config.singleRun && process.env.BROWSER_STACK_USERNAME) {
         reporters.push("BrowserStack");
         concurrency = 1;
         browserNoActivityTimeout = 30000;
+        browserDisconnectTolerance = 3;
         const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
         const capabilities = bsCaps.create([{
             "browser": ["chrome", "firefox", "ie", "opera", "edge"],
@@ -74,6 +76,7 @@ module.exports = (config) => {
         browserStack,
         customLaunchers,
         browserNoActivityTimeout,
-        port
+        port,
+        browserDisconnectTolerance
     });
 };
