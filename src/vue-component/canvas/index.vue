@@ -1,11 +1,11 @@
 <template>
     <div @transitionend="resize">
-        <canvas ref="canvas" @mousemove="onmove" @mousedown="ondown" @mouseup="onup" @wheel.prevent="onscroll" :style="{backgroundColor}" />
+        <canvas ref="canvas" @mousemove="dragged" @mousedown="pressed" @mouseup="released" @wheel.prevent="wheeled" :style="{backgroundColor}" />
     </div>
 </template>
 
 <script>
-    import {mapState, mapGetters, mapMutations} from "vuex";
+    import {mapState, mapGetters, mapMutations, mapActions} from "vuex";
     import {
         WebGLRenderer,
         Scene,
@@ -22,13 +22,69 @@
         LineBasicMaterial
     } from "three";
 
+    function setCameraSize(camera, domElement) {
+        const width = domElement.clientWidth;
+        const height = domElement.clientHeight;
+        if (camera.isPerspectiveCamera) {
+            camera.aspect = width / height;
+        } else {
+            camera.left = -0.5 * width;
+            camera.right = 0.5 * width;
+            camera.top = 0.5 * height;
+            camera.bottom = -0.5 * height;
+        }
+        camera.updateProjectionMatrix();
+    }
+
+    function setRendererSize(renderer) {
+        const domElement = renderer.domElement;
+        renderer.setSize(domElement.clientWidth, domElement.clientHeight, false);
+    }
+
+    function initializeMaterial(material, options) {
+        if ("color" in options) {
+            material.color.set(options.color);
+        }
+        if ("size" in options) {
+            material.size = options.size;
+        }
+    }
+
+    function addLinesToLineGroup(group, lines, nodes, material) {
+        Object.keys(lines).forEach((l) => {
+            const obj = group.getObjectByName(l);
+            if (!obj) {
+                const n1 = nodes[lines[l].n1], n2 = nodes[lines[l].n2];
+                const geo = new Geometry();
+                geo.vertices.push(new Vector3(n1.x, n1.y, n1.z), new Vector3(n2.x, n2.y, n2.z));
+                const ln = new Line(geo, material);
+                ln.name = l;
+                group.add(ln);
+            }
+        });
+    }
+
+    function addNodesToNodeGroup(group, nodes, material) {
+        Object.keys(nodes).forEach((n) => {
+            const obj = group.getObjectByName(n);
+            if (!obj) {
+                const geo = new Geometry();
+                geo.vertices.push(new Vector3(nodes[n].x, nodes[n].y, nodes[n].z));
+                const pts = new Points(geo, material);
+                pts.name = n;
+                group.add(pts);
+            }
+        });
+    }
+
     export default {
         data() {
             return {
-                prevPos: null,
-                width: 300,
-                height: 150,
-                modified: false
+                mouseX: 0,
+                mouseY: 0,
+                mouseLeft: false,
+                mouseMiddle: false,
+                mouseRight: false
             };
         },
         computed: {
@@ -42,256 +98,193 @@
             ...mapState("component/canvas", [
                 "lineStyle",
                 "nodeStyle",
-                "backgroundColor"
+                "backgroundColor",
+                "antialias"
             ]),
             ...mapState("component/canvas/three", [
-                "perspective",
-                "cameraPosition",
-                "cameraRotation",
-                "position",
-                "rotation",
-                "scale"
+                "cameraMode"
             ]),
-            //
-            // Three.jsのオブジェクトを生成します。
-            // 算出プロパティは計算結果をキャッシュするので、
-            // 初期化用プロパティが変更されない限り既に生成したインスタンスが返されます。
-            //
-            // WebGLRendererを生成・設定します。
-            initRenderer() {
+            ...mapState("component/canvas/three/orbit", [
+                "target"
+            ]),
+            ...mapGetters("component/canvas/three/orbit", [
+                "position"
+            ]),
+            renderer() {
                 return new WebGLRenderer({
                     canvas: this.$refs.canvas,
                     alpha: true,
-                    antialias: true,
+                    antialias: this.antialias,
                     logarithmicDepthBuffer: true
                 });
             },
-            renderer() {
-                this.initRenderer.setSize(this.width, this.height, false);
-                return this.initRenderer;
-            },
-            // Sceneを生成・設定します。
-            roterScene() {
-                const rsc = new Scene();
-                const line = new LineSegments();
-                line.geometry.addAttribute("position", new BufferAttribute(new Float32Array([-100, 0, 0, 100, 0, 0, 0, -100, 0, 0, 100, 0]), 3));
-                rsc.add(line);
-                return rsc;
-            },
-            localScene() {
-                const scn = new Scene();
-                const line = new LineSegments();
-                line.geometry.addAttribute("position", new BufferAttribute(new Float32Array([-100, 0, 0, 100, 0, 0, 0, -100, 0, 0, 100, 0]), 3));
-                scn.add(line);
-                this.roterScene.add(scn);
-                return scn;
-            },
-            // Cameraを生成・設定します。
-            initCamera() {
-                return this.perspective ? new PerspectiveCamera(): new OrthographicCamera();
-            },
-            positionedCamera() {
-                this.initCamera.position.x = this.cameraPosition.x;
-                this.initCamera.position.y = this.cameraPosition.y;
-                this.initCamera.position.z = this.cameraPosition.z;
-                return this.initCamera;
-            },
-            rotatedCamera() {
-                this.initCamera.rotation.x = this.cameraRotation.x;
-                this.initCamera.rotation.y = this.cameraRotation.y;
-                this.initCamera.rotation.z = this.cameraRotation.z;
-                return this.initCamera;
-            },
-            resizedCamera() {
-                if (this.perspective) {
-                    this.initCamera.aspect = this.width / this.height;
-                } else {
-                    this.initCamera.left = -0.5 * this.width;
-                    this.initCamera.right = 0.5 * this.width;
-                    this.initCamera.top = 0.5 * this.height;
-                    this.initCamera.bottom = -0.5 * this.height;
+            initialCamera() {
+                switch (this.cameraMode) {
+                    case "orthographic":
+                        return new OrthographicCamera();
+                    default:
+                        return new PerspectiveCamera();
                 }
-                this.initCamera.updateProjectionMatrix();
-                return this.initCamera;
             },
             camera() {
-                return this.positionedCamera && this.rotatedCamera && this.resizedCamera;
+                const camera = this.initialCamera;
+                camera.position.copy(this.position);
+                camera.lookAt(new Vector3(...this.target));
+                return camera;
             },
-            // 要素種別毎のグループを生成し、sceneに追加します。
-            lineGroup() {
-                const g = new Group();
-                this.localScene.add(g);
-                return g;
+            scene: () => {
+                const scene = new Scene();
+                //scene.scale.y = -1;
+                scene.rotation.x = -.5 * Math.PI;
+                //scene.rotation.z = -.5 * Math.PI;
+                return scene;
             },
-            nodeGroup() {
-                const g = new Group();
-                this.localScene.add(g);
-                return g;
-            },
-            // 要素種別毎にスタイルを生成します。
+            lineGroup: () => new Group(),
+            nodeGroup: () => new Group(),
             nodeMaterial: () => new PointsMaterial(),
             lineMaterial: () => new LineBasicMaterial()
         },
         watch: {
-            // 変数の変更時にスタイルを即時反映します。
-            "nodeStyle.color": {
-                handler(color) {
-                    this.nodeMaterial.color.set(color);
-                    this.render();
-                },
-                immediate: true
-            },
-            "nodeStyle.size": {
-                handler(size) {
-                    this.nodeMaterial.size = size;
-                    this.render();
-                },
-                immediate: true
-            },
-            "lineStyle.color": {
-                handler(color) {
-                    this.lineMaterial.color.set(color);
-                    this.render();
-                },
-                immediate: true
-            },
-            "rotation.z": {
-                handler(z) {
-                    this.roterScene.rotation.z = z;
-                },
-                immediate: true
-            },
-            "rotation.x": {
-                handler(x) {
-                    this.roterScene.rotation.x = x;
-                },
-                immediate: true
-            },
-            "position.x": {
-                handler(x) {
-                    this.localScene.position.x = x;
-                },
-                immediate: true
-            },
-            "position.y": {
-                handler(y) {
-                    this.localScene.position.y = y;
-                },
-                immediate: true
-            },
-            "position.z": {
-                handler(z) {
-                    this.localScene.position.z = z;
-                },
-                immediate: true
-            },
-            scale: {
-                handler(scale) {
-                    this.localScene.scale.x = scale;
-                    this.localScene.scale.y = scale;
-                    this.localScene.scale.z = scale;
-                },
-                immediate: true
-            },
-            perspective() {
+            "nodeStyle.color": function(color) {
+                this.nodeMaterial.color.set(color);
                 this.render();
             },
-            nodes: {
-                handler(nodes) {
-                    Object.keys(nodes).forEach((n) => {
-                        const obj = this.nodeGroup.getObjectByName(n);
-                        if (!obj) {
-                            const geo = new Geometry();
-                            geo.vertices.push(new Vector3(nodes[n].x, nodes[n].y, nodes[n].z));
-                            const pts = new Points(geo, this.nodeMaterial);
-                            pts.name = n;
-                            this.nodeGroup.add(pts);
-                        }
-                    });
-                },
-                immediate: true
+            "nodeStyle.size": function(size) {
+                this.nodeMaterial.size = size;
+                this.render();
             },
-            lines: {
-                handler(lines) {
-                    Object.keys(lines).forEach((l) => {
-                        const obj = this.lineGroup.getObjectByName(l);
-                        if (!obj) {
-                            const n1 = this.nodes[lines[l].n1], n2 = this.nodes[lines[l].n2];
-                            const geo = new Geometry();
-                            geo.vertices.push(new Vector3(n1.x, n1.y, n1.z), new Vector3(n2.x, n2.y, n2.z));
-                            const ln = new Line(geo, this.lineMaterial);
-                            ln.name = l;
-                            this.lineGroup.add(ln);
-                        }
-                    });
-                },
-                immediate: true
+            "lineStyle.color": function(color) {
+                this.lineMaterial.color.set(color);
+                this.render();
+            },
+            cameraMode() {
+                const vm = this;
+                setCameraSize(vm.camera, vm.$el);
+                vm.render();
+            },
+            antialias() {
+                setRendererSize(this.renderer);
+                this.render();
             }
+        },
+        beforeCreate() {
+            let reserved = false;
+            this.$on("render", () => {
+                // レンダリングは更新時に1度だけ行います。
+                if (!reserved) {
+                    reserved = true;
+                    this.$nextTick(() => {
+                        this.renderer.render(this.scene, this.camera);
+                        reserved = false;
+                    });
+                }
+            });
+        },
+        created() {
+            const vm = this;
+            initializeMaterial(vm.nodeMaterial, vm.nodeStyle);
+            initializeMaterial(vm.lineMaterial, vm.lineStyle);
+            addLinesToLineGroup(vm.lineGroup, vm.lines, vm.nodes, vm.lineMaterial);
+            addNodesToNodeGroup(vm.nodeGroup, vm.nodes, vm.nodeMaterial);
+            vm.scene.add(vm.lineGroup);
+            vm.scene.add(vm.nodeGroup);
+            //
+            // xのベースライン
+            //
+            let mat = new LineBasicMaterial();
+            mat.color.set(0xff0000);
+            let geo = new Geometry();
+            geo.vertices.push(new Vector3(0, 0, 0), new Vector3(10, 0, 0));
+            vm.scene.add(new Line(geo, mat));
+            //
+            // yのベースライン
+            //
+            mat = new LineBasicMaterial();
+            mat.color.set(0x0000ff);
+            geo = new Geometry();
+            geo.vertices.push(new Vector3(0, 0, 0), new Vector3(0, 10, 0));
+            vm.scene.add(new Line(geo, mat));
+            //
+            // zのベースライン
+            //
+            mat = new LineBasicMaterial();
+            mat.color.set(0xffff00);
+            geo = new Geometry();
+            geo.vertices.push(new Vector3(0, 0, 0), new Vector3(0, 0, 10));
+            vm.scene.add(new Line(geo, mat));
         },
         mounted() {
             addEventListener("resize", this.resize);
-            // 初期描画
             this.resize();
-        },
-        updated() {
-            this.render();
         },
         beforeDestroy() {
             removeEventListener("resize", this.resize);
         },
         methods: {
-            ...mapMutations("component/canvas/three", [
-                "offsetPosition",
-                "offsetRotation",
-                "multiplyScale"
+            ...mapActions("component/canvas/three/orbit", [
+                "rotate",
+                "translate2D"
             ]),
             render() {
-                // レンダリングはDOM更新時に1度だけ行います。
-                if (!this.modified) {
-                    this.modified = true;
-                    this.$nextTick(() => {
-                        this.renderer.render(this.roterScene, this.camera);
-                        this.modified = false;
-                    });
-                }
+                this.$emit("render");
             },
             resize() {
-                this.width = this.$el.clientWidth;
-                this.height = this.$el.clientHeight;
-                this.render();
+                const vm = this;
+                setCameraSize(vm.camera, vm.$el);
+                setRendererSize(vm.renderer);
+                vm.render();
             },
-            ondown(e) {
-                if (!e.button) {
-                    this.prevPos = [e.clientX, e.clientY];
+            pressed(e) {
+                // canvas要素上でマウスボタンが押されたときに呼ばれます。
+                const vm = this;
+                switch (e.button) {
+                    case 0:
+                        vm.mouseLeft = true;
+                        break;
+                    case 1:
+                        vm.mouseMiddle = true;
+                        break;
+                    case 2:
+                        vm.mouseRight = true;
                 }
+                vm.mouseX = e.clientX;
+                vm.mouseY = e.clientY;
             },
-            onmove(e) {
-                if (this.prevPos) {
+            dragged(e) {
+                const vm = this;
+                if (vm.mouseLeft) {
+                    // 左ドラッグ時の動作
+                    // canvas要素 (画面) 上でのマウスの移動距離x, y
+                    const x = (e.clientX - vm.mouseX) * 0.1;
+                    const y = (e.clientY - vm.mouseY) * 0.1;
+
                     if (e.shiftKey) {
-                        const localX = (e.clientX - this.prevPos[0]) * 0.1;
-                        const localZ = (this.prevPos[1] - e.clientY) * 0.1;
-                        this.offsetPosition({
-                            x: localX * Math.cos(this.rotation.z) + localZ * Math.sin(this.rotation.x) * Math.sin(this.rotation.z),
-                            y: -localX * Math.sin(this.rotation.x) + localZ * Math.sin(this.rotation.x) * Math.cos(this.rotation.z),
-                            z: localZ * Math.cos(this.rotation.x)
-                        });
+                        // Shiftキー + ドラッグ -> 移動 (Pan)
+                        vm.translate2D([-x, y]);
                     } else {
-                        this.offsetRotation({
-                            x: (e.clientY - this.prevPos[1]) * 0.1,
-                            z: (e.clientX - this.prevPos[0]) * 0.1
-                        });
+                        // 単純にドラッグ -> 回転 (Rotate)
+                        vm.rotate([-y, -x]);
                     }
-                    this.render();
-                    this.prevPos = [e.clientX, e.clientY];
+                    vm.render();
+                    vm.mouseX = e.clientX;
+                    vm.mouseY = e.clientY;
                 }
             },
-            onup(e) {
-                if(!e.button) {
-                    this.prevPos = null;
+            released(e) {
+                const vm = this;
+                switch (e.button) {
+                    case 0:
+                        vm.mouseLeft = false;
+                        break;
+                    case 1:
+                        vm.mouseMiddle = false;
+                        break;
+                    case 2:
+                        vm.mouseRight = false;
                 }
             },
-            onscroll(e) {
-                this.multiplyScale(1 + e.deltaY * 0.001);
+            wheeled(e) {
+                this.zoom(1 + e.deltaY * 0.001);
                 this.render();
             }
         }
