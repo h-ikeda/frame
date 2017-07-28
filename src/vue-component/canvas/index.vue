@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import {mapState, mapGetters, mapMutations} from "vuex";
+    import {mapState, mapGetters, mapMutations, mapActions} from "vuex";
     import {
         WebGLRenderer,
         Scene,
@@ -21,35 +21,6 @@
         PointsMaterial,
         LineBasicMaterial
     } from "three";
-
-    function initializeCamera(camera, position, rotation) {
-        setPosition(camera, position);
-        setRotation(camera, rotation);
-    }
-
-    function initializeScene(scene, position, rotation, scale) {
-        setPosition(scene, position);
-        setRotation(scene, rotation);
-        setScale(scene, scale);
-    }
-
-    function setPosition(obj, position) {
-        obj.position.x = position.x;
-        obj.position.y = position.y;
-        obj.position.z = position.z;
-    }
-
-    function setRotation(obj, rotation) {
-        obj.rotation.x = rotation.x;
-        obj.rotation.y = rotation.y;
-        obj.rotation.z = rotation.z;
-    }
-
-    function setScale(obj, scale) {
-        obj.scale.x = scale;
-        obj.scale.y = scale;
-        obj.scale.z = scale;
-    }
 
     function setCameraSize(camera, domElement) {
         const width = domElement.clientWidth;
@@ -131,26 +102,43 @@
                 "antialias"
             ]),
             ...mapState("component/canvas/three", [
-                "perspective",
-                "cameraPosition",
-                "cameraRotation",
-                "position",
-                "rotation",
-                "scale"
+                "cameraMode"
+            ]),
+            ...mapState("component/canvas/three/orbit", [
+                "target"
+            ]),
+            ...mapGetters("component/canvas/three/orbit", [
+                "position"
             ]),
             renderer() {
-                const vm = this;
                 return new WebGLRenderer({
                     canvas: this.$refs.canvas,
                     alpha: true,
-                    antialias: vm.antialias,
+                    antialias: this.antialias,
                     logarithmicDepthBuffer: true
                 });
             },
-            camera() {
-                return this.perspective ? new PerspectiveCamera(): new OrthographicCamera();
+            initialCamera() {
+                switch (this.cameraMode) {
+                    case "orthographic":
+                        return new OrthographicCamera();
+                    default:
+                        return new PerspectiveCamera();
+                }
             },
-            scene: () => new Scene(),
+            camera() {
+                const camera = this.initialCamera;
+                camera.position.copy(this.position);
+                camera.lookAt(new Vector3(...this.target));
+                return camera;
+            },
+            scene: () => {
+                const scene = new Scene();
+                //scene.scale.y = -1;
+                scene.rotation.x = -.5 * Math.PI;
+                //scene.rotation.z = -.5 * Math.PI;
+                return scene;
+            },
             lineGroup: () => new Group(),
             nodeGroup: () => new Group(),
             nodeMaterial: () => new PointsMaterial(),
@@ -169,63 +157,10 @@
                 this.lineMaterial.color.set(color);
                 this.render();
             },
-            "rotation.x": function(x) {
-                this.scene.rotation.x = x;
-                this.render();
-            },
-            "rotation.y": function(y) {
-                this.scene.rotation.y = y;
-                this.render();
-            },
-            "rotation.z": function(z) {
-                this.scene.rotation.z = z;
-                this.render();
-            },
-            "position.x": function(x) {
-                this.scene.position.x = x;
-                this.render();
-            },
-            "position.y": function(y) {
-                this.scene.position.y = y;
-                this.render();
-            },
-            "position.z": function(z) {
-                this.scene.position.z = z;
-                this.render();
-            },
-            scale(scale) {
-                setScale(this.scene, scale);
-                this.render();
-            },
-            perspective() {
+            cameraMode() {
                 const vm = this;
-                initializeCamera(vm.camera, vm.cameraPosition, vm.cameraRotation);
                 setCameraSize(vm.camera, vm.$el);
                 vm.render();
-            },
-            "cameraRotation.x": function(x) {
-                this.camera.rotation.x = x;
-                this.render();
-            },
-            "cameraRotation.y": function(y) {
-                this.camera.rotation.y = y;
-                this.render();
-            },
-            "cameraRotation.z": function(z) {
-                this.camera.rotation.z = z;
-                this.render();
-            },
-            "cameraPosition.x": function(x) {
-                this.camera.position.x = x;
-                this.render();
-            },
-            "cameraPosition.y": function(y) {
-                this.camera.position.y = y;
-                this.render();
-            },
-            "cameraPosition.z": function(z) {
-                this.camera.position.z = z;
-                this.render();
             },
             antialias() {
                 setRendererSize(this.renderer);
@@ -233,14 +168,13 @@
             }
         },
         beforeCreate() {
-            const vm = this;
             let reserved = false;
-            vm.$on("render", () => {
+            this.$on("render", () => {
                 // レンダリングは更新時に1度だけ行います。
                 if (!reserved) {
                     reserved = true;
-                    vm.$nextTick(() => {
-                        vm.renderer.render(vm.scene, vm.camera);
+                    this.$nextTick(() => {
+                        this.renderer.render(this.scene, this.camera);
                         reserved = false;
                     });
                 }
@@ -248,31 +182,48 @@
         },
         created() {
             const vm = this;
-            initializeScene(vm.scene, vm.position, vm.rotation, vm.scale);
             initializeMaterial(vm.nodeMaterial, vm.nodeStyle);
             initializeMaterial(vm.lineMaterial, vm.lineStyle);
             addLinesToLineGroup(vm.lineGroup, vm.lines, vm.nodes, vm.lineMaterial);
             addNodesToNodeGroup(vm.nodeGroup, vm.nodes, vm.nodeMaterial);
             vm.scene.add(vm.lineGroup);
             vm.scene.add(vm.nodeGroup);
+            //
+            // xのベースライン
+            //
+            let mat = new LineBasicMaterial();
+            mat.color.set(0xff0000);
+            let geo = new Geometry();
+            geo.vertices.push(new Vector3(0, 0, 0), new Vector3(10, 0, 0));
+            vm.scene.add(new Line(geo, mat));
+            //
+            // yのベースライン
+            //
+            mat = new LineBasicMaterial();
+            mat.color.set(0x0000ff);
+            geo = new Geometry();
+            geo.vertices.push(new Vector3(0, 0, 0), new Vector3(0, 10, 0));
+            vm.scene.add(new Line(geo, mat));
+            //
+            // zのベースライン
+            //
+            mat = new LineBasicMaterial();
+            mat.color.set(0xffff00);
+            geo = new Geometry();
+            geo.vertices.push(new Vector3(0, 0, 0), new Vector3(0, 0, 10));
+            vm.scene.add(new Line(geo, mat));
         },
         mounted() {
-            const vm = this;
-            initializeCamera(vm.camera, vm.cameraPosition, vm.cameraRotation);
-            addEventListener("resize", vm.resize);
-            vm.resize();
+            addEventListener("resize", this.resize);
+            this.resize();
         },
         beforeDestroy() {
             removeEventListener("resize", this.resize);
         },
         methods: {
-            ...mapMutations("component/canvas/three", [
-                "offset",
+            ...mapActions("component/canvas/three/orbit", [
                 "rotate",
-                "zoom",
-                "offsetCamera",
-                "rotateCamera",
-                "setCameraRotation"
+                "translate2D"
             ]),
             render() {
                 this.$emit("render");
@@ -282,21 +233,6 @@
                 setCameraSize(vm.camera, vm.$el);
                 setRendererSize(vm.renderer);
                 vm.render();
-            },
-            lookAt(x, y, z) {
-                if (process.env.NODE_ENV !== "production") {
-                    if (typeof x !== "number") {
-                        throw "Argument x shold be a number.";
-                    }
-                    if (typeof y !== "number") {
-                        throw "Argument y should be a number.";
-                    }
-                    if (typeof z !== "number") {
-                        throw "Argument z shold be a number.";
-                    }
-                }
-                this.camera.lookAt(new Vector3(x, y, z));
-                this.setCameraRotation(this.camera.rotation);
             },
             pressed(e) {
                 // canvas要素上でマウスボタンが押されたときに呼ばれます。
@@ -322,30 +258,12 @@
                     const x = (e.clientX - vm.mouseX) * 0.1;
                     const y = (e.clientY - vm.mouseY) * 0.1;
 
-                    // 下記のコマンドでオブジェクトを移動、回転できる。
-                    // 移動の場合はユークリッド空間の座標、
-                    // 回転の場合はオイラー角[単位:rad] (x: x軸周りの回転角, y: y軸周りの回転角, z: z軸周りの回転角)
-
-                    // vm.rotate({x, y, z}) -> sceneオブジェクトをsceneオブジェクトの原点を中心に回転。
-                    // vm.rotateCamera({x, y, z}) -> cameraオブジェクトの視線方向を回転。
-                    // vm.offset({x, y, z}) -> sceneオブジェクトをグローバル座標系で平行移動。
-                    // vm.offsetCamera({x, y, z}) -> cameraオブジェクトをグローバル座標系で平行移動。
-
-                    // vm.lookAt(x, y, z) -> cameraオブジェクトの視線を点(x, y, z)に向ける。
-
                     if (e.shiftKey) {
                         // Shiftキー + ドラッグ -> 移動 (Pan)
-                        vm.offset({
-                            x: x * Math.cos(vm.rotation.z) - y * Math.sin(vm.rotation.x) * Math.sin(vm.rotation.z),
-                            y: -x * Math.sin(vm.rotation.x) - y * Math.sin(vm.rotation.x) * Math.cos(vm.rotation.z),
-                            z: -y * Math.cos(vm.rotation.x)
-                        });
+                        vm.translate2D([-x, y]);
                     } else {
                         // 単純にドラッグ -> 回転 (Rotate)
-                        vm.rotate({
-                            x: y,
-                            z: x
-                        });
+                        vm.rotate([-y, -x]);
                     }
                     vm.render();
                     vm.mouseX = e.clientX;
