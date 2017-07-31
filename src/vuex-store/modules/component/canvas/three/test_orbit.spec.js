@@ -1,6 +1,5 @@
 import orbit from "./orbit";
 import assert from "assert";
-import {Vector3} from "three";
 
 const {getters, mutations, actions} = orbit;
 
@@ -12,7 +11,7 @@ describe("Orbitモジュールのテスト", function() {
                 spherical: [20, Math.PI * .5, 0]
             };
             const result = getters.position(state);
-            assert(result instanceof Vector3);
+            assert(result.isVector3);
             [1, 3.1, 18].forEach((expected, index) => {
                 assert(Math.abs(result.getComponent(index) - expected) < .0000000000000015, `${result.getComponent(index)} is not close to ${expected}.`);
             });
