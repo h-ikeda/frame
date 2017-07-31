@@ -1,5 +1,6 @@
 import component from "./index.vue";
 import assert from "assert";
+import {WebGLRenderer} from "three";
 
 const {computed} = component;
 
@@ -14,7 +15,7 @@ describe("canvasコンポーネントのテスト", function() {
                     $refs: {}
                 };
                 const result = computed.renderer.apply(_this);
-                assert(result.isWebGLRenderer);
+                assert(result instanceof WebGLRenderer);
             });
         });
     });

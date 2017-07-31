@@ -18,7 +18,9 @@ export default {
         },
         setAcceralation(state, acceralation) {
             Object.keys(state.acceralation).forEach((key) => {
-                state.acceralation[key] = acceralation[key];
+                if (key in acceralation) {
+                    state.acceralation[key] = acceralation[key];
+                }
             });
         }
     },
