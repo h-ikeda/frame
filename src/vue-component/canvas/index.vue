@@ -134,9 +134,7 @@
             },
             scene: () => {
                 const scene = new Scene();
-                //scene.scale.y = -1;
                 scene.rotation.x = -.5 * Math.PI;
-                //scene.rotation.z = -.5 * Math.PI;
                 return scene;
             },
             lineGroup: () => new Group(),
@@ -223,6 +221,7 @@
         methods: {
             ...mapActions("component/canvas/three/orbit", [
                 "rotate",
+                "zoom",
                 "translate2D"
             ]),
             render() {

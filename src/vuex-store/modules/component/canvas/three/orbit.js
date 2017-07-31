@@ -32,25 +32,39 @@ export default {
     },
     actions: {
         translate({commit, state}, offset) {
-            commit("setTarget", state.target.map((value, index) =>
-                value + offset[index]
-            ));
+            let [x, y, z] = state.target, [deltaX, deltaY, deltaZ] = offset;
+            commit("setTarget", [
+                x + deltaX,
+                y + deltaY,
+                z + deltaZ
+            ]);
         },
         rotate({commit, state}, rotation) {
-            commit("setSpherical", state.spherical.map((value, index) =>
-                index ? (value + rotation[index - 1]): value
-            ));
+            //
+            // φ（y軸に対する傾斜角）は0～180度とし、範囲を超えるときは0または180度とする。
+            // θ（y軸周りの回転角）は0～360度とし、範囲を超えるときは範囲内の0～360度に換算する。
+            //
+            let [radius, phi, theta] = state.spherical, [deltaPhi, deltaTheta] = rotation;
+            commit("setSpherical", [
+                radius,
+                Math.max(Math.min(phi + deltaPhi, Math.PI), 0),
+                (theta + (deltaTheta < 0 ? deltaTheta % (Math.PI * 2) + Math.PI * 2: deltaTheta)) % (Math.PI * 2)
+            ]);
         },
         zoom({commit, state}, scale) {
-            commit("setSpherical", state.spherical.map((value, index) =>
-                index ? value: (value * scale)
-            ));
+            let [radius, phi, theta] = state.spherical;
+            commit("setSpherical", [
+                radius / scale,
+                phi,
+                theta
+            ]);
         },
-        //
-        // カメラ視線に直交する平面座標系を移動させます。
-        //
         translate2D({dispatch, state}, offset) {
-            const rotation = new Euler(state.spherical[1] - .5 * Math.PI, state.spherical[2], 0, "ZYX");
+            //
+            // カメラ視線に直交する平面座標系を移動させます。
+            //
+            const [, phi, theta] = state.spherical;
+            const rotation = new Euler(phi - .5 * Math.PI, theta, 0, "ZYX");
             dispatch("translate", new Vector3(...offset, 0).applyEuler(rotation).toArray());
         }
     }

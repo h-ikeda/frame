@@ -4,22 +4,21 @@ module.exports = (config) => {
 
     const frameworks = ["polyfill", "mocha"];
     const reporters = ["coverage-istanbul", "progress"];
-    const polyfill = ["Promise"];
     const files = ["test/index.js"];
     const preprocessors = {
         "test/index.js": ["webpack", "sourcemap"]
     };
     const webpack = require("./webpack.config");
     const beforeMiddleware = ["webpackBlocker"];
-    let concurrency = Infinity;
+    let concurrency;
     const browsers = [];
     const customLaunchers = {};
     const browserStack = {
         project: "frame_" + require("child_process").execSync("git branch | grep \\* | cut -d \" \" -f2-")
     };
-    let browserNoActivityTimeout = 10000;
-    let port = 9876;
-    let browserDisconnectTolerance = 0;
+    let browserNoActivityTimeout;
+    let port;
+    let browserDisconnectTolerance;
 
     if (config.singleRun && process.env.BROWSER_STACK_USERNAME) {
         reporters.push("BrowserStack");
@@ -65,7 +64,6 @@ module.exports = (config) => {
 
     config.set({
         frameworks,
-        polyfill,
         reporters,
         files,
         preprocessors,
