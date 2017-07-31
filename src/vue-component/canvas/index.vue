@@ -1,6 +1,13 @@
 <template>
     <div @transitionend="resize">
-        <canvas ref="canvas" @mousemove="dragged" @mousedown="pressed" @mouseup="released" @wheel.prevent="wheeled" :style="{backgroundColor}" />
+        <canvas
+            ref="canvas"
+            @mousedown.left="start"
+            @mouseup.left="end"
+            @mousemove="orbit"
+            @wheel.prevent="scale"
+            :style="{backgroundColor}"
+        />
     </div>
 </template>
 
@@ -80,21 +87,14 @@
     export default {
         data() {
             return {
-                mouseX: 0,
-                mouseY: 0,
-                mouseLeft: false,
-                mouseMiddle: false,
-                mouseRight: false
+                mouseEvent: null
             };
         },
         computed: {
             // Vuexのステートから必要な変数を展開します。
-            ...mapGetters("model/input/nodes", {
-                nodes: "data"
-            }),
-            ...mapGetters("model/input/lines", {
-                lines: "data"
-            }),
+            ...mapGetters("model/input", [
+                "data"
+            ]),
             ...mapState("component/canvas", [
                 "lineStyle",
                 "nodeStyle",
@@ -102,13 +102,12 @@
                 "antialias"
             ]),
             ...mapState("component/canvas/three", [
-                "cameraMode"
-            ]),
-            ...mapState("component/canvas/three/orbit", [
-                "target"
+                "cameraMode",
+                "acceralation"
             ]),
             ...mapGetters("component/canvas/three/orbit", [
-                "position"
+                "position",
+                "target"
             ]),
             renderer() {
                 return new WebGLRenderer({
@@ -129,7 +128,7 @@
             camera() {
                 const camera = this.initialCamera;
                 camera.position.copy(this.position);
-                camera.lookAt(new Vector3(...this.target));
+                camera.lookAt(this.target);
                 return camera;
             },
             scene: () => {
@@ -155,17 +154,14 @@
                 this.lineMaterial.color.set(color);
                 this.render();
             },
-            cameraMode() {
-                const vm = this;
-                setCameraSize(vm.camera, vm.$el);
-                vm.render();
-            },
-            antialias() {
-                setRendererSize(this.renderer);
+            camera() {
                 this.render();
             }
         },
         beforeCreate() {
+            //
+            // レンダリングのトリガーとなるイベントハンドラを定義。
+            //
             let reserved = false;
             this.$on("render", () => {
                 // レンダリングは更新時に1度だけ行います。
@@ -182,8 +178,8 @@
             const vm = this;
             initializeMaterial(vm.nodeMaterial, vm.nodeStyle);
             initializeMaterial(vm.lineMaterial, vm.lineStyle);
-            addLinesToLineGroup(vm.lineGroup, vm.lines, vm.nodes, vm.lineMaterial);
-            addNodesToNodeGroup(vm.nodeGroup, vm.nodes, vm.nodeMaterial);
+            addLinesToLineGroup(vm.lineGroup, vm.data.lines, vm.data.nodes, vm.lineMaterial);
+            addNodesToNodeGroup(vm.nodeGroup, vm.data.nodes, vm.nodeMaterial);
             vm.scene.add(vm.lineGroup);
             vm.scene.add(vm.nodeGroup);
             //
@@ -233,58 +229,26 @@
                 setRendererSize(vm.renderer);
                 vm.render();
             },
-            pressed(e) {
-                // canvas要素上でマウスボタンが押されたときに呼ばれます。
-                const vm = this;
-                switch (e.button) {
-                    case 0:
-                        vm.mouseLeft = true;
-                        break;
-                    case 1:
-                        vm.mouseMiddle = true;
-                        break;
-                    case 2:
-                        vm.mouseRight = true;
-                }
-                vm.mouseX = e.clientX;
-                vm.mouseY = e.clientY;
+            start(event) {
+                this.mouseEvent = event;
             },
-            dragged(e) {
-                const vm = this;
-                if (vm.mouseLeft) {
-                    // 左ドラッグ時の動作
-                    // canvas要素 (画面) 上でのマウスの移動距離x, y
-                    const x = (e.clientX - vm.mouseX) * 0.1;
-                    const y = (e.clientY - vm.mouseY) * 0.1;
-
-                    if (e.shiftKey) {
-                        // Shiftキー + ドラッグ -> 移動 (Pan)
-                        vm.translate2D([-x, y]);
+            orbit(event) {
+                if (this.mouseEvent) {
+                    const acceralation = this.acceralation;
+                    const [x, y] = ["clientX", "clientY"].map((c) => this.mouseEvent[c] - event[c]);
+                    if (event.shiftKey) {
+                        this.translate2D([x * acceralation.pan, -y * acceralation.pan]);
                     } else {
-                        // 単純にドラッグ -> 回転 (Rotate)
-                        vm.rotate([-y, -x]);
+                        this.rotate([y * acceralation.rotation, x * acceralation.rotation]);
                     }
-                    vm.render();
-                    vm.mouseX = e.clientX;
-                    vm.mouseY = e.clientY;
+                    this.mouseEvent = event;
                 }
             },
-            released(e) {
-                const vm = this;
-                switch (e.button) {
-                    case 0:
-                        vm.mouseLeft = false;
-                        break;
-                    case 1:
-                        vm.mouseMiddle = false;
-                        break;
-                    case 2:
-                        vm.mouseRight = false;
-                }
+            end() {
+                this.mouseEvent = null;
             },
-            wheeled(e) {
-                this.zoom(1 + e.deltaY * 0.001);
-                this.render();
+            scale(event) {
+                this.zoom(1 + event.deltaY * this.acceralation.zoom);
             }
         }
     };

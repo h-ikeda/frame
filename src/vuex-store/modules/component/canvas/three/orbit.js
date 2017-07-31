@@ -20,7 +20,11 @@ export default {
         //
         position: (state) => new Vector3()
             .setFromSpherical(new Spherical(...state.spherical).makeSafe())
-            .add(new Vector3(...state.target))
+            .add(new Vector3(...state.target)),
+        //
+        // state.targetの座標を持つVector3オブジェクトを返します。
+        //
+        target: (state) => new Vector3(...state.target)
     },
     mutations: {
         setTarget(state, target) {
