@@ -2,10 +2,15 @@
     <div @transitionend="resize">
         <canvas
             ref="canvas"
-            @mousedown.left="start"
-            @mouseup.left="end"
-            @mousemove="orbit"
-            @wheel.prevent="scale"
+            @mousedown.left="handleMousedown"
+            @mouseup.left="handleMouseup"
+            @mousemove="handleMousemove"
+            @wheel.prevent="handleWheel"
+            @gesturestart.prevent="handleGesturestart"
+            @gesturechange.prevent="handleGesturechange"
+            @gestureend.prevent="handleGestureend"
+            @touchstart="handleTouchstart"
+            @touchend="handleTouchend"
             :style="{backgroundColor}"
         />
     </div>
@@ -87,7 +92,8 @@
     export default {
         data() {
             return {
-                mouseEvent: null
+                mouseEvent: null,
+                gestureEvent: null
             };
         },
         computed: {
@@ -229,26 +235,54 @@
                 setRendererSize(vm.renderer);
                 vm.render();
             },
-            start(event) {
+            handleMousedown(event) {
                 this.mouseEvent = event;
             },
-            orbit(event) {
+            handleMouseup() {
+                this.mouseEvent = null;
+            },
+            handleMousemove(event) {
                 if (this.mouseEvent) {
-                    const acceralation = this.acceralation;
                     const [x, y] = ["clientX", "clientY"].map((c) => this.mouseEvent[c] - event[c]);
                     if (event.shiftKey) {
-                        this.translate2D([x * acceralation.pan, -y * acceralation.pan]);
+                        this.pan(x, y);
                     } else {
-                        this.rotate([y * acceralation.rotation, x * acceralation.rotation]);
+                        this.orbit(x, y);
                     }
                     this.mouseEvent = event;
                 }
             },
-            end() {
-                this.mouseEvent = null;
+            handleWheel(event) {
+                console.log(gestureSupport);
+                this.orbit(event.deltaX, event.deltaY);
             },
-            scale(event) {
-                this.zoom(1 + event.deltaY * this.acceralation.zoom);
+            pan(x, y) {
+                const m = this.acceralation.pan;
+                this.translate2D([x * m, -y * m]);
+            },
+            orbit(x, y) {
+                const m = this.acceralation.rotation;
+                this.rotate([y * m, x * m]);
+            },
+            scale(s) {
+                const m = this.acceralation.zoom;
+                this.zoom(1 + s * m);
+            },
+            handleGesturestart(event) {
+                this.gestureEvent = event;
+            },
+            handleGesturechange(event) {
+                this.scale((event.scale - this.gestureEvent.scale) * 1000);
+                this.gestureEvent = event;
+            },
+            handleGestureend() {
+                this.gestureEvent = null;
+            },
+            handleTouchstart(event) {
+                console.log("touched.");
+            },
+            handleTouchend() {
+                console.log("touch end.");
             }
         }
     };
