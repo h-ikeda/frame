@@ -83,25 +83,27 @@
             };
         },
         computed: {
-            // Vuexのステートから必要な変数を展開します。
+            // モデルデータ
             ...mapGetters("model/input", [
                 "data"
             ]),
             ...mapState("component/canvas", [
                 "lineStyle",
                 "nodeStyle",
-                "backgroundColor",
-                "antialias"
+                "backgroundColor"
             ]),
+            // WebGLオプション
             ...mapState("component/canvas/three", [
                 "cameraMode",
-                "acceralation"
+                "antialias"
             ]),
+            // カメラ位置の計算
             ...mapGetters("component/canvas/three/orbit", [
                 "position",
                 "target"
             ]),
             _renderer() {
+                // オプションを変更すると、再計算されます。
                 return new WebGLRenderer({
                     canvas: this.$refs.canvas,
                     antialias: this.antialias,
@@ -110,13 +112,16 @@
                 });
             },
             renderer() {
+                // リサイズ時に再計算されます。
                 this._renderer.setSize(this.width, this.height, false);
                 return this._renderer;
             },
             __camera() {
-                return this.cameraMode === "orthographic" ? new OrthographicCamera(): new PerspectiveCamera();
+                // オプションを変更すると、再計算されます。
+                return new(this.cameraMode === "orthographic" ? OrthographicCamera: PerspectiveCamera)();
             },
             _camera() {
+                // リサイズ時に再計算されます。
                 if (this.cameraMode === "orthographic") {
                     this.__camera.left = -0.5 * this.width;
                     this.__camera.right = 0.5 * this.width;
@@ -129,6 +134,7 @@
                 return this.__camera;
             },
             camera() {
+                // カメラ位置変更時に再計算されます。
                 this._camera.position.copy(this.position);
                 this._camera.lookAt(this.target);
                 return this._camera;
@@ -155,11 +161,21 @@
             lineMaterial: () => new LineBasicMaterial()
         },
         watch: {
+            //
+            // 変更をwatchしてレンダリングを開始します。
+            //
             scene(scene) {
                 this.renderer.render(scene, this.camera);
             },
             camera(camera) {
                 this.renderer.render(this.scene, camera);
+            },
+            //
+            // レンダラーが再生成された時に反応する。
+            // サイズ変更時はcameraの変更により呼ばれる。
+            //
+            antialias() {
+                this.renderer.render(this.scene, this.camera);
             }
         },
         mounted() {
@@ -174,6 +190,9 @@
                 this.width = this.$el.clientWidth;
                 this.height = this.$el.clientHeight;
             },
+            //
+            // ここからは、イベントハンドリングの定義です。
+            //
             ...mapActions("component/canvas/three/orbit", [
                 "rotate",
                 "zoom",
@@ -197,24 +216,22 @@
                 }
             },
             handleWheel(event) {
-                this.scale(-event.deltaY);
+                this.scale(event.deltaY * .005);
             },
             pan(x, y) {
-                const m = this.acceralation.pan;
-                this.translate2D([x * m, -y * m]);
+                this.translate2D([x, -y]);
             },
             orbit(x, y) {
-                const m = this.acceralation.rotation;
-                this.rotate([y * m, x * m]);
+                this.rotate([y, x]);
             },
             scale(s) {
-                this.zoom(1 + s * this.acceralation.zoom);
+                this.zoom(s);
             },
             handleGesturestart(event) {
                 this.gestureEvent = event;
             },
             handleGesturechange(event) {
-                this.scale((event.scale - this.gestureEvent.scale) * 1000);
+                this.scale(event.scale / this.gestureEvent.scale - 1);
                 this.gestureEvent = event;
             },
             handleGestureend() {
