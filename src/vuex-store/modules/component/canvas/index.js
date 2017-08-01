@@ -11,6 +11,13 @@ export default {
             nodeStyle: {
                 color: 0xff0000,
                 size: 0.5
+            },
+            displacedLineStyle: {
+                color: 0x0000ff
+            },
+            displacedNodeStyle: {
+                color: 0x00ffff,
+                size: 0.5
             }
         };
     },
