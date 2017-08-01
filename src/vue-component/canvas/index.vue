@@ -32,27 +32,9 @@
         BufferAttribute,
         Geometry,
         PointsMaterial,
-        LineBasicMaterial
+        LineBasicMaterial,
+        AxisHelper
     } from "three";
-
-    function setCameraSize(camera, domElement) {
-        const width = domElement.clientWidth;
-        const height = domElement.clientHeight;
-        if (camera.isPerspectiveCamera) {
-            camera.aspect = width / height;
-        } else {
-            camera.left = -0.5 * width;
-            camera.right = 0.5 * width;
-            camera.top = 0.5 * height;
-            camera.bottom = -0.5 * height;
-        }
-        camera.updateProjectionMatrix();
-    }
-
-    function setRendererSize(renderer) {
-        const domElement = renderer.domElement;
-        renderer.setSize(domElement.clientWidth, domElement.clientHeight, false);
-    }
 
     function initializeMaterial(material, options) {
         if ("color" in options) {
@@ -93,6 +75,8 @@
     export default {
         data() {
             return {
+                width: 300,
+                height: 150,
                 mouseEvent: null,
                 gestureEvent: null,
                 touchEvent: null
@@ -117,103 +101,66 @@
                 "position",
                 "target"
             ]),
-            renderer() {
+            _renderer() {
                 return new WebGLRenderer({
                     canvas: this.$refs.canvas,
-                    alpha: true,
                     antialias: this.antialias,
+                    alpha: true,
                     logarithmicDepthBuffer: true
                 });
             },
-            initialCamera() {
-                switch (this.cameraMode) {
-                    case "orthographic":
-                        return new OrthographicCamera();
-                    default:
-                        return new PerspectiveCamera();
+            renderer() {
+                this._renderer.setSize(this.width, this.height, false);
+                return this._renderer;
+            },
+            __camera() {
+                return this.cameraMode === "orthographic" ? new OrthographicCamera(): new PerspectiveCamera();
+            },
+            _camera() {
+                if (this.cameraMode === "orthographic") {
+                    this.__camera.left = -0.5 * this.width;
+                    this.__camera.right = 0.5 * this.width;
+                    this.__camera.top = 0.5 * this.height;
+                    this.__camera.bottom = -0.5 * this.height;
+                } else {
+                    this.__camera.aspect = this.width / this.height;
                 }
+                this.__camera.updateProjectionMatrix();
+                return this.__camera;
             },
             camera() {
-                const camera = this.initialCamera;
-                camera.position.copy(this.position);
-                camera.lookAt(this.target);
-                return camera;
+                this._camera.position.copy(this.position);
+                this._camera.lookAt(this.target);
+                return this._camera;
             },
-            scene: () => {
+            _scene() {
                 const scene = new Scene();
                 scene.rotation.x = -.5 * Math.PI;
+                scene.add(this.lineGroup);
+                scene.add(this.nodeGroup);
+                scene.add(this.axisHelper);
                 return scene;
+            },
+            scene() {
+                initializeMaterial(this.nodeMaterial, this.nodeStyle);
+                initializeMaterial(this.lineMaterial, this.lineStyle);
+                addLinesToLineGroup(this.lineGroup, this.data.lines, this.data.nodes, this.lineMaterial);
+                addNodesToNodeGroup(this.nodeGroup, this.data.nodes, this.nodeMaterial);
+                return this._scene;
             },
             lineGroup: () => new Group(),
             nodeGroup: () => new Group(),
+            axisHelper: () => new AxisHelper(10),
             nodeMaterial: () => new PointsMaterial(),
             lineMaterial: () => new LineBasicMaterial()
         },
         watch: {
-            "nodeStyle.color": function(color) {
-                this.nodeMaterial.color.set(color);
-                this.render();
+            scene(scene) {
+                this.renderer.render(scene, this.camera);
             },
-            "nodeStyle.size": function(size) {
-                this.nodeMaterial.size = size;
-                this.render();
-            },
-            "lineStyle.color": function(color) {
-                this.lineMaterial.color.set(color);
-                this.render();
-            },
-            camera() {
-                this.render();
+            camera(camera) {
+                this.renderer.render(this.scene, camera);
             }
-        },
-        beforeCreate() {
-            //
-            // レンダリングのトリガーとなるイベントハンドラを定義。
-            //
-            let reserved = false;
-            this.$on("render", () => {
-                // レンダリングは更新時に1度だけ行います。
-                if (!reserved) {
-                    reserved = true;
-                    this.$nextTick(() => {
-                        this.renderer.render(this.scene, this.camera);
-                        reserved = false;
-                    });
-                }
-            });
-        },
-        created() {
-            const vm = this;
-            initializeMaterial(vm.nodeMaterial, vm.nodeStyle);
-            initializeMaterial(vm.lineMaterial, vm.lineStyle);
-            addLinesToLineGroup(vm.lineGroup, vm.data.lines, vm.data.nodes, vm.lineMaterial);
-            addNodesToNodeGroup(vm.nodeGroup, vm.data.nodes, vm.nodeMaterial);
-            vm.scene.add(vm.lineGroup);
-            vm.scene.add(vm.nodeGroup);
-            //
-            // xのベースライン
-            //
-            let mat = new LineBasicMaterial();
-            mat.color.set(0xff0000);
-            let geo = new Geometry();
-            geo.vertices.push(new Vector3(0, 0, 0), new Vector3(10, 0, 0));
-            vm.scene.add(new Line(geo, mat));
-            //
-            // yのベースライン
-            //
-            mat = new LineBasicMaterial();
-            mat.color.set(0x0000ff);
-            geo = new Geometry();
-            geo.vertices.push(new Vector3(0, 0, 0), new Vector3(0, 10, 0));
-            vm.scene.add(new Line(geo, mat));
-            //
-            // zのベースライン
-            //
-            mat = new LineBasicMaterial();
-            mat.color.set(0xffff00);
-            geo = new Geometry();
-            geo.vertices.push(new Vector3(0, 0, 0), new Vector3(0, 0, 10));
-            vm.scene.add(new Line(geo, mat));
         },
         mounted() {
             addEventListener("resize", this.resize);
@@ -223,20 +170,15 @@
             removeEventListener("resize", this.resize);
         },
         methods: {
+            resize() {
+                this.width = this.$el.clientWidth;
+                this.height = this.$el.clientHeight;
+            },
             ...mapActions("component/canvas/three/orbit", [
                 "rotate",
                 "zoom",
                 "translate2D"
             ]),
-            render() {
-                this.$emit("render");
-            },
-            resize() {
-                const vm = this;
-                setCameraSize(vm.camera, vm.$el);
-                setRendererSize(vm.renderer);
-                vm.render();
-            },
             handleMousedown(event) {
                 this.mouseEvent = event;
             },
@@ -255,8 +197,7 @@
                 }
             },
             handleWheel(event) {
-                console.log(gestureSupport);
-                this.orbit(event.deltaX, event.deltaY);
+                this.scale(-event.deltaY);
             },
             pan(x, y) {
                 const m = this.acceralation.pan;
@@ -267,8 +208,7 @@
                 this.rotate([y * m, x * m]);
             },
             scale(s) {
-                const m = this.acceralation.zoom;
-                this.zoom(1 + s * m);
+                this.zoom(1 + s * this.acceralation.zoom);
             },
             handleGesturestart(event) {
                 this.gestureEvent = event;
@@ -295,10 +235,3 @@
         }
     };
 </script>
-
-<style scoped>
-    canvas {
-        width: 100%;
-        height: 100%;
-    }
-</style>
