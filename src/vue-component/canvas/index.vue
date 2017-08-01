@@ -9,8 +9,9 @@
             @gesturestart.prevent="handleGesturestart"
             @gesturechange.prevent="handleGesturechange"
             @gestureend.prevent="handleGestureend"
-            @touchstart="handleTouchstart"
-            @touchend="handleTouchend"
+            @touchstart.prevent="handleTouchstart"
+            @touchmove.prevent="handleTouchmove"
+            @touchend.prevent="handleTouchend"
             :style="{backgroundColor}"
         />
     </div>
@@ -93,7 +94,8 @@
         data() {
             return {
                 mouseEvent: null,
-                gestureEvent: null
+                gestureEvent: null,
+                touchEvent: null
             };
         },
         computed: {
@@ -279,10 +281,16 @@
                 this.gestureEvent = null;
             },
             handleTouchstart(event) {
-                console.log("touched.");
+                this.touchEvent = event;
+            },
+            handleTouchmove(event) {
+                const x = event.changedTouches.item(0).clientX - this.touchEvent.changedTouches.item(0).clientX;
+                const y = event.changedTouches.item(0).clientY - this.touchEvent.changedTouches.item(0).clientY;
+                this.orbit(x * -.1, y * -.1);
+                this.touchEvent = event;
             },
             handleTouchend() {
-                console.log("touch end.");
+                this.touchEvent = null;
             }
         }
     };
