@@ -36,15 +36,6 @@
         AxisHelper
     } from "three";
 
-    function initializeMaterial(material, options) {
-        if ("color" in options) {
-            material.color.set(options.color);
-        }
-        if ("size" in options) {
-            material.size = options.size;
-        }
-    }
-
     function addLinesToLineGroup(group, lines, nodes, material) {
         Object.keys(lines).forEach((l) => {
             const obj = group.getObjectByName(l);
@@ -72,6 +63,23 @@
         });
     }
 
+    function addDisplacedNodesToGroup(group, displacements, nodes, material) {
+        Object.keys(nodes).forEach((n) => {
+            const obj = group.getObjectByName(n);
+            if (!obj && n in displacements) {
+                const geo = new Geometry();
+                const pos = new Vector3(nodes[n].x, nodes[n].y, nodes[n].z);
+                pos.x += displacements[n].x || 0;
+                pos.y += displacements[n].y || 0;
+                pos.z += displacements[n].z || 0;
+                geo.vertices.push(pos);
+                const pts = new Points(geo, material);
+                pts.name = n;
+                group.add(pts);
+            }
+        });
+    }
+
     export default {
         data() {
             return {
@@ -84,12 +92,14 @@
         },
         computed: {
             // モデルデータ
-            ...mapGetters("model/input", [
+            ...mapGetters("model", [
                 "data"
             ]),
+            // スタイル設定
             ...mapState("component/canvas", [
                 "lineStyle",
                 "nodeStyle",
+                "displacedNodeStyle",
                 "backgroundColor"
             ]),
             // WebGLオプション
@@ -144,21 +154,30 @@
                 scene.rotation.x = -.5 * Math.PI;
                 scene.add(this.lineGroup);
                 scene.add(this.nodeGroup);
+                scene.add(this.displacedNodeGroup);
                 scene.add(this.axisHelper);
                 return scene;
             },
             scene() {
-                initializeMaterial(this.nodeMaterial, this.nodeStyle);
-                initializeMaterial(this.lineMaterial, this.lineStyle);
-                addLinesToLineGroup(this.lineGroup, this.data.lines, this.data.nodes, this.lineMaterial);
-                addNodesToNodeGroup(this.nodeGroup, this.data.nodes, this.nodeMaterial);
+                this.nodeMaterial.color.set(this.nodeStyle.color);
+                this.nodeMaterial.size = this.nodeStyle.size;
+                this.lineMaterial.color.set(this.lineStyle.color);
+                this.displacedNodeMaterial.color.set(this.displacedNodeStyle.color);
+                this.displacedNodeMaterial.size = this.displacedNodeStyle.size;
+                addNodesToNodeGroup(this.nodeGroup, this.data.input.nodes, this.nodeMaterial);
+                addLinesToLineGroup(this.lineGroup, this.data.input.lines, this.data.input.nodes, this.lineMaterial);
+                addDisplacedNodesToGroup(this.displacedNodeGroup, this.data.result.displacements, this.data.input.nodes, this.displacedNodeMaterial);
                 return this._scene;
             },
             lineGroup: () => new Group(),
             nodeGroup: () => new Group(),
+            displacedNodeGroup: () => new Group(),
+            displacedLineGroup: () => new Group(),
             axisHelper: () => new AxisHelper(10),
             nodeMaterial: () => new PointsMaterial(),
-            lineMaterial: () => new LineBasicMaterial()
+            lineMaterial: () => new LineBasicMaterial(),
+            displacedNodeMaterial: () => new PointsMaterial(),
+            displacedLineMaterial: () => new LineBasicMaterial()
         },
         watch: {
             //
@@ -198,6 +217,15 @@
                 "zoom",
                 "translate2D"
             ]),
+            pan(x, y) {
+                this.translate2D([x, -y]);
+            },
+            orbit(x, y) {
+                this.rotate([y, x]);
+            },
+            scale(s) {
+                this.zoom(s);
+            },
             handleMousedown(event) {
                 this.mouseEvent = event;
             },
@@ -217,15 +245,6 @@
             },
             handleWheel(event) {
                 this.scale(event.deltaY * .005);
-            },
-            pan(x, y) {
-                this.translate2D([x, -y]);
-            },
-            orbit(x, y) {
-                this.rotate([y, x]);
-            },
-            scale(s) {
-                this.zoom(s);
             },
             handleGesturestart(event) {
                 this.gestureEvent = event;

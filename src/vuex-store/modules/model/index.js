@@ -19,7 +19,8 @@ export default {
         };
     },
     getters: {
-        modules: () => modules
+        modules: () => modules,
+        data: (_, getters) => ({input: getters["input/data"], result: getters["result/data"]})
     },
     mutations: {
         updateRequestId(state) {
