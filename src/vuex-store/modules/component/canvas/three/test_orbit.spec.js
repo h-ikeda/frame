@@ -36,6 +36,41 @@ describe("Orbitモジュールのテスト", function() {
                 assert.equal(state.spherical[index], expected);
             });
         });
+        describe("setMagnifyのテスト", function() {
+            it("magnifyの更新", function() {
+                const state = {
+                    magnify: {
+                        translate: 0.1,
+                        rotate: 0.1,
+                        zoom: 0.1
+                    }
+                };
+                mutations.setMagnify(state, {
+                    translate: 0.9,
+                    rotate: 0.8,
+                    zoom: 0.04
+                });
+                assert.equal(state.magnify.translate, 0.9);
+                assert.equal(state.magnify.rotate, 0.8);
+                assert.equal(state.magnify.zoom, 0.04);
+            });
+            it("一部のみ更新", function() {
+                const state = {
+                    magnify: {
+                        translate: 0.1,
+                        rotate: 0.1,
+                        zoom: 0.05
+                    }
+                };
+                mutations.setMagnify(state, {
+                    translate: 0.9,
+                    rotate: 0.8
+                });
+                assert.equal(state.magnify.translate, 0.9);
+                assert.equal(state.magnify.rotate, 0.8);
+                assert.equal(state.magnify.zoom, 0.05);
+            });
+        });
     });
     describe("actionsのテスト", function() {
         describe("translateのテスト", function() {
@@ -47,12 +82,15 @@ describe("Orbitモジュールのテスト", function() {
                     ++count;
                 }
                 const state = {
-                    target: [2, -8.1, 0]
+                    target: [2, -8.1, 0],
+                    magnify: {
+                        translate: 0.1
+                    }
                 };
-                actions.translate({commit, state}, [10.8, 3, -29]);
+                actions.translate({commit, state}, [10.8, 3, -280]);
                 assert.equal(count, 1);
                 assert.equal(mutation, "setTarget");
-                [12.8, -5.1, -29].forEach((expected, index) => {
+                [3.08, -7.8, -28].forEach((expected, index) => {
                     assert.equal(payload[index], expected);
                 });
             });
@@ -66,9 +104,12 @@ describe("Orbitモジュールのテスト", function() {
                     ++count;
                 }
                 const state = {
-                    spherical: [2, 1.3, 0.1]
+                    spherical: [2, 1.3, 0.1],
+                    magnify: {
+                        rotate: 0.5
+                    }
                 };
-                actions.rotate({commit, state}, [1, 2]);
+                actions.rotate({commit, state}, [2, 4]);
                 assert.equal(count, 1);
                 assert.equal(mutation, "setSpherical");
                 [2, 2.3, 2.1].forEach((expected, index) => {
@@ -83,7 +124,10 @@ describe("Orbitモジュールのテスト", function() {
                     ++count;
                 }
                 const state = {
-                    spherical: [2, 2.3, 0.1]
+                    spherical: [2, 2.3, 0.1],
+                    magnify: {
+                        rotate: 1
+                    }
                 };
                 actions.rotate({commit, state}, [2, 2]);
                 assert.equal(count, 1);
@@ -100,7 +144,10 @@ describe("Orbitモジュールのテスト", function() {
                     ++count;
                 }
                 const state = {
-                    spherical: [2, 2.3, 0.1]
+                    spherical: [2, 2.3, 0.1],
+                    magnify: {
+                        rotate: 1
+                    }
                 };
                 actions.rotate({commit, state}, [-3, 2]);
                 assert.equal(count, 1);
@@ -117,7 +164,10 @@ describe("Orbitモジュールのテスト", function() {
                     ++count;
                 }
                 const state = {
-                    spherical: [2, 1.3, 0.1]
+                    spherical: [2, 1.3, 0.1],
+                    magnify: {
+                        rotate: 1
+                    }
                 };
                 actions.rotate({commit, state}, [1, 10]);
                 assert.equal(count, 1);
@@ -134,7 +184,10 @@ describe("Orbitモジュールのテスト", function() {
                     ++count;
                 }
                 const state = {
-                    spherical: [2, 1.3, 0.1]
+                    spherical: [2, 1.3, 0.1],
+                    magnify: {
+                        rotate: 1
+                    }
                 };
                 actions.rotate({commit, state}, [1, -10]);
                 assert.equal(count, 1);
@@ -153,9 +206,12 @@ describe("Orbitモジュールのテスト", function() {
                     ++count;
                 }
                 const state = {
-                    spherical: [3.2, -8.1, 0]
+                    spherical: [3, -8.1, 0],
+                    magnify: {
+                        zoom: 2
+                    }
                 };
-                actions.zoom({commit, state}, 1.6);
+                actions.zoom({commit, state}, 0.25);
                 assert.equal(count, 1);
                 assert.equal(mutation, "setSpherical");
                 [2, -8.1, 0].forEach((expected, index) => {
@@ -170,9 +226,12 @@ describe("Orbitモジュールのテスト", function() {
                     ++count;
                 }
                 const state = {
-                    spherical: [2, -8.1, 0]
+                    spherical: [2, -8.1, 0],
+                    magnify: {
+                        zoom: 0.5
+                    }
                 };
-                actions.zoom({commit, state}, 0.5);
+                actions.zoom({commit, state}, -1);
                 assert.equal(count, 1);
                 assert.equal(mutation, "setSpherical");
                 [4, -8.1, 0].forEach((expected, index) => {

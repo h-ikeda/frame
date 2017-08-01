@@ -11,7 +11,15 @@ export default {
             //
             // targetを原点とする球面座標系でのカメラ位置
             // radius, phi, theta
-            spherical: [20, 1.2, -0.5]
+            spherical: [20, 1.2, -0.5],
+            //
+            // 変化速度の設定
+            //
+            magnify: {
+                translate: .1,
+                rotate: .1,
+                zoom: 1.01
+            }
         };
     },
     getters: {
@@ -32,15 +40,22 @@ export default {
         },
         setSpherical(state, spherical) {
             state.spherical = spherical;
+        },
+        setMagnify(state, magnify) {
+            Object.keys(magnify).forEach((key) => {
+                if (key in state.magnify) {
+                    state.magnify[key] = magnify[key];
+                }
+            });
         }
     },
     actions: {
         translate({commit, state}, offset) {
-            let [x, y, z] = state.target, [deltaX, deltaY, deltaZ] = offset;
+            const [x, y, z] = state.target, m = state.magnify.translate, [deltaX, deltaY, deltaZ] = offset;
             commit("setTarget", [
-                x + deltaX,
-                y + deltaY,
-                z + deltaZ
+                x + deltaX * m,
+                y + deltaY * m,
+                z + deltaZ * m
             ]);
         },
         rotate({commit, state}, rotation) {
@@ -48,17 +63,17 @@ export default {
             // φ（y軸に対する傾斜角）は0～180度とし、範囲を超えるときは0または180度とする。
             // θ（y軸周りの回転角）は0～360度とし、範囲を超えるときは範囲内の0～360度に換算する。
             //
-            let [radius, phi, theta] = state.spherical, [deltaPhi, deltaTheta] = rotation;
+            const [radius, phi, theta] = state.spherical, m = state.magnify.rotate, [deltaPhi, deltaTheta] = rotation;
             commit("setSpherical", [
                 radius,
-                Math.max(Math.min(phi + deltaPhi, Math.PI), 0),
-                (theta + (deltaTheta < 0 ? deltaTheta % (Math.PI * 2) + Math.PI * 2: deltaTheta)) % (Math.PI * 2)
+                Math.max(Math.min(phi + deltaPhi * m, Math.PI), 0),
+                (theta + (deltaTheta < 0 ? deltaTheta * m % (Math.PI * 2) + Math.PI * 2: deltaTheta * m)) % (Math.PI * 2)
             ]);
         },
         zoom({commit, state}, scale) {
-            let [radius, phi, theta] = state.spherical;
+            let [radius, phi, theta] = state.spherical, m = state.magnify.zoom;
             commit("setSpherical", [
-                radius / scale,
+                radius / (1 + scale * m),
                 phi,
                 theta
             ]);
