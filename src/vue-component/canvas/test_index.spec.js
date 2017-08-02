@@ -11,9 +11,19 @@ describe("canvasコンポーネントのテスト", function() {
                 assert.equal(typeof computed._renderer, "function");
             });
             it("_rendererメソッドはWebGLRendererのインスタンスを返す", function() {
+                const canvas = document.createElement("canvas");
+                try {
+                    if (!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")))) {
+                        // Skip test when WebGL disabled.
+                        return;
+                    };
+                } catch (e) {
+                    // Skip test when WebGL disabled.
+        			return;
+        		}
                 const _this = {
                     $refs: {
-                        canvas: document.createElement("canvas")
+                        canvas
                     }
                 };
                 const result = computed._renderer.apply(_this);
