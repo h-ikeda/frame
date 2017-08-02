@@ -35,6 +35,7 @@
         CylinderGeometry,
         PointsMaterial,
         LineBasicMaterial,
+        LineDashedMaterial,
         MeshBasicMaterial,
         AxisHelper,
         ArrowHelper
@@ -112,6 +113,23 @@
                 const pts = new Points(geo, material);
                 pts.name = n;
                 group.add(pts);
+            }
+        });
+    }
+    
+    function addDisplacedLinesToGroup(group, lines, displacements, nodes, material) {
+        if (!Object.keys(displacements).length) return;
+        Object.keys(lines).forEach((l) => {
+            const obj = group.getObjectByName(l);
+            if (!obj) {
+                const n1 = nodes[lines[l].n1], n2 = nodes[lines[l].n2];
+                const d1 = displacements[lines[l].n1] || {}, d2 = displacements[lines[l].n2] || {};
+                const geo = new Geometry();
+                geo.vertices.push(new Vector3(n1.x + (d1.x || 0), n1.y + (d1.y || 0), n1.z + (d1.z || 0)), new Vector3(n2.x + (d2.x || 0), n2.y + (d2.y || 0), n2.z + (d2.z || 0)));
+                geo.computeLineDistances();
+                const ln = new Line(geo, material);
+                ln.name = l;
+                group.add(ln);
             }
         });
     }
@@ -193,6 +211,7 @@
                 scene.add(this.boundaryGroup);
                 scene.add(this.nodeloadGroup);
                 scene.add(this.displacedNodeGroup);
+                scene.add(this.displacedLineGroup);
                 scene.add(this.axisHelper);
                 return scene;
             },
@@ -207,6 +226,7 @@
                 addBoundaryToGroup(this.boundaryGroup, this.data.input.boundaries, this.data.input.nodes, this.boundaryMaterial);
                 addNodeloadsToGroup(this.nodeloadGroup, this.data.input.nodeloads, this.data.input.nodes);
                 addDisplacedNodesToGroup(this.displacedNodeGroup, this.data.result.displacements, this.data.input.nodes, this.displacedNodeMaterial);
+                addDisplacedLinesToGroup(this.displacedLineGroup, this.data.input.lines, this.data.result.displacements, this.data.input.nodes, this.displacedLineMaterial);
                 return this._scene;
             },
             lineGroup: () => new Group(),
@@ -220,7 +240,7 @@
             lineMaterial: () => new LineBasicMaterial(),
             boundaryMaterial: () => new MeshBasicMaterial(),
             displacedNodeMaterial: () => new PointsMaterial(),
-            displacedLineMaterial: () => new LineBasicMaterial()
+            displacedLineMaterial: () => new LineDashedMaterial({dashSize: 0.2, gapSize: 0.1, color: 0x88ffff})
         },
         watch: {
             //
