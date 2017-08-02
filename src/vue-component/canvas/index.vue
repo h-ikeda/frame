@@ -29,11 +29,15 @@
         Points,
         Line,
         LineSegments,
+        Mesh,
         BufferAttribute,
         Geometry,
+        CylinderGeometry,
         PointsMaterial,
         LineBasicMaterial,
-        AxisHelper
+        MeshBasicMaterial,
+        AxisHelper,
+        ArrowHelper
     } from "three";
 
     function addLinesToLineGroup(group, lines, nodes, material) {
@@ -59,6 +63,38 @@
                 const pts = new Points(geo, material);
                 pts.name = n;
                 group.add(pts);
+            }
+        });
+    }
+
+    function addBoundaryToGroup(group, boundaries, nodes, material) {
+        Object.keys(boundaries).forEach((n) => {
+            const obj = group.getObjectByName(n);
+            if (!obj) {
+                if (boundaries[n].x === true && boundaries[n].y === true && boundaries[n].z === true) {
+                    const geo = new CylinderGeometry(0, .25, .4);
+                    const mesh = new Mesh(geo, material);
+                    mesh.name = n;
+                    mesh.position.x = nodes[boundaries[n].node].x;
+                    mesh.position.y = nodes[boundaries[n].node].y;
+                    mesh.position.z = nodes[boundaries[n].node].z - .2;
+                    mesh.rotation.x = .5 * Math.PI;
+                    group.add(mesh);
+                }
+            }
+        });
+    }
+    
+    function addNodeloadsToGroup(group, nodeloads, nodes) {
+        Object.keys(nodeloads).forEach((n) => {
+            const obj = group.getObjectByName(n);
+            if (!obj) {
+                const dir = new Vector3(nodeloads[n].x, nodeloads[n].y, nodeloads[n].z);
+                const origin = new Vector3(nodes[nodeloads[n].node].x, nodes[nodeloads[n].node].y, nodes[nodeloads[n].node].z);
+                origin.add(dir.clone().negate());
+                const arrow = new ArrowHelper(dir.clone().normalize(), origin, dir.length(), 0x888888, dir.length() * 0.3, dir.length() * 0.2);
+                arrow.name = n;
+                group.add(arrow);
             }
         });
     }
@@ -154,6 +190,8 @@
                 scene.rotation.x = -.5 * Math.PI;
                 scene.add(this.lineGroup);
                 scene.add(this.nodeGroup);
+                scene.add(this.boundaryGroup);
+                scene.add(this.nodeloadGroup);
                 scene.add(this.displacedNodeGroup);
                 scene.add(this.axisHelper);
                 return scene;
@@ -166,16 +204,21 @@
                 this.displacedNodeMaterial.size = this.displacedNodeStyle.size;
                 addNodesToNodeGroup(this.nodeGroup, this.data.input.nodes, this.nodeMaterial);
                 addLinesToLineGroup(this.lineGroup, this.data.input.lines, this.data.input.nodes, this.lineMaterial);
+                addBoundaryToGroup(this.boundaryGroup, this.data.input.boundaries, this.data.input.nodes, this.boundaryMaterial);
+                addNodeloadsToGroup(this.nodeloadGroup, this.data.input.nodeloads, this.data.input.nodes);
                 addDisplacedNodesToGroup(this.displacedNodeGroup, this.data.result.displacements, this.data.input.nodes, this.displacedNodeMaterial);
                 return this._scene;
             },
             lineGroup: () => new Group(),
             nodeGroup: () => new Group(),
+            boundaryGroup: () => new Group(),
+            nodeloadGroup: () => new Group(),
             displacedNodeGroup: () => new Group(),
             displacedLineGroup: () => new Group(),
             axisHelper: () => new AxisHelper(10),
             nodeMaterial: () => new PointsMaterial(),
             lineMaterial: () => new LineBasicMaterial(),
+            boundaryMaterial: () => new MeshBasicMaterial(),
             displacedNodeMaterial: () => new PointsMaterial(),
             displacedLineMaterial: () => new LineBasicMaterial()
         },

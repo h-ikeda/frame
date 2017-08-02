@@ -45,24 +45,24 @@ export default function(store) {
     const material = uuid();
     const section = uuid();
     const combination = [
-        [0, 3],
+        [0, 4],
+        [0, 5],
+        [0, 6],
+        [1, 4],
         [1, 5],
+        [1, 7],
+        [2, 4],
         [2, 6],
+        [2, 7],
         [3, 5],
         [3, 6],
+        [3, 7],
+        [4, 5],
+        [4, 6],
         [4, 7],
         [5, 7],
-        [6, 7],
-        [0, 5],
-        [4, 5],
-        [0, 6],
-        [4, 6],
         [5, 6],
-        [3, 1],
-        [2, 7],
-        [2, 3],
-        [1, 7],
-        [3, 7]
+        [6, 7]
     ];
     const lines = {};
     combination.forEach((ids) => {
@@ -116,7 +116,7 @@ export default function(store) {
     }
 
     const nodeloads = {};
-    [3, 6].forEach((i) => {
+    [4, 6].forEach((i) => {
         nodeloads[uuid()] = {
             node: nodeIds[i],
             x: 1.0,

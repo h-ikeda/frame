@@ -1,4 +1,5 @@
 "use strict";
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const GoogleFontsWebpackPlugin = require("google-fonts-webpack-plugin");
 const HtmlWebpackDisplayLoaderPlugin = require("html-webpack-display-loader-plugin");
@@ -23,7 +24,10 @@ module.exports = {
             //
             test: /\.vue$/,
             use: [{
-                loader: "vue-loader"
+                loader: "vue-loader",
+                options: {
+                    extractCSS: true
+                }
             }]
         }, {
             //
@@ -114,6 +118,10 @@ module.exports = {
         new HtmlWebpackDisplayLoaderPlugin({
             id: "frame-root"
         }),
+        //
+        // 抽出されたスタイルを1つのcssファイルとして読み込みます。
+        //
+        new ExtractTextPlugin("[contenthash].css"),
         //
         // 開発用サーバーでHot Module Replacement (モジュール単位で変更を反映)を有効にします。
         //
