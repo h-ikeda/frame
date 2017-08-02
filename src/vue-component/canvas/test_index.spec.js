@@ -12,7 +12,9 @@ describe("canvasコンポーネントのテスト", function() {
             });
             it("_rendererメソッドはWebGLRendererのインスタンスを返す", function() {
                 const _this = {
-                    $refs: {}
+                    $refs: {
+                        canvas: document.createElement("canvas")
+                    }
                 };
                 const result = computed._renderer.apply(_this);
                 assert(result instanceof WebGLRenderer);
