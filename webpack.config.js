@@ -1,10 +1,12 @@
 "use strict";
+const BabiliPlugin = require("babili-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const GoogleFontsWebpackPlugin = require("google-fonts-webpack-plugin");
 const HtmlWebpackDisplayLoaderPlugin = require("html-webpack-display-loader-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlWebpackPolyfillsPlugin = require("html-webpack-polyfills-plugin");
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const webpack = require("webpack");
 
 module.exports = {
@@ -132,3 +134,7 @@ module.exports = {
         new webpack.NamedModulesPlugin()
     ]
 };
+
+if (process.env.NODE_ENV === "production") {
+    module.exports.plugins.push(new BabiliPlugin(), new OptimizeCssAssetsPlugin());
+}
