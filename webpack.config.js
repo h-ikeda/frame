@@ -9,6 +9,18 @@ const HtmlWebpackPolyfillsPlugin = require("html-webpack-polyfills-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const webpack = require("webpack");
 
+const htmlWebpackPluginOptions = {
+    title: "Frame | 1stop-st.org"
+};
+
+if (process.env.NODE_ENV === "production") {
+    htmlWebpackPluginOptions.minify = {
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+
+    };
+}
+
 module.exports = {
     entry: {
         main: "./src"
@@ -89,9 +101,7 @@ module.exports = {
         // EJSテンプレートからindex.htmlを作成します。
         // サイトにアクセスした時、最初に読み込まれるHTMLファイルになります。
         //
-        new HtmlWebpackPlugin({
-            title: "Frame | 1stop-st.org"
-        }),
+        new HtmlWebpackPlugin(htmlWebpackPluginOptions),
         //
         // 画像ファイルからマルチブラウザ対応のfaviconを生成します。
         // 生成されたfaviconへのリンクがindex.htmlに挿入されます。
