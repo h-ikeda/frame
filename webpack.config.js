@@ -33,7 +33,8 @@ module.exports = {
             test: /\.js$/,
             use: [{
                 loader: "babel-loader"
-            }]
+            }],
+            exclude: /(^|\/)node_modules\/(?!@material\/).*/
         }, {
             //
             // 画像ファイルは、url-loaderで読み込みます。
