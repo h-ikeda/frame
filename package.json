@@ -21,7 +21,7 @@
     "html-webpack-display-loader-plugin": "0.0.1",
     "html-webpack-plugin": "^2.29.0",
     "html-webpack-polyfills-plugin": "0.0.1",
-    "istanbul-instrumenter-loader": "^2.0.0",
+    "istanbul-instrumenter-loader": "^3.0.0",
     "karma": "^1.7.0",
     "karma-browserstack-launcher": "^1.2.0",
     "karma-coverage-istanbul-reporter": "^1.3.0",
