@@ -1,12 +1,10 @@
 "use strict";
-const BabiliPlugin = require("babili-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const GoogleFontsWebpackPlugin = require("google-fonts-webpack-plugin");
 const HtmlWebpackDisplayLoaderPlugin = require("html-webpack-display-loader-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlWebpackPolyfillsPlugin = require("html-webpack-polyfills-plugin");
-const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const webpack = require("webpack");
 
 const htmlWebpackPluginOptions = {
@@ -17,7 +15,22 @@ if (process.env.NODE_ENV === "production") {
     htmlWebpackPluginOptions.minify = {
         collapseBooleanAttributes: true,
         collapseWhitespace: true,
-
+        decodeEntities: true,
+        minifyCSS: true,
+        minifyJS: true,
+        minifyURLs: true,
+        preventAttributesEscaping: true,
+        processConditionalComments: true,
+        removeAttributeQuotes: true,
+        removeComments: true,
+        removeEmptyAttributes: true,
+        removeOptionalTags: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        sortAttributes: true,
+        sortClassName: true,
+        useShortDoctype: true
     };
 }
 
@@ -146,5 +159,7 @@ module.exports = {
 };
 
 if (process.env.NODE_ENV === "production") {
+    const BabiliPlugin = require("babili-webpack-plugin");
+    const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
     module.exports.plugins.push(new BabiliPlugin(), new OptimizeCssAssetsPlugin());
 }
