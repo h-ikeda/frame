@@ -49,8 +49,14 @@ module.exports = (config) => {
             customLaunchers[browser] = capability;
         });
     }
+    
+    let junitReporter;
 
     if (process.env.CIRCLECI) {
+        reporters.push("junit");
+        junitReporter = {
+            outputDir: process.env.CIRCLE_TEST_REPORTS + "/junit/"
+        };
         browsers.sort();
         const browserNum = Math.ceil(browsers.length / process.env.CIRCLE_NODE_TOTAL);
         browsers.splice(0, browserNum * process.env.CIRCLE_NODE_INDEX);
@@ -75,6 +81,7 @@ module.exports = (config) => {
         customLaunchers,
         browserNoActivityTimeout,
         port,
-        browserDisconnectTolerance
+        browserDisconnectTolerance,
+        junitReporter
     });
 };
