@@ -3,10 +3,5 @@
     "targets": {
       "browsers": ["last 2 version"]
     }
-  }], "stage-3"],
-  "env": {
-    "development": {
-      "plugins": ["istanbul"]
-    }
-  }
+  }], "stage-3"]
 }

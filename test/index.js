@@ -1,3 +1,11 @@
+["log", "warn", "error"].map((funcName)=>{
+    console[funcName + "old"] = console[funcName];
+    console[funcName] = function(funcName, ...args) {
+        console[funcName + "old"].apply(console, args.map((arg)=>("" + arg)
+            .replace(/[\u0000-\u0008\u000B-\u000C\u000E-\u001F\uD800-\uDFFF\uFFFE-\uFFFF]/g,"_")));
+    }.bind(console, funcName);
+});
+
 const src = require.context("istanbul-instrumenter-loader?esModules!../src/", true, /\.(vue|js)$/);
 const test = require.context("../src/", true, /test_[^\/]*\.spec\.js$/);
 
