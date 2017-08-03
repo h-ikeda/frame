@@ -1,4 +1,4 @@
-// eslint no-console:0
+/* eslint no-console:0 */
 
 // three.jsのnull文字を含むログがkarma-junit-reporterからXMLStringifyに渡されるとエラーとなるので、null文字をreplaceしておく。
 ["log", "warn", "error"].map((funcName) => {
