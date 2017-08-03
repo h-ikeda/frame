@@ -161,5 +161,8 @@ module.exports = {
 if (process.env.NODE_ENV === "production") {
     const BabiliPlugin = require("babili-webpack-plugin");
     const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-    module.exports.plugins.push(new BabiliPlugin(), new OptimizeCssAssetsPlugin());
+    module.exports.plugins.push(new BabiliPlugin({
+        removeConsole: true,
+        removeDebugger: true
+    }), new OptimizeCssAssetsPlugin());
 }
