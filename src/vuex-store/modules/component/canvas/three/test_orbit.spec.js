@@ -16,6 +16,16 @@ describe("Orbitモジュールのテスト", function() {
                 assert(Math.abs(result.getComponent(index) - expected) < .0000000000000015, `${result.getComponent(index)} is not close to ${expected}.`);
             });
         });
+        it("targetのテスト", function() {
+            const state = {
+                target: [0.8, 9.998, -20]
+            };
+            const result = getters.target(state);
+            assert(result.isVector3);
+            [0.8, 9.998, -20].forEach((expected, index) => {
+                assert.equal(result[String.fromCharCode("x".charCodeAt() + index)], expected);
+            });
+        });
     });
     describe("mutationsのテスト", function() {
         it("setTargetのテスト", function() {
@@ -236,6 +246,59 @@ describe("Orbitモジュールのテスト", function() {
                 assert.equal(mutation, "setSpherical");
                 [4, -8.1, 0].forEach((expected, index) => {
                     assert.equal(payload[index], expected);
+                });
+            });
+        });
+        describe("translate2Dのテスト", function() {
+            it("カメラ視線がxy平面に直行しているとき", function() {
+                const state = {
+                    spherical: [30.8, Math.PI / 2, 0]
+                };
+                let action, payload, count = 0;
+                function dispatch(_action, _payload) {
+                    ++count;
+                    action = _action;
+                    payload = _payload;
+                }
+                actions.translate2D({dispatch, state}, [21, -5.9]);
+                assert.equal(count, 1);
+                assert.equal(action, "translate");
+                [21, -5.9, 0].forEach((expected, index) => {
+                    assert.equal(payload[index], expected);
+                });
+            });
+            it("カメラ視線がzy平面に直行しているとき", function() {
+                const state = {
+                    spherical: [30.8, Math.PI / 2, -Math.PI / 2]
+                };
+                let action, payload, count = 0;
+                function dispatch(_action, _payload) {
+                    ++count;
+                    action = _action;
+                    payload = _payload;
+                }
+                actions.translate2D({dispatch, state}, [21, -5.9]);
+                assert.equal(count, 1);
+                assert.equal(action, "translate");
+                [0, -5.9, 21].forEach((expected, index) => {
+                    assert(Math.abs(payload[index] - expected) < 1e-14, `${payload[index]} is not close to ${expected}.`);
+                });
+            });
+            it("カメラ視線がxz平面に直行しているとき", function() {
+                const state = {
+                    spherical: [30.8, Math.PI, 0]
+                };
+                let action, payload, count = 0;
+                function dispatch(_action, _payload) {
+                    ++count;
+                    action = _action;
+                    payload = _payload;
+                }
+                actions.translate2D({dispatch, state}, [21, -5.9]);
+                assert.equal(count, 1);
+                assert.equal(action, "translate");
+                [21, 0, -5.9].forEach((expected, index) => {
+                    assert(Math.abs(payload[index] - expected) < 1e-14, `${payload[index]} is not close to ${expected}.`);
                 });
             });
         });
