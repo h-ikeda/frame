@@ -33,7 +33,7 @@ module.exports = (config) => {
         const customLaunchers = {};
 
         switch (process.env.CIRCLE_NODE_INDEX) {
-            case 0:
+            case "0":
                 // Test on BrowserStack
                 const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
                 const capabilities = bsCaps.create([{
@@ -62,7 +62,7 @@ module.exports = (config) => {
                 options.customLaunchers = customLaunchers;
                 options.browsers = browsers;
                 break;
-            case 1:
+            case "1":
                 // Test on SauceLabs
                 customLaunchers = {
                     sl_chrome: {
@@ -92,9 +92,9 @@ module.exports = (config) => {
                 options.customLaunchers = customLaunchers;
                 options.browsers = Object.keys(customLaunchers);
                 break;
-            case 2:
+            case "2":
                 break;
-            case 3:
+            case "3":
                 break;
             default:
         }
