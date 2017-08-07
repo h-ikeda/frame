@@ -22,22 +22,19 @@ module.exports = (config) => {
         options.junitReporter = {
             outputDir: process.env.CIRCLE_TEST_REPORTS + "/junit/"
         };
-        options.concurrency = 1;
         options.browserNoActivityTimeout = 240000;
         options.browserDisconnectTolerance = 1;
         options.browserDisconnectTimeout = 10000;
         options.captureTimeout = 240000;
-        
-        options.browserStack = {
-            project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH
-        };
-        
-        let customLaunchers = {};
 
         switch (process.env.CIRCLE_NODE_INDEX) {
             case "0":
                 // Test on BrowserStack
                 options.reporters.push("BrowserStack");
+                options.browserStack = {
+                    project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH
+                };
+                options.concurrency = 1;
                 const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
                 const capabilities = bsCaps.create([{
                     "browser": ["opera", "edge"],
@@ -45,12 +42,18 @@ module.exports = (config) => {
                     "os": "Windows",
                     "os_version": ["10", "7"]
                 }, {
-                    "browser": ["chrome", "firefox", "opera", "safari"],
+                    "browser": ["opera", "safari"],
                     "browser_version": "latest",
                     "os": "OS X",
                     "os_version": ["Sierra", "El Capitan"]
+                }, {
+                    "browser": ["firefox", "chrome"],
+                    "browser_version": "latest",
+                    "os": "OS X",
+                    "os_version": ["El Capitan"]
                 }]).filter((capability) => capability);
                 const browsers = [];
+                options.customLaunchers = {};
                 capabilities.forEach((capability) => {
                     const browser = [
                         "os",
@@ -60,15 +63,15 @@ module.exports = (config) => {
                     ].map((key) => capability[key]).join(" ");
                     browsers.push(browser);
                     capability.base = "BrowserStack";
-                    customLaunchers[browser] = capability;
+                    options.customLaunchers[browser] = capability;
                 });
-                options.customLaunchers = customLaunchers;
                 options.browsers = browsers;
                 break;
             case "1":
                 // Test on SauceLabs
                 options.reporters.push("saucelabs");
-                customLaunchers = {
+                options.concurrency = 2;
+                options.customLaunchers = {
                     "Chrome on Windows 7": {
                         base: "SauceLabs",
                         browserName: "chrome",
@@ -116,22 +119,9 @@ module.exports = (config) => {
                         browserName: "chrome",
                         version: "latest",
                         platform: "macOS 10.12"
-                    },
-                    "Firefox on Mac OSX 10.11": {
-                        base: "SauceLabs",
-                        browserName: "firefox",
-                        version: "latest",
-                        platform: "macOS 10.11"
-                    },
-                    "Chrome on Mac OSX 10.11": {
-                        base: "SauceLabs",
-                        browserName: "chrome",
-                        version: "latest",
-                        platform: "macOS 10.11"
                     }
                 };
-                options.customLaunchers = customLaunchers;
-                options.browsers = Object.keys(customLaunchers);
+                options.browsers = Object.keys(options.customLaunchers);
                 break;
             case "2":
                 break;
