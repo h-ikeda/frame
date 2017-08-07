@@ -18,13 +18,15 @@ module.exports = (config) => {
     } else {
         options.singleRun = true;
         options.logLevel = config.LOG_ERROR;
-        options.reporters.push("junit", "BrowserStack", "saucelabs");
+        options.reporters.push("junit");
         options.junitReporter = {
             outputDir: process.env.CIRCLE_TEST_REPORTS + "/junit/"
         };
         options.concurrency = 1;
-        options.browserNoActivityTimeout = 30000;
-        options.browserDisconnectTolerance = 3;
+        options.browserNoActivityTimeout = 240000;
+        options.browserDisconnectTolerance = 1;
+        options.browserDisconnectTimeout = 10000;
+        options.captureTimeout = 240000;
         
         options.browserStack = {
             project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH
@@ -35,6 +37,7 @@ module.exports = (config) => {
         switch (process.env.CIRCLE_NODE_INDEX) {
             case "0":
                 // Test on BrowserStack
+                options.reporters.push("BrowserStack");
                 const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
                 const capabilities = bsCaps.create([{
                     "browser": ["chrome", "firefox", "ie", "opera", "edge"],
@@ -64,6 +67,7 @@ module.exports = (config) => {
                 break;
             case "1":
                 // Test on SauceLabs
+                options.reporters.push("saucelabs");
                 customLaunchers = {
                     slChrome: {
                         base: "SauceLabs",
