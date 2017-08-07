@@ -69,28 +69,53 @@ module.exports = (config) => {
                 // Test on SauceLabs
                 options.reporters.push("saucelabs");
                 customLaunchers = {
-                    slChrome: {
+                    "Chrome on Windows 7": {
                         base: "SauceLabs",
                         browserName: "chrome",
-                        platform: "Windows 7",
-                        version: "35"
+                        version: "latest",
+                        platform: "Windows 7"
                     },
-                    slFirefox: {
+                    "Firefox on Windows 7": {
                         base: "SauceLabs",
                         browserName: "firefox",
-                        version: "30"
+                        version: "latest",
+                        platform: "Windows 7"
                     },
-                    slSafari: {
-                        base: "SauceLabs",
-                        browserName: "safari",
-                        platform: "macOS 10.12",
-                        version: "10.0"
-                    },
-                    slIE11: {
+                    "Internet Explorer 11 on Windows 7": {
                         base: "SauceLabs",
                         browserName: "internet explorer",
-                        platform: "Windows 8.1",
-                        version: "11"
+                        version: "11",
+                        platform: "Windows 7"
+                    },
+                    "Opera on Windows 7": {
+                        base: "SauceLabs",
+                        browserName: "opera",
+                        version: "latest",
+                        platform: "Windows 7"
+                    },
+                    "Edge on Windows 10": {
+                        base: "SauceLabs",
+                        browserName: "MicrosoftEdge",
+                        version: "latest",
+                        platform: "Windows 10"
+                    },
+                    "Internet Explorer 11 on Windows 10": {
+                        base: "SauceLabs",
+                        browserName: "internet explorer",
+                        version: "11",
+                        platform: "Windows 10"
+                    },
+                    "Chrome on Windows 10": {
+                        base: "SauceLabs",
+                        browserName: "chrome",
+                        version: "latest",
+                        platform: "Windows 10"
+                    },
+                    "Firefox on Windows 10": {
+                        base: "SauceLabs",
+                        browserName: "firefox",
+                        version: "latest",
+                        platform: "Windows 10"
                     }
                 };
                 options.customLaunchers = customLaunchers;
