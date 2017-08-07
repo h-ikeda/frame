@@ -206,40 +206,74 @@
             _scene() {
                 const scene = new Scene();
                 scene.rotation.x = -.5 * Math.PI;
-                scene.add(this.lineGroup);
-                scene.add(this.nodeGroup);
-                scene.add(this.boundaryGroup);
-                scene.add(this.nodeloadGroup);
-                scene.add(this.displacedNodeGroup);
-                scene.add(this.displacedLineGroup);
+                scene.add(this._lineGroup);
+                scene.add(this._nodeGroup);
+                scene.add(this._boundaryGroup);
+                scene.add(this._nodeloadGroup);
+                scene.add(this._displacedNodeGroup);
+                scene.add(this._displacedLineGroup);
                 scene.add(this.axisHelper);
                 return scene;
             },
             scene() {
-                this.nodeMaterial.color.set(this.nodeStyle.color);
-                this.nodeMaterial.size = this.nodeStyle.size;
-                this.lineMaterial.color.set(this.lineStyle.color);
-                this.displacedNodeMaterial.color.set(this.displacedNodeStyle.color);
-                this.displacedNodeMaterial.size = this.displacedNodeStyle.size;
-                addNodesToNodeGroup(this.nodeGroup, this.data.input.nodes, this.nodeMaterial);
-                addLinesToLineGroup(this.lineGroup, this.data.input.lines, this.data.input.nodes, this.lineMaterial);
-                addBoundaryToGroup(this.boundaryGroup, this.data.input.boundaries, this.data.input.nodes, this.boundaryMaterial);
-                addNodeloadsToGroup(this.nodeloadGroup, this.data.input.nodeloads, this.data.input.nodes);
-                addDisplacedNodesToGroup(this.displacedNodeGroup, this.data.result.displacements, this.data.input.nodes, this.displacedNodeMaterial);
-                addDisplacedLinesToGroup(this.displacedLineGroup, this.data.input.lines, this.data.result.displacements, this.data.input.nodes, this.displacedLineMaterial);
+                this._scene.fog = this.sceneFog;
+                this._scene.background = this.sceneBackground;
                 return this._scene;
             },
-            lineGroup: () => new Group(),
-            nodeGroup: () => new Group(),
-            boundaryGroup: () => new Group(),
-            nodeloadGroup: () => new Group(),
-            displacedNodeGroup: () => new Group(),
-            displacedLineGroup: () => new Group(),
+            sceneBackground: () => null,
+            sceneFog: () => null,
+            _lineGroup: () => new Group(),
+            lineGroup() {
+                addLinesToLineGroup(this._lineGroup, this.data.input.lines, this.data.input.nodes, this.lineMaterial);
+                return this._lineGroup;
+            },
+            _nodeGroup: () => new Group(),
+            nodeGroup() {
+                addNodesToNodeGroup(this._nodeGroup, this.data.input.nodes, this.nodeMaterial);
+                return this._nodeGroup;
+            },
+            _boundaryGroup: () => new Group(),
+            boundaryGroup() {
+                addBoundaryToGroup(this._boundaryGroup, this.data.input.boundaries, this.data.input.nodes, this.boundaryMaterial);
+                return this._boundaryGroup;
+            },
+            _nodeloadGroup: () => new Group(),
+            nodeloadGroup() {
+                addNodeloadsToGroup(this._nodeloadGroup, this.data.input.nodeloads, this.data.input.nodes);
+                return this._nodeloadGroup;
+            },
+            _displacedNodeGroup: () => new Group(),
+            displacedNodeGroup() {
+                addDisplacedNodesToGroup(this._displacedNodeGroup, this.data.result.displacements, this.data.input.nodes, this.displacedNodeMaterial);
+                return this._displacedNodeGroup;
+            },
+            _displacedLineGroup: () => new Group(),
+            displacedLineGroup() {
+                addDisplacedLinesToGroup(this._displacedLineGroup, this.data.input.lines, this.data.result.displacements, this.data.input.nodes, this.displacedLineMaterial);
+                return this._displacedLineGroup;
+            },
             axisHelper: () => new AxisHelper(10),
-            nodeMaterial: () => new PointsMaterial(),
-            lineMaterial: () => new LineBasicMaterial(),
-            boundaryMaterial: () => new MeshBasicMaterial(),
-            displacedNodeMaterial: () => new PointsMaterial(),
+            _nodeMaterial: () => new PointsMaterial(),
+            nodeMaterial() {
+                this._nodeMaterial.color.set(this.nodeStyle.color);
+                this._nodeMaterial.size = this.nodeStyle.size;
+                return this._nodeMaterial;
+            },
+            _lineMaterial: () => new LineBasicMaterial(),
+            lineMaterial() {
+                this._lineMaterial.color.set(this.lineStyle.color);
+                return this._lineMaterial;
+            },
+            _boundaryMaterial: () => new MeshBasicMaterial(),
+            boundaryMaterial() {
+                return this._boundaryMaterial;
+            },
+            _displacedNodeMaterial: () => new PointsMaterial(),
+            displacedNodeMaterial() {
+                this._displacedNodeMaterial.color.set(this.displacedNodeStyle.color);
+                this._displacedNodeMaterial.size = this.displacedNodeStyle.size;
+                return this._displacedNodeMaterial;
+            },
             displacedLineMaterial: () => new LineDashedMaterial({dashSize: 0.2, gapSize: 0.1, color: 0x88ffff})
         },
         watch: {
@@ -248,6 +282,24 @@
             //
             scene(scene) {
                 this.renderer.render(scene, this.camera);
+            },
+            lineGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            nodeGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            boundaryGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            nodeloadGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            displacedNodeGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            displacedLineGroup() {
+                this.renderer.render(this.scene, this.camera);
             },
             camera(camera) {
                 this.renderer.render(this.scene, camera);
