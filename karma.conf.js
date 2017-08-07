@@ -30,7 +30,7 @@ module.exports = (config) => {
             project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH
         };
         
-        const customLaunchers = {};
+        let customLaunchers = {};
 
         switch (process.env.CIRCLE_NODE_INDEX) {
             case "0":
