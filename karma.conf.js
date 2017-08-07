@@ -116,6 +116,18 @@ module.exports = (config) => {
                         browserName: "chrome",
                         version: "latest",
                         platform: "macOS 10.12"
+                    },
+                    "Firefox on Mac OSX 10.11": {
+                        base: "SauceLabs",
+                        browserName: "firefox",
+                        version: "latest",
+                        platform: "macOS 10.11"
+                    },
+                    "Chrome on Mac OSX 10.11": {
+                        base: "SauceLabs",
+                        browserName: "chrome",
+                        version: "latest",
+                        platform: "macOS 10.11"
                     }
                 };
                 options.customLaunchers = customLaunchers;
