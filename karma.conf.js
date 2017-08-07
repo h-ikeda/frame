@@ -40,7 +40,7 @@ module.exports = (config) => {
                 options.reporters.push("BrowserStack");
                 const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
                 const capabilities = bsCaps.create([{
-                    "browser": ["chrome", "firefox", "ie", "opera", "edge"],
+                    "browser": ["opera", "edge"],
                     "browser_version": "latest",
                     "os": "Windows",
                     "os_version": ["10", "7"]
@@ -86,18 +86,6 @@ module.exports = (config) => {
                         browserName: "internet explorer",
                         version: "11",
                         platform: "Windows 7"
-                    },
-                    "Opera on Windows 7": {
-                        base: "SauceLabs",
-                        browserName: "opera",
-                        version: "latest",
-                        platform: "Windows 7"
-                    },
-                    "Edge on Windows 10": {
-                        base: "SauceLabs",
-                        browserName: "MicrosoftEdge",
-                        version: "latest",
-                        platform: "Windows 10"
                     },
                     "Internet Explorer 11 on Windows 10": {
                         base: "SauceLabs",
