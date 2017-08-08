@@ -41,33 +41,6 @@
         ArrowHelper
     } from "three";
 
-    function addLinesToLineGroup(group, lines, nodes, material) {
-        Object.keys(lines).forEach((l) => {
-            const obj = group.getObjectByName(l);
-            if (!obj) {
-                const n1 = nodes[lines[l].n1], n2 = nodes[lines[l].n2];
-                const geo = new Geometry();
-                geo.vertices.push(new Vector3(n1.x, n1.y, n1.z), new Vector3(n2.x, n2.y, n2.z));
-                const ln = new Line(geo, material);
-                ln.name = l;
-                group.add(ln);
-            }
-        });
-    }
-
-    function addNodesToNodeGroup(group, nodes, material) {
-        Object.keys(nodes).forEach((n) => {
-            const obj = group.getObjectByName(n);
-            if (!obj) {
-                const geo = new Geometry();
-                geo.vertices.push(new Vector3(nodes[n].x, nodes[n].y, nodes[n].z));
-                const pts = new Points(geo, material);
-                pts.name = n;
-                group.add(pts);
-            }
-        });
-    }
-
     function addBoundaryToGroup(group, boundaries, nodes, material) {
         Object.keys(boundaries).forEach((n) => {
             const obj = group.getObjectByName(n);
@@ -85,7 +58,7 @@
             }
         });
     }
-    
+
     function addNodeloadsToGroup(group, nodeloads, nodes) {
         Object.keys(nodeloads).forEach((n) => {
             const obj = group.getObjectByName(n);
@@ -116,7 +89,7 @@
             }
         });
     }
-    
+
     function addDisplacedLinesToGroup(group, lines, displacements, nodes, material) {
         if (!Object.keys(displacements).length) return;
         Object.keys(lines).forEach((l) => {
@@ -182,15 +155,13 @@
             },
             __camera() {
                 // オプションを変更すると、再計算されます。
-                return new(this.cameraMode === "orthographic" ? OrthographicCamera: PerspectiveCamera)();
+                return new (this.cameraMode === "orthographic" ? OrthographicCamera: PerspectiveCamera)();
             },
             _camera() {
                 // リサイズ時に再計算されます。
                 if (this.cameraMode === "orthographic") {
-                    this.__camera.left = -0.5 * this.width;
-                    this.__camera.right = 0.5 * this.width;
-                    this.__camera.top = 0.5 * this.height;
-                    this.__camera.bottom = -0.5 * this.height;
+                    this.__camera.left = -(this.__camera.right = .5 * this.width);
+                    this.__camera.bottom = -(this.__camera.top = .5 * this.height);
                 } else {
                     this.__camera.aspect = this.width / this.height;
                 }
@@ -205,6 +176,7 @@
             },
             _scene() {
                 const scene = new Scene();
+                // z軸を上(ポール軸)にする。
                 scene.rotation.x = -.5 * Math.PI;
                 scene.add(this._lineGroup);
                 scene.add(this._nodeGroup);
@@ -224,12 +196,46 @@
             sceneFog: () => null,
             _lineGroup: () => new Group(),
             lineGroup() {
-                addLinesToLineGroup(this._lineGroup, this.data.input.lines, this.data.input.nodes, this.lineMaterial);
+                Object.keys(this.data.input.lines).forEach((l) => {
+                    const obj = this._lineGroup.getObjectByName(l);
+                    if (!obj) {
+                        const n1 = this.data.input.nodes[this.data.input.lines[l].n1], n2 = this.data.input.nodes[this.data.input.lines[l].n2];
+                        const geo = new Geometry();
+                        const vector1 = new Vector3(n1.x, n1.y, n1.z);
+                        const vector2 = new Vector3(n2.x, n2.y, n2.z);
+                        geo.vertices.push(vector1, vector2);
+                        const ln = new Line(geo, this.lineMaterial);
+                        ln.name = l;
+                        this._lineGroup.add(ln);
+                        this.$watch(() => this.data.input.nodes[this.data.input.lines[l].n1], (obj) => {
+                            vector1.set(obj.x, obj.y, obj.z);
+                            geo.verticesNeedUpdate = true;
+                        });
+                        this.$watch(() => this.data.input.nodes[this.data.input.lines[l].n2], (obj) => {
+                            vector2.set(obj.x, obj.y, obj.z);
+                            geo.verticesNeedUpdate = true;
+                        });
+                    }
+                });
                 return this._lineGroup;
             },
             _nodeGroup: () => new Group(),
             nodeGroup() {
-                addNodesToNodeGroup(this._nodeGroup, this.data.input.nodes, this.nodeMaterial);
+                Object.keys(this.data.input.nodes).forEach((n) => {
+                    const obj = this._nodeGroup.getObjectByName(n);
+                    if (!obj) {
+                        const vector = new Vector3(this.data.input.nodes[n].x, this.data.input.nodes[n].y, this.data.input.nodes[n].z);
+                        const geo = new Geometry();
+                        geo.vertices.push(vector);
+                        const pts = new Points(geo, this.nodeMaterial);
+                        pts.name = n;
+                        this._nodeGroup.add(pts);
+                        this.$watch(() => this.data.input.nodes[n], (obj) => {
+                            vector.set(obj.x, obj.y, obj.z);
+                            geo.verticesNeedUpdate = true;
+                        });
+                    }
+                });
                 return this._nodeGroup;
             },
             _boundaryGroup: () => new Group(),

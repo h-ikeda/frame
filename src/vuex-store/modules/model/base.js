@@ -1,5 +1,5 @@
 export default class {
-    
+
     constructor({state, getters, mutations, actions, modules} = {}) {
         this._state = state || {};
         this._getters = getters || {};
@@ -14,14 +14,11 @@ export default class {
 
     get state() {
         let state = this._state;
-        if (typeof state === "function") {
-            state = state();
-        }
         return {
             data: {},
             idArray: [],
             selected: {},
-            ...state
+            ...(typeof state === "function" ? state(): state)
         };
     }
 
@@ -58,12 +55,12 @@ export default class {
                 state.idArray = Object.keys(data).sort();
                 state.selected = {};
             },
-            addData(state, data) {
+            mergeData(state, data) {
                 state.data = {
                     ...state.data,
                     ...data
                 };
-                state.idArray.push(...Object.keys(data).sort());
+                state.idArray.push(...Object.keys(data).filter((id) => !(id in state.data)).sort());
             },
             removeData(state, idArray) {
                 const data = {
