@@ -96,8 +96,21 @@ describe("canvasコンポーネントのテスト", function() {
                             return new MouseEvent(type, init);
                         } catch(e) {
                             const evt = document.createEvent("MouseEvents");
-                            const params = init || {};
-                            evt.initMouseEvent(type, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                            const {
+                                bubbles,
+                                cancelable,
+                                screenX,
+                                screenY,
+                                clientX,
+                                clientY,
+                                ctrlKey,
+                                altKey,
+                                shiftKey,
+                                metaKey,
+                                button,
+                                relatedTarget
+                            } = init || {};
+                            evt.initMouseEvent(type, bubbles, cancelable, window, 0, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget);
                             return evt;
                         }
                     };
