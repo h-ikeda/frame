@@ -8,10 +8,8 @@
             @wheel.prevent="handleWheel"
             @gesturestart.prevent="handleGesturestart"
             @gesturechange.prevent="handleGesturechange"
-            @gestureend.prevent="handleGestureend"
-            @touchstart.prevent="handleTouchstart"
-            @touchmove.prevent="handleTouchmove"
-            @touchend.prevent="handleTouchend"
+            @touchstart="handleTouchstart"
+            @touchmove="handleTouchmove"
             :style="{backgroundColor}"
         />
     </div>
@@ -355,11 +353,12 @@
             },
             handleMousemove(event) {
                 if (this.mouseEvent) {
-                    const [x, y] = ["clientX", "clientY"].map((c) => this.mouseEvent[c] - event[c]);
-                    if (event.shiftKey) {
-                        this.pan(x, y);
-                    } else {
+                    const x = this.mouseEvent.clientX - event.clientX;
+                    const y = this.mouseEvent.clientY - event.clientY;
+                    if (event.ctrlKey) {
                         this.orbit(x, y);
+                    } else {
+                        this.pan(x, y);
                     }
                     this.mouseEvent = event;
                 }
@@ -374,20 +373,27 @@
                 this.scale(event.scale / this.gestureEvent.scale - 1);
                 this.gestureEvent = event;
             },
-            handleGestureend() {
-                this.gestureEvent = null;
-            },
             handleTouchstart(event) {
                 this.touchEvent = event;
             },
             handleTouchmove(event) {
-                const x = event.changedTouches.item(0).clientX - this.touchEvent.changedTouches.item(0).clientX;
-                const y = event.changedTouches.item(0).clientY - this.touchEvent.changedTouches.item(0).clientY;
-                this.orbit(x * -.1, y * -.1);
+                const oldX = this.touchEvent.touches.item(0).clientX;
+                const newX = event.touches.item(0).clientX;
+                const oldY = this.touchEvent.touches.item(0).clientY;
+                const newY = event.touches.item(0).clientY;
+                if (event.touches.length === 1) {
+                    this.orbit((oldX - newX) * .1, (oldY - newY) * .1);
+                } else {
+                    const oldX1 = this.touchEvent.touches.item(1).clientX;
+                    const newX1 = event.touches.item(1).clientX;
+                    const oldY1 = this.touchEvent.touches.item(1).clientY;
+                    const newY1 = event.touches.item(1).clientY;
+                    this.pan((oldX1 + oldX - newX1 - newX) * .05, (oldY1 + oldY - newY1 - newY) * .05);
+                    const newLength = Math.hypot(newX1 - newX, newY1 - newY);
+                    const oldLength = Math.hypot(oldX1 - oldX, oldY1 - oldY);
+                    this.scale(newLength / oldLength - 1);
+                }
                 this.touchEvent = event;
-            },
-            handleTouchend() {
-                this.touchEvent = null;
             }
         }
     };
