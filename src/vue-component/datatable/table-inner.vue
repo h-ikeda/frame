@@ -1,7 +1,7 @@
 <template>
     <component :is="selected">
         <template scope="data">
-            <column-header :columns="data.header.columns" :checked="data.header.selectedAll" />
+            <column-header :header="data.header" />
             <table-content :data="data.body" />
         </template>
     </component>

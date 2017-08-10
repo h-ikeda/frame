@@ -4,7 +4,7 @@
             <td>
                 <mdc-checkbox :checked="item.selected" />
             </td>
-            <td v-for="value of item.columns">{{value}}</td>
+            <td v-for="column of item.columns" contenteditable @click.stop @blur="column.value=$event.target.innerHTML">{{column.value}}</td>
         </tr>
     </tbody>
 </template>

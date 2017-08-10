@@ -2,9 +2,9 @@
     <thead class="mdc-typography--caption">
         <tr class="column-header__row">
             <th class="column-header__cell">
-                <mdc-checkbox :checked="checked" @change="select" />
+                <mdc-checkbox :checked="header.selectedAll" @change="header.selectedAll=$event" />
             </th>
-            <th class="column-header__cell" v-for="column of columns">
+            <th class="column-header__cell" v-for="column of header.columns">
                 {{column}}
             </th>
         </tr>
@@ -14,12 +14,7 @@
 <script>
     import mdcCheckbox from "../mdc-component/checkbox";
     export default {
-        props: ["columns", "checked"],
-        methods: {
-            select(e) {
-                this.$emit("change", e);
-            }
-        },
+        props: ["header"],
         components: {
             ...mdcCheckbox
         }

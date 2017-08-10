@@ -7,6 +7,33 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlWebpackPolyfillsPlugin = require("html-webpack-polyfills-plugin");
 const webpack = require("webpack");
 
+const htmlWebpackPluginOptions = {
+    title: "Frame | 1stop-st.org"
+};
+
+if (process.env.NODE_ENV === "production") {
+    htmlWebpackPluginOptions.minify = {
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+        decodeEntities: true,
+        minifyCSS: true,
+        minifyJS: true,
+        minifyURLs: true,
+        preventAttributesEscaping: true,
+        processConditionalComments: true,
+        removeAttributeQuotes: true,
+        removeComments: true,
+        removeEmptyAttributes: true,
+        removeOptionalTags: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        sortAttributes: true,
+        sortClassName: true,
+        useShortDoctype: true
+    };
+}
+
 module.exports = {
     entry: {
         main: "./src"
@@ -87,9 +114,7 @@ module.exports = {
         // EJSテンプレートからindex.htmlを作成します。
         // サイトにアクセスした時、最初に読み込まれるHTMLファイルになります。
         //
-        new HtmlWebpackPlugin({
-            title: "Frame | 1stop-st.org"
-        }),
+        new HtmlWebpackPlugin(htmlWebpackPluginOptions),
         //
         // 画像ファイルからマルチブラウザ対応のfaviconを生成します。
         // 生成されたfaviconへのリンクがindex.htmlに挿入されます。
@@ -132,3 +157,12 @@ module.exports = {
         new webpack.NamedModulesPlugin()
     ]
 };
+
+if (process.env.NODE_ENV === "production") {
+    const BabiliPlugin = require("babili-webpack-plugin");
+    const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+    module.exports.plugins.push(new BabiliPlugin({
+        removeConsole: true,
+        removeDebugger: true
+    }), new OptimizeCssAssetsPlugin());
+}

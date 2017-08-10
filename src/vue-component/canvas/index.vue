@@ -8,10 +8,8 @@
             @wheel.prevent="handleWheel"
             @gesturestart.prevent="handleGesturestart"
             @gesturechange.prevent="handleGesturechange"
-            @gestureend.prevent="handleGestureend"
-            @touchstart.prevent="handleTouchstart"
-            @touchmove.prevent="handleTouchmove"
-            @touchend.prevent="handleTouchend"
+            @touchstart="handleTouchstart"
+            @touchmove="handleTouchmove"
             :style="{backgroundColor}"
         />
     </div>
@@ -41,33 +39,6 @@
         ArrowHelper
     } from "three";
 
-    function addLinesToLineGroup(group, lines, nodes, material) {
-        Object.keys(lines).forEach((l) => {
-            const obj = group.getObjectByName(l);
-            if (!obj) {
-                const n1 = nodes[lines[l].n1], n2 = nodes[lines[l].n2];
-                const geo = new Geometry();
-                geo.vertices.push(new Vector3(n1.x, n1.y, n1.z), new Vector3(n2.x, n2.y, n2.z));
-                const ln = new Line(geo, material);
-                ln.name = l;
-                group.add(ln);
-            }
-        });
-    }
-
-    function addNodesToNodeGroup(group, nodes, material) {
-        Object.keys(nodes).forEach((n) => {
-            const obj = group.getObjectByName(n);
-            if (!obj) {
-                const geo = new Geometry();
-                geo.vertices.push(new Vector3(nodes[n].x, nodes[n].y, nodes[n].z));
-                const pts = new Points(geo, material);
-                pts.name = n;
-                group.add(pts);
-            }
-        });
-    }
-
     function addBoundaryToGroup(group, boundaries, nodes, material) {
         Object.keys(boundaries).forEach((n) => {
             const obj = group.getObjectByName(n);
@@ -85,7 +56,7 @@
             }
         });
     }
-    
+
     function addNodeloadsToGroup(group, nodeloads, nodes) {
         Object.keys(nodeloads).forEach((n) => {
             const obj = group.getObjectByName(n);
@@ -116,7 +87,7 @@
             }
         });
     }
-    
+
     function addDisplacedLinesToGroup(group, lines, displacements, nodes, material) {
         if (!Object.keys(displacements).length) return;
         Object.keys(lines).forEach((l) => {
@@ -182,15 +153,13 @@
             },
             __camera() {
                 // オプションを変更すると、再計算されます。
-                return new(this.cameraMode === "orthographic" ? OrthographicCamera: PerspectiveCamera)();
+                return new (this.cameraMode === "orthographic" ? OrthographicCamera: PerspectiveCamera)();
             },
             _camera() {
                 // リサイズ時に再計算されます。
                 if (this.cameraMode === "orthographic") {
-                    this.__camera.left = -0.5 * this.width;
-                    this.__camera.right = 0.5 * this.width;
-                    this.__camera.top = 0.5 * this.height;
-                    this.__camera.bottom = -0.5 * this.height;
+                    this.__camera.left = -(this.__camera.right = .5 * this.width);
+                    this.__camera.bottom = -(this.__camera.top = .5 * this.height);
                 } else {
                     this.__camera.aspect = this.width / this.height;
                 }
@@ -205,41 +174,110 @@
             },
             _scene() {
                 const scene = new Scene();
+                // z軸を上(ポール軸)にする。
                 scene.rotation.x = -.5 * Math.PI;
-                scene.add(this.lineGroup);
-                scene.add(this.nodeGroup);
-                scene.add(this.boundaryGroup);
-                scene.add(this.nodeloadGroup);
-                scene.add(this.displacedNodeGroup);
-                scene.add(this.displacedLineGroup);
+                scene.add(this._lineGroup);
+                scene.add(this._nodeGroup);
+                scene.add(this._boundaryGroup);
+                scene.add(this._nodeloadGroup);
+                scene.add(this._displacedNodeGroup);
+                scene.add(this._displacedLineGroup);
                 scene.add(this.axisHelper);
                 return scene;
             },
             scene() {
-                this.nodeMaterial.color.set(this.nodeStyle.color);
-                this.nodeMaterial.size = this.nodeStyle.size;
-                this.lineMaterial.color.set(this.lineStyle.color);
-                this.displacedNodeMaterial.color.set(this.displacedNodeStyle.color);
-                this.displacedNodeMaterial.size = this.displacedNodeStyle.size;
-                addNodesToNodeGroup(this.nodeGroup, this.data.input.nodes, this.nodeMaterial);
-                addLinesToLineGroup(this.lineGroup, this.data.input.lines, this.data.input.nodes, this.lineMaterial);
-                addBoundaryToGroup(this.boundaryGroup, this.data.input.boundaries, this.data.input.nodes, this.boundaryMaterial);
-                addNodeloadsToGroup(this.nodeloadGroup, this.data.input.nodeloads, this.data.input.nodes);
-                addDisplacedNodesToGroup(this.displacedNodeGroup, this.data.result.displacements, this.data.input.nodes, this.displacedNodeMaterial);
-                addDisplacedLinesToGroup(this.displacedLineGroup, this.data.input.lines, this.data.result.displacements, this.data.input.nodes, this.displacedLineMaterial);
+                this._scene.fog = this.sceneFog;
+                this._scene.background = this.sceneBackground;
                 return this._scene;
             },
-            lineGroup: () => new Group(),
-            nodeGroup: () => new Group(),
-            boundaryGroup: () => new Group(),
-            nodeloadGroup: () => new Group(),
-            displacedNodeGroup: () => new Group(),
-            displacedLineGroup: () => new Group(),
+            sceneBackground: () => null,
+            sceneFog: () => null,
+            _lineGroup: () => new Group(),
+            lineGroup() {
+                Object.keys(this.data.input.lines).forEach((l) => {
+                    const obj = this._lineGroup.getObjectByName(l);
+                    if (!obj) {
+                        const n1 = this.data.input.nodes[this.data.input.lines[l].n1], n2 = this.data.input.nodes[this.data.input.lines[l].n2];
+                        const geo = new Geometry();
+                        const vector1 = new Vector3(n1.x, n1.y, n1.z);
+                        const vector2 = new Vector3(n2.x, n2.y, n2.z);
+                        geo.vertices.push(vector1, vector2);
+                        const ln = new Line(geo, this.lineMaterial);
+                        ln.name = l;
+                        this._lineGroup.add(ln);
+                        this.$watch(() => this.data.input.nodes[this.data.input.lines[l].n1], (obj) => {
+                            vector1.set(obj.x, obj.y, obj.z);
+                            geo.verticesNeedUpdate = true;
+                        });
+                        this.$watch(() => this.data.input.nodes[this.data.input.lines[l].n2], (obj) => {
+                            vector2.set(obj.x, obj.y, obj.z);
+                            geo.verticesNeedUpdate = true;
+                        });
+                    }
+                });
+                return this._lineGroup;
+            },
+            _nodeGroup: () => new Group(),
+            nodeGroup() {
+                Object.keys(this.data.input.nodes).forEach((n) => {
+                    const obj = this._nodeGroup.getObjectByName(n);
+                    if (!obj) {
+                        const vector = new Vector3(this.data.input.nodes[n].x, this.data.input.nodes[n].y, this.data.input.nodes[n].z);
+                        const geo = new Geometry();
+                        geo.vertices.push(vector);
+                        const pts = new Points(geo, this.nodeMaterial);
+                        pts.name = n;
+                        this._nodeGroup.add(pts);
+                        this.$watch(() => this.data.input.nodes[n], (obj) => {
+                            vector.set(obj.x, obj.y, obj.z);
+                            geo.verticesNeedUpdate = true;
+                        });
+                    }
+                });
+                return this._nodeGroup;
+            },
+            _boundaryGroup: () => new Group(),
+            boundaryGroup() {
+                addBoundaryToGroup(this._boundaryGroup, this.data.input.boundaries, this.data.input.nodes, this.boundaryMaterial);
+                return this._boundaryGroup;
+            },
+            _nodeloadGroup: () => new Group(),
+            nodeloadGroup() {
+                addNodeloadsToGroup(this._nodeloadGroup, this.data.input.nodeloads, this.data.input.nodes);
+                return this._nodeloadGroup;
+            },
+            _displacedNodeGroup: () => new Group(),
+            displacedNodeGroup() {
+                addDisplacedNodesToGroup(this._displacedNodeGroup, this.data.result.displacements, this.data.input.nodes, this.displacedNodeMaterial);
+                return this._displacedNodeGroup;
+            },
+            _displacedLineGroup: () => new Group(),
+            displacedLineGroup() {
+                addDisplacedLinesToGroup(this._displacedLineGroup, this.data.input.lines, this.data.result.displacements, this.data.input.nodes, this.displacedLineMaterial);
+                return this._displacedLineGroup;
+            },
             axisHelper: () => new AxisHelper(10),
-            nodeMaterial: () => new PointsMaterial(),
-            lineMaterial: () => new LineBasicMaterial(),
-            boundaryMaterial: () => new MeshBasicMaterial(),
-            displacedNodeMaterial: () => new PointsMaterial(),
+            _nodeMaterial: () => new PointsMaterial(),
+            nodeMaterial() {
+                this._nodeMaterial.color.set(this.nodeStyle.color);
+                this._nodeMaterial.size = this.nodeStyle.size;
+                return this._nodeMaterial;
+            },
+            _lineMaterial: () => new LineBasicMaterial(),
+            lineMaterial() {
+                this._lineMaterial.color.set(this.lineStyle.color);
+                return this._lineMaterial;
+            },
+            _boundaryMaterial: () => new MeshBasicMaterial(),
+            boundaryMaterial() {
+                return this._boundaryMaterial;
+            },
+            _displacedNodeMaterial: () => new PointsMaterial(),
+            displacedNodeMaterial() {
+                this._displacedNodeMaterial.color.set(this.displacedNodeStyle.color);
+                this._displacedNodeMaterial.size = this.displacedNodeStyle.size;
+                return this._displacedNodeMaterial;
+            },
             displacedLineMaterial: () => new LineDashedMaterial({dashSize: 0.2, gapSize: 0.1, color: 0x88ffff})
         },
         watch: {
@@ -248,6 +286,24 @@
             //
             scene(scene) {
                 this.renderer.render(scene, this.camera);
+            },
+            lineGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            nodeGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            boundaryGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            nodeloadGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            displacedNodeGroup() {
+                this.renderer.render(this.scene, this.camera);
+            },
+            displacedLineGroup() {
+                this.renderer.render(this.scene, this.camera);
             },
             camera(camera) {
                 this.renderer.render(this.scene, camera);
@@ -297,11 +353,12 @@
             },
             handleMousemove(event) {
                 if (this.mouseEvent) {
-                    const [x, y] = ["clientX", "clientY"].map((c) => this.mouseEvent[c] - event[c]);
-                    if (event.shiftKey) {
-                        this.pan(x, y);
-                    } else {
+                    const x = this.mouseEvent.clientX - event.clientX;
+                    const y = this.mouseEvent.clientY - event.clientY;
+                    if (event.ctrlKey) {
                         this.orbit(x, y);
+                    } else {
+                        this.pan(x, y);
                     }
                     this.mouseEvent = event;
                 }
@@ -316,20 +373,27 @@
                 this.scale(event.scale / this.gestureEvent.scale - 1);
                 this.gestureEvent = event;
             },
-            handleGestureend() {
-                this.gestureEvent = null;
-            },
             handleTouchstart(event) {
                 this.touchEvent = event;
             },
             handleTouchmove(event) {
-                const x = event.changedTouches.item(0).clientX - this.touchEvent.changedTouches.item(0).clientX;
-                const y = event.changedTouches.item(0).clientY - this.touchEvent.changedTouches.item(0).clientY;
-                this.orbit(x * -.1, y * -.1);
+                const oldX = this.touchEvent.touches.item(0).clientX;
+                const newX = event.touches.item(0).clientX;
+                const oldY = this.touchEvent.touches.item(0).clientY;
+                const newY = event.touches.item(0).clientY;
+                if (event.touches.length === 1) {
+                    this.orbit((oldX - newX) * .1, (oldY - newY) * .1);
+                } else {
+                    const oldX1 = this.touchEvent.touches.item(1).clientX;
+                    const newX1 = event.touches.item(1).clientX;
+                    const oldY1 = this.touchEvent.touches.item(1).clientY;
+                    const newY1 = event.touches.item(1).clientY;
+                    this.pan((oldX1 + oldX - newX1 - newX) * .05, (oldY1 + oldY - newY1 - newY) * .05);
+                    const newLength = Math.hypot(newX1 - newX, newY1 - newY);
+                    const oldLength = Math.hypot(oldX1 - oldX, oldY1 - oldY);
+                    this.scale(newLength / oldLength - 1);
+                }
                 this.touchEvent = event;
-            },
-            handleTouchend() {
-                this.touchEvent = null;
             }
         }
     };

@@ -1,15 +1,7 @@
 {
-  "presets": [
-    [
-      "env",
-      {
-        "targets": {
-          "browsers": [
-            "last 2 version"
-          ]
-        }
-      }
-    ],
-    "stage-3"
-  ]
+  "presets": [["env", {
+    "targets": {
+      "browsers": ["last 2 version"]
+    }
+  }], "stage-3"]
 }
