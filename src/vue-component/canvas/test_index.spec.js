@@ -90,15 +90,31 @@ describe("canvasコンポーネントのテスト", function() {
                 });
             });
             describe("mouseイベントの処理", function() {
+                before(function() {
+                    // IE11以下のため、マウスイベントコンストラクタのポリフィル
+                    try {
+                        new MouseEvent("test");
+                        this.MouseEvent = MouseEvent;
+                    } catch (e) {
+                        this.MouseEvent = class extends Event.prototype {
+                            constructor(eventType, params = {bubbles: false, cancelable: false}) {
+                                super();
+                                const mouseEvent = document.createEvent("MouseEvent");
+                                mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                                return mouseEvent;
+                            }
+                        };
+                    }
+                });
                 it("handleMousedownでマウスイベントをキャプチャ", function() {
                     const vm = {};
-                    const e = new MouseEvent("mousedown");
+                    const e = new this.MouseEvent("mousedown");
                     methods.handleMousedown.call(vm, e);
                     assert.equal(vm.mouseEvent, e);
                 });
                 it("handleMousemoveでthis.panを呼び出す", function() {
                     const vm = {
-                        mouseEvent: new MouseEvent("mousedown", {
+                        mouseEvent: new this.MouseEvent("mousedown", {
                             clientX: 324,
                             clientY: 225
                         }),
@@ -109,7 +125,7 @@ describe("canvasコンポーネントのテスト", function() {
                             ++this.count;
                         }
                     };
-                    methods.handleMousemove.call(vm, new MouseEvent("mousemove", {
+                    methods.handleMousemove.call(vm, new this.MouseEvent("mousemove", {
                         clientX: 424,
                         clientY: 375
                     }));
@@ -119,7 +135,7 @@ describe("canvasコンポーネントのテスト", function() {
                 });
                 it("Ctrl押下時、handleMousemoveでthis.orbitを呼び出す", function() {
                     const vm = {
-                        mouseEvent: new MouseEvent("mousedown", {
+                        mouseEvent: new this.MouseEvent("mousedown", {
                             clientX: 324,
                             clientY: 225
                         }),
@@ -130,7 +146,7 @@ describe("canvasコンポーネントのテスト", function() {
                             ++this.count;
                         }
                     };
-                    methods.handleMousemove.call(vm, new MouseEvent("mousemove", {
+                    methods.handleMousemove.call(vm, new this.MouseEvent("mousemove", {
                         clientX: 424,
                         clientY: 375,
                         ctrlKey: true
@@ -141,9 +157,9 @@ describe("canvasコンポーネントのテスト", function() {
                 });
                 it("handleMouseupでマウスイベントをクリア", function() {
                     const vm = {
-                        mouseEvent: new MouseEvent("mousemove")
+                        mouseEvent: new this.MouseEvent("mousemove")
                     };
-                    methods.handleMouseup.call(vm, new MouseEvent("mouseup"));
+                    methods.handleMouseup.call(vm, new this.MouseEvent("mouseup"));
                     assert.strictEqual(vm.mouseEvent, null);
                 });
             });
