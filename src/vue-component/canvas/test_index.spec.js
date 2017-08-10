@@ -98,7 +98,7 @@ describe("canvasコンポーネントのテスト", function() {
                     } catch (e) {
                         this.MouseEvent = class extends Event {
                             constructor(eventType, params = {bubbles: false, cancelable: false}) {
-                                super();
+                                super(eventType);
                                 const mouseEvent = document.createEvent("MouseEvent");
                                 mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
                                 return mouseEvent;
