@@ -96,7 +96,7 @@ describe("canvasコンポーネントのテスト", function() {
                         new MouseEvent("test");
                         this.MouseEvent = MouseEvent;
                     } catch (e) {
-                        this.MouseEvent = class extends Event.prototype {
+                        this.MouseEvent = class extends Event {
                             constructor(eventType, params = {bubbles: false, cancelable: false}) {
                                 super();
                                 const mouseEvent = document.createEvent("MouseEvent");
