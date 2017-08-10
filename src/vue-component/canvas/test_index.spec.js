@@ -91,24 +91,20 @@ describe("canvasコンポーネントのテスト", function() {
             });
             describe("mouseイベントの処理", function() {
                 before(function() {
-                    // IE11以下のため、マウスイベントコンストラクタのポリフィル
-                    try {
-                        new MouseEvent("test");
-                        this.MouseEvent = MouseEvent;
-                    } catch (e) {
-                        this.MouseEvent = class extends Event {
-                            constructor(eventType, params = {bubbles: false, cancelable: false}) {
-                                super(eventType);
-                                const mouseEvent = document.createEvent("MouseEvent");
-                                mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-                                return mouseEvent;
-                            }
-                        };
-                    }
+                    this.MouseEvent = (type, init) => {
+                        try {
+                            return new MouseEvent(type, init);
+                        } catch(e) {
+                            const evt = document.createEvent("MouseEvents");
+                            const params = init || {};
+                            evt.initMouseEvent(type, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                            return evt;
+                        }
+                    };
                 });
                 it("handleMousedownでマウスイベントをキャプチャ", function() {
                     const vm = {};
-                    const e = new this.MouseEvent("mousedown");
+                    const e = this.MouseEvent("mousedown");
                     methods.handleMousedown.call(vm, e);
                     assert.equal(vm.mouseEvent, e);
                 });
