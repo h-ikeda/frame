@@ -26,7 +26,7 @@ module.exports = (config) => {
             outputDir: process.env.CIRCLE_TEST_REPORTS + "/junit/"
         };
         options.coverageIstanbulReporter = {
-            dir: "$CIRCLE_ARTIFACTS/coverage/%browser%"
+            dir: process.env.CIRCLE_ARTIFACTS + "/coverage/%browser%"
         };
         options.browserNoActivityTimeout = 240000;
         options.browserDisconnectTolerance = 1;
