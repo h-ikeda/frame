@@ -24,25 +24,18 @@ export default class {
 
     get getters() {
         return {
-            data: (state, getters) => Object.keys(this._modules).reduce((dataObject, moduleName) => ({
-                ...dataObject,
-                [moduleName]: getters[moduleName + "/data"]
-            }), state.data),
-            dataArray: (state, getters) => {
-                if (state.idArray.length) {
-                    return state.idArray.map((id) => {
-                        return {
-                            id,
-                            selected: state.selected[id],
-                            data: state.data[id]
-                        };
-                    });
-                }
-                return Object.keys(this._modules).map((moduleName) => ({
-                    id: moduleName,
-                    data: getters[moduleName + "/dataArray"]
-                }));
-            },
+            data: (state, getters) => Object.keys(this._modules).reduce((dataObject, moduleName) => {
+                dataObject[moduleName] = getters[moduleName + "/data"];
+                return dataObject;
+            }, state.data),
+            dataArray: (state, getters) => Object.keys(this._modules).map((moduleName) => ({
+                id: moduleName,
+                data: getters[moduleName + "/dataArray"]
+            })).concat(state.idArray.map((id) => ({
+                id,
+                data: state.data[id],
+                selected: state.selected[id]
+            }))),
             selectedAll: (state) => !Object.keys(state.data).some((id) => !state.selected[id]),
             ...this._getters
         };

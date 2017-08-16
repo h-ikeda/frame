@@ -7,6 +7,10 @@
     "test": "karma start"
   },
   "devDependencies": {
+    "aframe": "^0.6.1",
+    "aframe-arrow-component": "^1.0.0",
+    "aframe-orbit-controls-component": "^1.0.0",
+    "aframe-point-component": "^1.1.1",
     "babel-core": "^6.0.0",
     "babel-loader": "^7.0.0",
     "babel-preset-env": "^1.5.0",
@@ -41,7 +45,6 @@
     "sass-loader": "^6.0.0",
     "style-loader": "^0.18.0",
     "superagent": "^3.5.2",
-    "three": "^0.86.0",
     "url-loader": "^0.5.0",
     "uuid": "^3.1.0",
     "vue": "^2.4.0",
