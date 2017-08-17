@@ -44,14 +44,17 @@ module.exports = (config) => {
                 const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
                 const capabilities = bsCaps.create([{
                     "browser": ["opera", "edge"],
+                    "browser_version": "latest",
                     "os": "Windows",
                     "os_version": ["10", "7"]
                 }, {
                     "browser": ["opera", "safari"],
+                    "browser_version": "latest",
                     "os": "OS X",
                     "os_version": ["Sierra", "El Capitan"]
                 }, {
                     "browser": ["firefox", "chrome"],
+                    "browser_version": "latest",
                     "os": "OS X",
                     "os_version": ["El Capitan"]
                 }]).filter((capability) => capability);
