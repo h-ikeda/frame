@@ -9,7 +9,7 @@
   "devDependencies": {
     "aframe": "^0.6.1",
     "aframe-arrow-component": "^1.0.0",
-    "aframe-orbit-controls-component": "^1.0.0",
+    "aframe-orbit-controls-component-2": "^0.1.12",
     "aframe-point-component": "^1.1.1",
     "babel-core": "^6.0.0",
     "babel-loader": "^7.0.0",

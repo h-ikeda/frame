@@ -284,9 +284,9 @@ aframe-arrow-component@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/aframe-arrow-component/-/aframe-arrow-component-1.0.0.tgz#57ae8757b5a747736b4d45f7c372be763d266a77"
 
-aframe-orbit-controls-component@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/aframe-orbit-controls-component/-/aframe-orbit-controls-component-1.0.0.tgz#23d64322bf172a659ab0cf2f0871fcc4e8810b0f"
+aframe-orbit-controls-component-2@^0.1.12:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/aframe-orbit-controls-component-2/-/aframe-orbit-controls-component-2-0.1.12.tgz#fd2c053260fd5112a9510089617fdd33ad26a493"
 
 aframe-point-component@^1.1.1:
   version "1.1.1"

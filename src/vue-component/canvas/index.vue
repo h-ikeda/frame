@@ -1,27 +1,27 @@
 <template>
     <a-scene embedded>
-        <a-entity>
-            <a-entity v-for="point of points" :point="point.props" :position="point.pos" :key="point.id" />
-        </a-entity>
-        <a-entity>
-            <a-entity v-for="line of lines" :line="line.props" :key="line.id" />
-        </a-entity>
-        <a-entity>
-            <a-cone v-for="cone of cones" radius-top="0" radius-bottom=".25" height=".4" rotation="90 0 0" :position="cone.pos" :key="cone.id" />
-        </a-entity>
-        <a-entity>
-            <a-entity v-for="arrow of arrows" :position="arrow.pos" :arrow="arrow.props" :key="arrow.id" />
-        </a-entity>
-        <a-entity v-if="calculated">
-            <a-entity v-for="point of movedPoints" :point="point.props" :position="point.pos" :key="point.id" />
-        </a-entity>
-        <a-entity v-if="calculated">
-            <a-entity v-for="line of movedLines" :line="line.props" :key="line.id" />
+        <a-entity id="aframe-target" rotation="-90 0 0">
+            <a-entity id="aframe-nodes">
+                <a-entity v-for="point of points" :point="point.props" :position="point.pos" :key="point.id" />
+            </a-entity>
+            <a-entity id="aframe-lines">
+                <a-entity v-for="line of lines" :line="line.props" :key="line.id" />
+            </a-entity>
+            <a-entity id="aframe-boundaries">
+                <a-cone v-for="cone of cones" radius-top="0" radius-bottom=".25" height=".4" rotation="90 0 0" :position="cone.pos" :key="cone.id" />
+            </a-entity>
+            <a-entity id="aframe-nodeloads">
+                <a-entity v-for="arrow of arrows" :position="arrow.pos" :arrow="arrow.props" :key="arrow.id" />
+            </a-entity>
+            <a-entity v-if="calculated" id="aframe-displacedNodes">
+                <a-entity v-for="point of movedPoints" :point="point.props" :position="point.pos" :key="point.id" />
+            </a-entity>
+            <a-entity v-if="calculated" id="aframe-displacedLines">
+                <a-entity v-for="line of movedLines" :line="line.props" :key="line.id" />
+            </a-entity>
         </a-entity>
         <a-sky :color="backgroundColor" />
-        <a-entity rotation="90 0 0" position="-3 -10 0">
-            <a-camera look-controls="reverseMouseDrag: true" />
-        </a-entity>
+        <a-camera orbit-controls="target: #aframe-target; enableDamping: true" />
     </a-scene>
 </template>
 
@@ -29,7 +29,7 @@
     import "aframe";
     import "aframe-point-component";
     import "aframe-arrow-component";
-    import "aframe-orbit-controls-component";
+    import "aframe-orbit-controls-component-2";
     import {mapGetters, mapState} from "vuex";
 
     export default {
