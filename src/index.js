@@ -5,8 +5,10 @@ import vuexStore from "./vuex-store";
 
 Vue.use(Vuex);
 
-new Vue({
-    el: "#frame-root",
-    store: new Vuex.Store(vuexStore),
-    render: (h) => h(vueComponent)
-});
+if (process.env.NODE_ENV !== "test") {
+    new Vue({
+        el: "#frame-root",
+        store: new Vuex.Store(vuexStore),
+        render: (h) => h(vueComponent)
+    });
+}

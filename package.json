@@ -4,7 +4,7 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build": "cross-env NODE_ENV=production webpack",
-    "test": "karma start"
+    "test": "cross-env NODE_ENV=test karma start"
   },
   "devDependencies": {
     "aframe": "^0.6.1",
