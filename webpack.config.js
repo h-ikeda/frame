@@ -101,7 +101,7 @@ module.exports = {
         historyApiFallback: true,
         hot: true
     },
-    devtool: process.env.NODE_ENV !== "production" && "cheap-module-eval-source-map" && "cheap-module-source-map",
+    devtool: "chep-module-source-map",
     plugins: [
         //
         // スクリプト内の変数を環境変数で置き換えます。
@@ -164,5 +164,14 @@ if (process.env.NODE_ENV === "production") {
     module.exports.plugins.push(new BabiliPlugin({
         removeConsole: true,
         removeDebugger: true
-    }), new OptimizeCssAssetsPlugin());
+    }, {
+        comments: false,
+        sourceMap: false
+    }), new OptimizeCssAssetsPlugin({
+        cssProcessorOptions: {
+            discardComments: {
+                removeAll: true
+            }
+        }
+    }));
 }
