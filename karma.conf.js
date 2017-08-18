@@ -58,7 +58,7 @@ module.exports = (config) => {
                     if (!key.includes("(SauceLabs)")) {
                         delete options.customLaunchers[key];
                     }
-                })
+                });
                 options.browsers = Object.keys(options.customLaunchers);
                 break;
             case "2":
@@ -68,6 +68,5 @@ module.exports = (config) => {
             default:
         }
     }
-
     config.set(options);
 };

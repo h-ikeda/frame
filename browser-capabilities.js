@@ -5,7 +5,7 @@ const availables = {};
 
 const bsArray = JSON.parse(request("GET", "https://www.browserstack.com/automate/browsers.json", {
     headers: {
-        authorization: "Basic " + Buffer(process.env.BROWSER_STACK_USERNAME + ":" + process.env.BROWSER_STACK_ACCESS_KEY).toString("base64")
+        authorization: "Basic " + Buffer.from(process.env.BROWSER_STACK_USERNAME + ":" + process.env.BROWSER_STACK_ACCESS_KEY).toString("base64")
     }
 }).getBody());
 
@@ -31,6 +31,22 @@ slArray.forEach(function(cap) {
     };
 });
 
+function compareVersion(version1, version2) {
+    const v1 = version1.split(".");
+    const v2 = version2.split(".");
+    let result = 0;
+    v1.some(function(v, index) {
+        if (parseInt(v, 10) > parseInt(v2[index], 10)) {
+            result = -1;
+            return true;
+        } else if (parseInt(v, 10) < parseInt(v2[index], 10)) {
+            result = 1;
+            return true;
+        }
+    });
+    return result;
+}
+
 // Latest version から targetVersions 分のバージョンをテストします。
 // targetVersions = 2 で dev, beta, 60, 59, 58, 57 が存在する場合、60, 59 をテスト。 
 const targetVersions = 2;
@@ -50,7 +66,6 @@ const targetVersions = 2;
     // BrowserStack capabilities
     /opera ([\.\d]+).* windows 7 .*\(BrowserStack\)/i,
     /edge ([\.\d]+).* windows 10 .*\(BrowserStack\)/i,
-    /opera ([\.\d]+).* windows 10 .*\(BrowserStack\)/i,
     /chrome ([\.\d]+).* os x el capitan .*\(BrowserStack\)/i,
     /firefox ([\.\d]+).* os x el capitan .*\(BrowserStack\)/i,
     /opera ([\.\d]+).* os x sierra .*\(BrowserStack\)/i,
@@ -61,26 +76,8 @@ const targetVersions = 2;
     Object.keys(availables).filter(function(key) {
         return rex.test(key) && !key.includes("beta");
     }).sort(function(key1, key2) {
-        let v1 = rex.exec(key1)[1];
-        let v2 = rex.exec(key2)[1];
-        return compareVersion(v1, v2);
+        return compareVersion(rex.exec(key1)[1], rex.exec(key2)[1]);
     }).slice(0, targetVersions).forEach(function(key) {
         module.exports[key] = availables[key];
     });
 });
-
-function compareVersion(version1, version2) {
-    const v1 = version1.split(".");
-    const v2 = version2.split(".");
-    let result = 0;
-    v1.some(function(v, index) {
-        if (parseInt(v, 10) > parseInt(v2[index], 10)) {
-            result = -1;
-            return true;
-        } else if (parseInt(v, 10) < parseInt(v2[index], 10)) {
-            result = 1;
-            return true;
-        }
-    });
-    return result;
-}
