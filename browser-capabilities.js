@@ -23,128 +23,64 @@ bsArray.forEach(function(cap) {
 const slArray = JSON.parse(request("GET", "https://saucelabs.com/rest/v1/info/platforms/webdriver").getBody());
 
 slArray.forEach(function(cap) {
-    cap.base = "SauceLabs";
     availables[`${cap.long_name} ${cap.long_version} on ${cap.os} (SauceLabs)`] = {
         browserName: cap.api_name,
         version: cap.long_version,
-        platform: cap.os
+        platform: cap.os,
+        base: "SauceLabs"
     };
 });
 
+// Latest version から targetVersions 分のバージョンをテストします。
+// targetVersions = 2 で dev, beta, 60, 59, 58, 57 が存在する場合、60, 59 をテスト。 
+const targetVersions = 2;
 
+// テスト対象を正規表現で抽出。
+// ex) Google Chrome 60.0.3112.78 on Windows 2008 (SauceLabs)
+[
+    // SauceLabs capabilities
+    /chrome ([\.\d]+).* windows 2008 .*\(SauceLabs\)/i,
+    /firefox ([\.\d]+).* windows 2008 .*\(SauceLabs\)/i,
+    /internet explorer (11.[\.\d]+).* windows 2008 .*\(SauceLabs\)/i, // IEは11のみ。
+    /chrome ([\.\d]+).* windows 10 .*\(SauceLabs\)/i,
+    /firefox ([\.\d]+).* windows 10 .*\(SauceLabs\)/i,
+    /internet explorer ([\.\d]+).* windows 10 .*\(SauceLabs\)/i,
+    /chrome ([\.\d]+).* mac 10\.12 .*\(SauceLabs\)/i, // Sierra
+    /firefox ([\.\d]+).* mac 10\.12 .*\(SauceLabs\)/i, // Sierra
+    // BrowserStack capabilities
+    /opera ([\.\d]+).* windows 7 .*\(BrowserStack\)/i,
+    /edge ([\.\d]+).* windows 10 .*\(BrowserStack\)/i,
+    /opera ([\.\d]+).* windows 10 .*\(BrowserStack\)/i,
+    /chrome ([\.\d]+).* os x el capitan .*\(BrowserStack\)/i,
+    /firefox ([\.\d]+).* os x el capitan .*\(BrowserStack\)/i,
+    /opera ([\.\d]+).* os x sierra .*\(BrowserStack\)/i,
+    /opera ([\.\d]+).* os x el capitan .*\(BrowserStack\)/i,
+    /safari ([\.\d]+).* os x sierra .*\(BrowserStack\)/i,
+    /safari ([\.\d]+).* os x el capitan .*\(BrowserStack\)/i,
+].forEach(function(rex) {
+    Object.keys(availables).filter(function(key) {
+        return rex.test(key) && !key.includes("beta");
+    }).sort(function(key1, key2) {
+        let v1 = rex.exec(key1)[1];
+        let v2 = rex.exec(key2)[1];
+        return compareVersion(v1, v2);
+    }).slice(0, targetVersions).forEach(function(key) {
+        module.exports[key] = availables[key];
+    });
+});
 
-module.exports = {
-    // SauceLabs launchers
-    "Chrome on Windows 7": {
-        base: "SauceLabs",
-        browserName: "chrome",
-        version: "latest",
-        platform: "Windows 7"
-    },
-    "Firefox on Windows 7": {
-        base: "SauceLabs",
-        browserName: "firefox",
-        version: "latest",
-        platform: "Windows 7"
-    },
-    "Internet Explorer 11 on Windows 7": {
-        base: "SauceLabs",
-        browserName: "internet explorer",
-        version: "11",
-        platform: "Windows 7"
-    },
-    "Internet Explorer 11 on Windows 10": {
-        base: "SauceLabs",
-        browserName: "internet explorer",
-        version: "11",
-        platform: "Windows 10"
-    },
-    "Chrome on Windows 10": {
-        base: "SauceLabs",
-        browserName: "chrome",
-        version: "latest",
-        platform: "Windows 10"
-    },
-    "Firefox on Windows 10": {
-        base: "SauceLabs",
-        browserName: "firefox",
-        version: "latest",
-        platform: "Windows 10"
-    },
-    "Firefox on Mac OSX 10.12": {
-        base: "SauceLabs",
-        browserName: "firefox",
-        version: "latest",
-        platform: "macOS 10.12"
-    },
-    "Chrome on Mac OSX 10.12": {
-        base: "SauceLabs",
-        browserName: "chrome",
-        version: "latest",
-        platform: "macOS 10.12"
-    },
-    // BrowserStack launchers
-    "Edge on Windows 10": {
-        base: "BrowserStack",
-        browser: "Edge",
-        os: "Windows",
-        os_version: "10",
-        browser_version: "latest"
-    },
-    "Opera on Windows 7": {
-        base: "BrowserStack",
-        browser: "Opera",
-        os: "Windows",
-        os_version: "7",
-        browser_version: "latest"
-    },
-    "Opera on Windows 10": {
-        base: "BrowserStack",
-        browser: "Opera",
-        os: "Windows",
-        os_version: "10",
-        browser_version: "latest"
-    },
-    "Opera on Mac OS X Sierra": {
-        base: "BrowserStack",
-        browser: "Opera",
-        os: "OS X",
-        os_version: "Sierra",
-        browser_version: "latest"
-    },
-    "Opera on Mac OS X El Capitan": {
-        base: "BrowserStack",
-        browser: "Opera",
-        os: "OS X",
-        os_version: "El Capitan",
-        browser_version: "latest"
-    },
-    "Safari on Mac OS X Sierra": {
-        base: "BrowserStack",
-        browser: "Safari",
-        os: "OS X",
-        os_version: "Sierra",
-        browser_version: "latest"
-    },
-    "Safari on Mac OS X El Capitan": {
-        base: "BrowserStack",
-        browser: "Safari",
-        os: "OS X",
-        os_version: "El Capitan",
-        browser_version: "latest"
-    },
-    "Firefox on Mac OS X El Capitan": {
-        base: "BrowserStack",
-        browser: "Firefox",
-        os: "OS X",
-        os_version: "El Capitan",
-        browser_version: "latest"
-    },
-    "Chrome on Mac OS X El Capitan": {
-        base: "BrowserStack",
-        browser: "Chrome",
-        os: "OS X",
-        os_version: "El Capitan",
-        browser_version: "latest"
-    }
-};
+function compareVersion(version1, version2) {
+    const v1 = version1.split(".");
+    const v2 = version2.split(".");
+    let result = 0;
+    v1.some(function(v, index) {
+        if (parseInt(v, 10) > parseInt(v2[index], 10)) {
+            result = -1;
+            return true;
+        } else if (parseInt(v, 10) < parseInt(v2[index], 10)) {
+            result = 1;
+            return true;
+        }
+    });
+    return result;
+}

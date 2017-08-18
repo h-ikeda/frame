@@ -41,92 +41,24 @@ module.exports = (config) => {
                     project: process.env.CIRCLE_PROJECT_REPONAME + "_" + process.env.CIRCLE_BRANCH
                 };
                 options.concurrency = 1;
-                const bsCaps = require("browserstack-capabilities")(process.env.BROWSER_STACK_USERNAME, process.env.BROWSER_STACK_ACCESS_KEY);
-                const capabilities = bsCaps.create([{
-                    "browser": ["opera", "edge"],
-                    "browser_version": "latest",
-                    "os": "Windows",
-                    "os_version": ["10", "7"]
-                }, {
-                    "browser": ["opera", "safari"],
-                    "browser_version": "latest",
-                    "os": "OS X",
-                    "os_version": ["Sierra", "El Capitan"]
-                }, {
-                    "browser": ["firefox", "chrome"],
-                    "browser_version": "latest",
-                    "os": "OS X",
-                    "os_version": ["El Capitan"]
-                }]).filter((capability) => capability);
-                const browsers = [];
-                options.customLaunchers = {};
-                capabilities.forEach((capability) => {
-                    const browser = [
-                        "os",
-                        "os_version",
-                        "browser",
-                        "browser_version"
-                    ].map((key) => capability[key]).join(" ");
-                    browsers.push(browser);
-                    capability.base = "BrowserStack";
-                    options.customLaunchers[browser] = capability;
+                options.customLaunchers = require("./browser-capabilities");
+                Object.keys(options.customLaunchers).forEach(function(key) {
+                    if (!key.includes("(BrowserStack)")) {
+                        delete options.customLaunchers[key];
+                    }
                 });
-                options.browsers = browsers;
+                options.browsers = Object.keys(options.customLaunchers);
                 break;
             case "1":
                 // Test on SauceLabs
                 options.reporters.push("saucelabs");
                 options.concurrency = 2;
-                options.customLaunchers = {
-                    "Chrome on Windows 7": {
-                        base: "SauceLabs",
-                        browserName: "chrome",
-                        version: "latest",
-                        platform: "Windows 7"
-                    },
-                    "Firefox on Windows 7": {
-                        base: "SauceLabs",
-                        browserName: "firefox",
-                        version: "latest",
-                        platform: "Windows 7"
-                    },
-                    "Internet Explorer 11 on Windows 7": {
-                        base: "SauceLabs",
-                        browserName: "internet explorer",
-                        version: "11",
-                        platform: "Windows 7"
-                    },
-                    "Internet Explorer 11 on Windows 10": {
-                        base: "SauceLabs",
-                        browserName: "internet explorer",
-                        version: "11",
-                        platform: "Windows 10"
-                    },
-                    "Chrome on Windows 10": {
-                        base: "SauceLabs",
-                        browserName: "chrome",
-                        version: "latest",
-                        platform: "Windows 10"
-                    },
-                    "Firefox on Windows 10": {
-                        base: "SauceLabs",
-                        browserName: "firefox",
-                        version: "latest",
-                        platform: "Windows 10"
-                    },
-                    "Firefox on Mac OSX 10.12": {
-                        base: "SauceLabs",
-                        browserName: "firefox",
-                        version: "latest",
-                        platform: "macOS 10.12"
-                    },
-                    "Chrome on Mac OSX 10.12": {
-                        base: "SauceLabs",
-                        browserName: "chrome",
-                        version: "latest",
-                        platform: "macOS 10.12"
+                options.customLaunchers = require("./browser-capabilities");
+                Object.keys(options.customLaunchers).forEach(function(key) {
+                    if (!key.includes("(SauceLabs)")) {
+                        delete options.customLaunchers[key];
                     }
-                };
+                })
                 options.browsers = Object.keys(options.customLaunchers);
                 break;
             case "2":
