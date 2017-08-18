@@ -3,7 +3,7 @@
 const request = require("sync-request");
 const availables = {};
 
-const bsArray = JSON.parse(request("GET", "https://www.browserstack.com/automate/browsers.json", {
+const bsArray = JSON.parse(request("GET", "https://api.browserstack.com/4/browsers?flat=true", {
     headers: {
         authorization: "Basic " + Buffer.from(process.env.BROWSER_STACK_USERNAME + ":" + process.env.BROWSER_STACK_ACCESS_KEY).toString("base64")
     }
