@@ -6,18 +6,18 @@ export default {
         return {
             backgroundColor: "#9E9E9E",
             lineStyle: {
-                color: 0x00ff00
+                color: "#00ff00"
             },
             nodeStyle: {
-                color: 0xff0000,
-                size: 0.5
+                color: "#ff0000",
+                size: 5
             },
             displacedLineStyle: {
-                color: 0x0000ff
+                color: "#0000ff"
             },
             displacedNodeStyle: {
-                color: 0x00ffff,
-                size: 0.5
+                color: "#00ffff",
+                size: 5
             }
         };
     },

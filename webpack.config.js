@@ -105,7 +105,7 @@ module.exports = {
     plugins: [
         //
         // スクリプト内の変数を環境変数で置き換えます。
-        // 下記デフォルト値はテスト用のダミー変数です。
+        // 下記はデフォルト値となります。
         //
         new webpack.EnvironmentPlugin({
             NODE_ENV: "development"
