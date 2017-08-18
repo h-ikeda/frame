@@ -23,7 +23,9 @@ module.exports = (config) => {
         options.logLevel = config.LOG_ERROR;
         options.reporters.push("junit");
         options.junitReporter = {
-            outputDir: process.env.CIRCLE_TEST_REPORTS + "/junit/"
+            outputDir: "./junit/",
+            outputFile: "junit.xml",
+            useBrowserName: false
         };
         options.coverageIstanbulReporter = {
             dir: process.env.CIRCLE_ARTIFACTS + "/coverage/%browser%"

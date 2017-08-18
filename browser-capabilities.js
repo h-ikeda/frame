@@ -20,7 +20,7 @@ bsArray.forEach(function(cap) {
     }
 });
 
-const slArray = JSON.parse(request("GET", "https://saucelabs.com/rest/v1/info/platforms/webdriver").getBody());
+const slArray = JSON.parse(request("GET", "https://saucelabs.com/rest/v1.1/info/platforms/webdriver").getBody());
 
 slArray.forEach(function(cap) {
     availables[`${cap.long_name} ${cap.long_version} on ${cap.os} (SauceLabs)`] = {
