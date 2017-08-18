@@ -1,8 +1,8 @@
 version: 2
 jobs:
     build:
+        parallelism: 2
         docker:
-            - image: circleci/node:latest-browsers
             - image: circleci/node:latest-browsers
         steps:
             - checkout
