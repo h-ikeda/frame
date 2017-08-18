@@ -10,14 +10,14 @@ module.exports = (config) => {
             "test/index.js": ["webpack", "sourcemap"]
         },
         webpack: require("./webpack.config"),
-        beforeMiddleware: ["webpackBlocker"]
+        beforeMiddleware: ["webpackBlocker"],
+        coverageIstanbulReporter: {
+            dir: "coverage/%browser%"
+        }
     };
 
     if (!process.env.CIRCLECI) {
         options.reporters.push("progress");
-        options.coverageIstanbulReporter = {
-            dir: "coverage/%browser%"
-        };
     } else {
         options.singleRun = true;
         options.logLevel = config.LOG_ERROR;
@@ -26,9 +26,6 @@ module.exports = (config) => {
             outputDir: "./junit/",
             outputFile: "junit.xml",
             useBrowserName: false
-        };
-        options.coverageIstanbulReporter = {
-            dir: process.env.CIRCLE_ARTIFACTS + "/coverage/%browser%"
         };
         options.browserNoActivityTimeout = 240000;
         options.browserDisconnectTolerance = 1;
