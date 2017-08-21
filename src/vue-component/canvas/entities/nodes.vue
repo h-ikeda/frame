@@ -5,7 +5,13 @@
 </template>
 
 <script>
+    import "aframe";
     import "aframe-point-component";
+    import Vue from "vue";
+    Vue.config.ignoredElements.push(...[
+        "a-entity"
+    ].filter((el) => Vue.config.ignoredElements.indexOf(el) === -1));
+
     import {mapGetters, mapState} from "vuex";
     export default {
         computed: {
