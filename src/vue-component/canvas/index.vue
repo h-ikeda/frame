@@ -8,6 +8,7 @@
             <a-displaced-nodes v-if="calculated" />
             <a-displaced-lines v-if="calculated" />
         </a-entity>
+        <a-circle radius="100" material="color: #666666; opacity:0.5; transparent: true" rotation="-90 0 0" />
         <a-sky :color="backgroundColor" />
         <a-camera orbit-controls="target: #aframe-target; enableDamping: true" />
     </a-scene>
