@@ -19,6 +19,15 @@
     import "aframe-point-component";
     import "aframe-arrow-component";
     import "aframe-orbit-controls-component-2";
+    import Vue from "vue";
+    Vue.config.ignoredElements.push(...[
+        "a-scene",
+        "a-entity",
+        "a-circle",
+        "a-sky",
+        "a-camera"
+    ].filter((el) => Vue.config.ignoredElements.indexOf(el) === -1));
+
     import {mapGetters, mapState} from "vuex";
     import components from "./entities";
     export default {
