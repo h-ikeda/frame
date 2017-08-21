@@ -84,10 +84,10 @@ export default function(store) {
     const sections = {
         [section]: {
             shape: "H",
-            B: 3.125,
-            H: 3.2,
-            tf: 0.1,
-            tw: 0.125
+            B: .3125,
+            H: .32,
+            tf: .01,
+            tw: .01
         }
     };
 
