@@ -18,6 +18,7 @@ export default class {
             data: {},
             idArray: [],
             selected: {},
+            hidden: {},
             ...(typeof state === "function" ? state(): state)
         };
     }
@@ -37,6 +38,7 @@ export default class {
                 selected: state.selected[id]
             }))),
             selectedAll: (state) => !Object.keys(state.data).some((id) => !state.selected[id]),
+            shownAll: (state) => !Object.keys(state.hidden).length,
             ...this._getters
         };
     }
@@ -99,6 +101,35 @@ export default class {
             unselectAll(state) {
                 state.selected = {};
             },
+            hide(state, idArray) {
+                const hidden = {};
+                idArray.forEach((id) => {
+                    hidden[id] = true;
+                });
+                state.hidden = {
+                    ...state.hidden,
+                    ...hidden
+                };
+            },
+            show(state, idArray) {
+                const hidden = {
+                    ...state.hidden
+                };
+                idArray.forEach((id) => {
+                    delete hidden[id];
+                });
+                state.hidden = hidden;
+            },
+            hideAll(state) {
+                const hidden = {};
+                Object.keys(state.data).forEach((id) => {
+                    hidden[id] = true;
+                });
+                state.hidden = hidden;
+            },
+            showAll(state) {
+                state.hidden = {};
+            },
             ...this._mutations
         };
     }
@@ -121,6 +152,12 @@ export default class {
             },
             toggleSelectAll({commit, getters}) {
                 commit(getters.selectedAll ? "unselectAll": "selectAll");
+            },
+            toggleHidden({commit, state}, id) {
+                commit(state.hidden[id] ? "show": "hide", [id]);
+            },
+            toggleShowAll({commit, getters}) {
+                commit(getters.shownAll ? "hideAll": "showAll");
             },
             ...this._actions
         };

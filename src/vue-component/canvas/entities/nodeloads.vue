@@ -5,15 +5,16 @@
 </template>
 
 <script>
-    import {mapGetters} from "vuex";
+    import {mapGetters, mapState} from "vuex";
     export default {
         computed: {
             ...mapGetters("model/input", {
                 nodes: "nodes/data",
                 nodeloads: "nodeloads/data"
             }),
+            ...mapState("model/input/nodeloads", ["hidden"]),
             arrows() {
-                return Object.keys(this.nodeloads).map((id) => {
+                return Object.keys(this.nodeloads).filter((id) => !this.hidden[id]).map((id) => {
                     const nodeload = this.nodeloads[id];
                     const node = this.nodes[nodeload.node];
                     return {
