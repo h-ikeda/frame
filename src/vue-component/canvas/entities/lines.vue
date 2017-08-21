@@ -14,8 +14,9 @@
                 nodeDatas: "nodes/data"
             }),
             ...mapState("component/canvas", ["lineStyle"]),
+            ...mapState("model/input/lines", ["hidden"]),
             lines() {
-                return Object.keys(this.lineDatas).map((id) => {
+                return Object.keys(this.lineDatas).filter((id) => !this.hidden[id]).map((id) => {
                     const n1 = this.nodeDatas[this.lineDatas[id].n1];
                     const n2 = this.nodeDatas[this.lineDatas[id].n2];
                     return {

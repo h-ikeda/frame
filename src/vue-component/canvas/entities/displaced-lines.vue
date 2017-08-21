@@ -14,8 +14,9 @@
                 lines: "input/lines/data",
                 displacements: "result/displacements/data"
             }),
+            ...mapState("model/input/lines", ["hidden"]),
             movedLines() {
-                return Object.keys(this.lines).map((id) => {
+                return Object.keys(this.lines).filter((id) => !this.hidden[id]).map((id) => {
                     const n1 = this.nodes[this.lines[id].n1];
                     const n2 = this.nodes[this.lines[id].n2];
                     const dis1 = this.displacements[this.lines[id].n1] || {};

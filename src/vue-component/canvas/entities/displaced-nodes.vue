@@ -13,8 +13,9 @@
                 displacements: "result/displacements/data",
                 nodes: "input/nodes/data"
             }),
+            ...mapState("model/input/nodes", ["hidden"]),
             movedPoints() {
-                return Object.keys(this.nodes).map((id) => {
+                return Object.keys(this.nodes).filter((id) => !this.hidden[id]).map((id) => {
                     const dis = this.displacements[id] || {};
                     return {
                         props: `size: ${this.displacedNodeStyle.size}; color: ${this.displacedNodeStyle.color}`,

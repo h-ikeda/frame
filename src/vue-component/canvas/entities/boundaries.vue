@@ -5,15 +5,16 @@
 </template>
 
 <script>
-    import {mapGetters} from "vuex";
+    import {mapGetters, mapState} from "vuex";
     export default {
         computed: {
             ...mapGetters("model/input", {
                 nodes: "nodes/data",
                 boundaries: "boundaries/data"
             }),
+            ...mapState("model/input/boundaries", ["hidden"]),
             cones() {
-                return Object.keys(this.boundaries).filter((id) => 
+                return Object.keys(this.boundaries).filter((id) => !this.hidden[id]).filter((id) =>
                     this.boundaries[id].x === true && this.boundaries[id].y === true && this.boundaries[id].z === true
                 ).map((id) => {
                     const node = this.nodes[this.boundaries[id].node];

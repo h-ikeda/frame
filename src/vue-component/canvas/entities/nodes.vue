@@ -11,8 +11,9 @@
         computed: {
             ...mapGetters("model/input/nodes", ["data"]),
             ...mapState("component/canvas", ["nodeStyle"]),
+            ...mapState("model/input/nodes", ["hidden"]),
             points() {
-                return Object.keys(this.data).map((id) => ({
+                return Object.keys(this.data).filter((id) => !this.hidden[id]).map((id) => ({
                     props: `size: ${this.nodeStyle.size}; color: ${this.nodeStyle.color}`,
                     pos: `${this.data[id].x} ${this.data[id].y} ${this.data[id].z}`,
                     id
