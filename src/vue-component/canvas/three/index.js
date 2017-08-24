@@ -11,6 +11,7 @@ import points from "./points";
 import group from "./group";
 import geometry from "./geometry";
 import bufferAttribute from "./buffer-attribute";
+import camera from "./camera";
 
 export {
     renderer,
@@ -25,5 +26,6 @@ export {
     group,
     geometry,
     bufferAttribute,
-    perspectiveCamera
+    perspectiveCamera,
+    camera
 };

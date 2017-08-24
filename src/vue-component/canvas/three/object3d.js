@@ -6,7 +6,8 @@ export default {
     props: [
         "position",
         "rotation",
-        "scale"
+        "scale",
+        "name"
     ],
     computed: {
         instance: () => new Object3D(),
@@ -70,15 +71,21 @@ export default {
         this.instance.scale.copy(this._scale);
         this.parent().$emit("add", this.instance);
     },
-    beforeDestrot() {
+    beforeDestroy() {
         this.parent().$emit("remove", this.instance);
     },
     watch: {
-        _position(pos) {
-            this.instance.position.copy(pos);
+        _position(_posision) {
+            const position = this.instance.position;
+            if (_position !== position) {
+                position.copy(_position);
+            }
         },
-        _rotation(rot) {
-            this.instance.rotation.copy(rot);
+        _rotation(_rotation) {
+            const rotation = this.instance.rotation;
+            if (_rotation !== rotation) {
+                rotation.copy(_rotation);
+            }
         },
         _scale(s) {
             this.instance.scale.copy(s);

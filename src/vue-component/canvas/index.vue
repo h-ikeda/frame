@@ -14,14 +14,12 @@
         <a-camera orbit-controls="target: #aframe-target; enableDamping: true" />
     </a-scene>
     -->
-    <div :style="style">
-        <v-renderer :alpha="true" :width="width" :height="height">
-            <v-scene>
-                <v-nodes />
-            </v-scene>
-            <v-perspective-camera target="0 0 0" />
-        </v-renderer>
-    </div>
+    <v-renderer :alpha="true" :style="style" ref="rdr">
+        <v-scene>
+            <v-nodes />
+        </v-scene>
+        <v-perspective-camera target="0 0 0" />
+    </v-renderer>
 </template>
 
 <script>
@@ -30,12 +28,6 @@
     import nodes from "./nodes.vue";
 
     export default {
-        data() {
-            return {
-                width: 300,
-                height: 150
-            };
-        },
         computed: {
             ...mapState("model", ["calculated"]),
             ...mapState("component/canvas", ["backgroundColor"]),
@@ -46,19 +38,18 @@
             }
         },
         methods: {
-            resize() {
-                this.width = this.$el.clientWidth;
-                this.height = this.$el.clientHeight;
+            resizeHandler() {
+                this.$refs.rdr.$emit("resize");
             }
         },
         created() {
-            addEventListener("resize", this.resize);
+            addEventListener("resize", this.resizeHandler);
         },
         mounted() {
-            this.resize();
+            this.resizeHandler();
         },
         beforeDestroy() {
-            removeEventListener("resize", this.resize);
+            removeEventListener("resize", this.resizeHandler);
         },
         components: {
             "v-renderer": renderer,
