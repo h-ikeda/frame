@@ -3,11 +3,15 @@ import three from "./three";
 
 export default {
     mixins: [three],
-    props: ["name", "attributes"],
+    props: ["name", "attribute"],
     computed: {
         instance: () => new BufferGeometry()
     },
     created() {
+        this.attribute.split(";").forEach((attr) => {
+            const [name, attribute] = attr.split(":");
+            this.instance.addAttribute(name.trim(), this.attributes[attribute.trim()]);
+        });
         this.parent().$emit("define", this.name, this.instance);
     },
     beforeDestroy() {

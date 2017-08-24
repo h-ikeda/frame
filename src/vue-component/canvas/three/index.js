@@ -1,6 +1,6 @@
 import renderer from "./renderer.vue";
 import object3d from "./object3d";
-import camera from "./camera";
+import perspectiveCamera from "./perspective-camera";
 import scene from "./scene";
 import bufferGeometry from "./buffer-geometry";
 import material from "./material";
@@ -15,7 +15,6 @@ import bufferAttribute from "./buffer-attribute";
 export {
     renderer,
     object3d,
-    camera,
     scene,
     bufferGeometry,
     material,
@@ -25,5 +24,6 @@ export {
     points,
     group,
     geometry,
-    bufferAttribute
+    bufferAttribute,
+    perspectiveCamera
 };

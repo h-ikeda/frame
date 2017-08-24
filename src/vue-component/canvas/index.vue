@@ -19,14 +19,14 @@
             <v-scene>
                 <v-nodes />
             </v-scene>
-            <v-camera positionZ="10" />
+            <v-perspective-camera target="0 0 0" />
         </v-renderer>
     </div>
 </template>
 
 <script>
     import {mapGetters, mapState} from "vuex";
-    import {renderer, scene, camera} from "./three";
+    import {renderer, scene, perspectiveCamera} from "./three";
     import nodes from "./nodes.vue";
 
     export default {
@@ -63,7 +63,7 @@
         components: {
             "v-renderer": renderer,
             "v-scene": scene,
-            "v-camera": camera,
+            "v-perspective-camera": perspectiveCamera,
             "v-nodes": nodes
         }
     };

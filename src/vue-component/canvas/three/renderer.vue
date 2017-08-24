@@ -53,13 +53,10 @@
             //
             // カメラはCamera、それ以外はSceneとして登録します。
             //
-            let camera = new PerspectiveCamera(), scene;
-            camera.position.z = -20;
-            camera.position.x = -20;
-            camera.lookAt(new Vector3(0, 0, 0));
+            let camera, scene;
             this.$on("add", (obj) => {
                 if (obj.isCamera) {
-                    //camera = obj;
+                    camera = obj;
                 } else {
                     scene = obj;
                 }

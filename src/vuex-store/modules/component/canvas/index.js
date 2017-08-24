@@ -10,14 +10,14 @@ export default {
             },
             nodeStyle: {
                 color: "#ff0000",
-                size: 5
+                size: .5
             },
             displacedLineStyle: {
                 color: "#0000ff"
             },
             displacedNodeStyle: {
                 color: "#00ffff",
-                size: 5
+                size: .5
             }
         };
     },
