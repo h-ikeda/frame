@@ -1,14 +1,14 @@
 <template>
-    <canvas ref="rdr" :key="key">
-        <slot />
-    </canvas>
+    <div>
+        <canvas ref="rdr" :key="key">
+            <slot />
+        </canvas>
+    </div>
 </template>
 
 <script>
     import {WebGLRenderer} from "three";
-            import {Vector3, PerspectiveCamera} from "three";
     import three from "./three";
-    import uuid from "uuid/v4";
     export default {
         mixins: [three],
         props: [
@@ -20,9 +20,14 @@
             "preserveDrawingBuffer",
             "depth",
             "logarithmicDepthBuffer",
-            "width",
-            "height"
+            "camera",
+            "scene"
         ],
+        data() {
+            return {
+                key: 0
+            };
+        },
         computed: {
             options() {
                 return {
@@ -38,54 +43,42 @@
             },
             rdr() {
                 return new WebGLRenderer({
-                    canvas: this.$el,
+                    canvas: this.$refs.rdr,
                     ...this.options
                 });
             },
-            //
-            // canvas要素を既存DOMと置き換えるために、オプション更新毎にユニークなkeyを設定します。
-            //
-            key() {
-                return this.options && uuid();
+            _camera() {
+                const name = this.camera === undefined ? Object.keys(this.cameras)[0]: this.camera;
+                return this.cameras[name];
+            },
+            _scene() {
+                const name = this.scene === undefined ? Object.keys(this.scenes)[0]: this.scene;
+                return this.scenes[name];
+            }
+        },
+        methods: {
+            render() {
+                this.rdr.render(this._scene, this._camera);
+            }
+        },
+        watch: {
+            options() {
+                ++this.key;
+            },
+            _scene(scene) {
+                this.rdr.render(scene, this._camera);
+            },
+            _camera(camera) {
+                this.rdr.render(this._scene, camera);
             }
         },
         beforeCreate() {
-            //
-            // カメラはCamera、それ以外はSceneとして登録します。
-            //
-            let camera, scene;
-            this.$on("add", (obj) => {
-                if (obj.isCamera) {
-                    camera = obj;
-                } else {
-                    scene = obj;
-                }
-            });
-            //
-            // レンダリングをトリガー
-            //
-            this.$on("render", () => {
-                this.rdr.render(scene, camera);
-            });
-            //
-            // サイズ変更のハンドリング
-            //
             this.$on("resize", () => {
-                this.rdr.setSize(this.width, this.height, false);
-                camera.aspect = this.width / this.height;
-                camera.updateProjectionMatrix();
+                this.rdr.setSize(this.$el.clientWidth, this.$el.clientHeight, false);
+                this._camera.aspect = this.$el.clientWidth / this.$el.clientHeight;
+                this._camera.updateProjectionMatrix();
+                this.render();
             });
-        },
-        watch: {
-            width() {
-                this.$emit("resize");
-            },
-            height() {
-                this.$emit("resize");
-            }
-        },
-        updated() {
-            this.$emit("render");
         }
     };
 </script>

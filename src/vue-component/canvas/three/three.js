@@ -1,9 +1,13 @@
+import {Scene} from "three";
+
 export default {
     data() {
         return {
             localMaterials: {},
             localGeometries: {},
-            localAttributes: {}
+            localAttributes: {},
+            localCameras: {},
+            localScenes: {}
         };
     },
     computed: {
@@ -28,6 +32,20 @@ export default {
                 ...parent.attributes,
                 ...this.localAttributes
             }: this.localAttributes;
+        },
+        cameras() {
+            const parent = this.parent();
+            return parent ? {
+                ...parent.cameras,
+                ...this.localCameras
+            }: this.localCameras;
+        },
+        scenes() {
+            const parent = this.parent();
+            return parent ? {
+                ...parent.scenes,
+                ...this.localScenes
+            }: this.localScenes;
         }
     },
     methods: {
@@ -44,6 +62,10 @@ export default {
                 this.$set(this.localGeometries, name, instance);
             } else if (instance.isBufferAttribute) {
                 this.$set(this.localAttributes, name, instance);
+            } else if (instance.isCamera) {
+                this.$set(this.localCameras, name, instance);
+            } else if (instance instanceof Scene) {
+                this.$set(this.localScenes, name, instance);
             }
         });
         this.$on("undefine", (name, instance) => {
@@ -53,6 +75,10 @@ export default {
                 this.$delete(this.localGeometries, name);
             } else if (instance.isBufferAttribute) {
                 this.$delete(this.localAttributes, name);
+            } else if (instance.isCamera) {
+                this.$delete(this.localCameras, name);
+            } else if (instance instanceof Scene) {
+                this.$delete(this.localScenes, name);
             }
         });
     }
