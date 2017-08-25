@@ -81,5 +81,17 @@ export default {
                 this.$delete(this.localScenes, name);
             }
         });
+    },
+    render(h) {
+        if (process.env.NODE_ENV !== "production") {
+            return h("div", {
+                attrs: {
+                    ...this.$props
+                }
+            }, this.$slots.default);
+        }
+        if (this.$slots.default) {
+            return h("div", this.$slots.default);
+        }
     }
 };

@@ -12,6 +12,12 @@ import group from "./group";
 import geometry from "./geometry";
 import bufferAttribute from "./buffer-attribute";
 import camera from "./camera";
+import boxBufferGeometry from "./box-buffer-geometry";
+import mesh from "./mesh";
+import meshStandardMaterial from "./mesh-standard-material";
+import light from "./light";
+import ambientLight from "./ambient-light";
+import directionalLight from "./directional-light";
 
 export {
     renderer,
@@ -27,5 +33,11 @@ export {
     geometry,
     bufferAttribute,
     perspectiveCamera,
-    camera
+    camera,
+    boxBufferGeometry,
+    mesh,
+    meshStandardMaterial,
+    light,
+    ambientLight,
+    directionalLight
 };

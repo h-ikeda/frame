@@ -1,11 +1,11 @@
 import object3d from "./object3d";
-import {Line} from "three";
+import {Mesh} from "three";
 
 export default {
     mixins: [object3d],
     props: ["geometry", "material"],
     computed: {
-        instance: () => new Line()
+        instance: () => new Mesh()
     },
     created() {
         if (this.material in this.materials) {

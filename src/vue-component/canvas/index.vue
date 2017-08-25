@@ -1,31 +1,29 @@
 <template>
     <!--
-    <a-scene embedded>
-        <a-entity id="aframe-target" rotation="-90 0 0">
-            <a-nodes />
-            <a-lines />
-            <a-boundaries />
-            <a-nodeloads />
-            <a-displaced-nodes v-if="calculated" />
-            <a-displaced-lines v-if="calculated" />
-        </a-entity>
         <a-circle radius="100" material="color: #666666; opacity:0.5; transparent: true" rotation="-90 0 0" />
-        <a-sky :color="backgroundColor" />
-        <a-camera orbit-controls="target: #aframe-target; enableDamping: true" />
-    </a-scene>
     -->
-    <v-renderer :alpha="true" :style="style" ref="rdr">
-        <v-scene>
+    <v-renderer :style="style" ref="rdr" :alpha="true" :antialias="true">
+        <v-scene :rotation="`${-Math.PI * .5} 0 0`">
             <v-nodes />
+            <v-lines />
+            <!--
+            <v-boundaries />
+            <v-nodeloads />
+            <v-displaced-nodes v-if="calculated" />
+            <v-displaced-lines v-if="calculated" />
+            -->
+            <v-ambient-light color="#bbb" />
+            <v-directional-light color="#fff" intensity="0.6" position="-0.5 -1 1" />
         </v-scene>
-        <v-perspective-camera target="0 0 0" />
+        <v-perspective-camera target=".5 2 0" orbit="10 1 -.6" />
     </v-renderer>
 </template>
 
 <script>
     import {mapGetters, mapState} from "vuex";
-    import {renderer, scene, perspectiveCamera} from "./three";
+    import {renderer, scene, perspectiveCamera, ambientLight, directionalLight} from "./three";
     import nodes from "./nodes.vue";
+    import lines from "./lines.vue";
 
     export default {
         computed: {
@@ -55,7 +53,10 @@
             "v-renderer": renderer,
             "v-scene": scene,
             "v-perspective-camera": perspectiveCamera,
-            "v-nodes": nodes
+            "v-nodes": nodes,
+            "v-lines": lines,
+            "v-ambient-light": ambientLight,
+            "v-directional-light": directionalLight
         }
     };
 </script>
