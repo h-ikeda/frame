@@ -28,10 +28,5 @@ export default {
         size(size) {
             this.instance.itemSize = size || 3;
         }
-    },
-    render(h) {
-        if (this.$slots.default) {
-            return h("div", this.$slots.default);
-        }
     }
 };

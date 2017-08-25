@@ -17,12 +17,12 @@ export default {
                 return new Vector3();
             }
             if (Array.isArray(pos)) {
-                return new Vector3(...pos);
+                return new Vector3(...pos.map((item) => parseFloat(item)));
             }
             if (typeof pos === "object") {
-                return new Vector3(pos.x, pos.y, pos.z);
+                return new Vector3(parseFloat(pos.x), parseFloat(pos.y), parseFloat(pos.z));
             }
-            return new Vector3(...pos.split(" "));
+            return new Vector3(...pos.trim().split(/\s+/).map((item) => parseFloat(item)));
         },
         _rotation() {
             const rot = this.rotation;
@@ -30,12 +30,20 @@ export default {
                 return new Euler();
             }
             if (Array.isArray(rot)) {
-                return new Euler(...rot);
+                const xyz = rot.slice(0, 3).map((item) => parseFloat(item));
+                xyz.length = 3;
+                const order = Euler.RotationOrders.indexOf((rot[3] + "").trim()) < 0 ? "XYZ": rot[3].trim();
+                return new Euler(...xyz, order);
             }
             if (typeof rot === "object") {
-                return new Euler(rot.x, rot.y, rot.z, rot.order);
+                const order = Euler.RotationOrders.indexOf((rot.order + "").trim()) < 0 ? "XYZ": rot.order.trim();
+                return new Euler(parseFloat(rot.x), parseFloat(rot.y), parseFloat(rot.z), order);
             }
-            return new Euler(...rot.split(" "));
+            const xyzo = rot.trim().split(/\s+/);
+            const xyz = xyzo.slice(0, 3).map((item) => parseFloat(item));
+            xyz.length = 3;
+            const order = Euler.RotationOrders.indexOf(xyzo[3]) < 0 ? "XYZ": xyzo[3];
+            return new Euler(...xyz, order);
         },
         _scale() {
             const s = this.scale;
@@ -75,25 +83,20 @@ export default {
         this.parent().$emit("remove", this.instance);
     },
     watch: {
-        _position(_posision) {
-            const position = this.instance.position;
-            if (_position !== position) {
-                position.copy(_position);
+        instance(instance, oldInstance) {
+            if (instance !== oldInstance) {
+                this.parent().$emit("remove", oldInstance);
+                this.parent().$emit("add", instance);
             }
         },
-        _rotation(_rotation) {
-            const rotation = this.instance.rotation;
-            if (_rotation !== rotation) {
-                rotation.copy(_rotation);
-            }
+        _position(position) {
+            this.instance.position.copy(position);
         },
-        _scale(s) {
-            this.instance.scale.copy(s);
-        }
-    },
-    render(h) {
-        if (this.$slots.default) {
-            return h("div", this.$slots.default);
+        _rotation(rotation) {
+            this.instance.rotation.copy(rotation);
+        },
+        _scale(scale) {
+            this.instance.scale.copy(scale);
         }
     }
 };

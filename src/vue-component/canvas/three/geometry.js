@@ -12,10 +12,5 @@ export default {
     },
     beforeDestroy() {
         this.parent().$emit("undefine", this.name, this.instance);
-    },
-    render(h) {
-        if (this.$slots.default) {
-            return h("div", this.$slots.default);
-        }
     }
 };

@@ -25,7 +25,7 @@
         ],
         data() {
             return {
-                key: 0
+                key: Number.MIN_SAFE_INTEGER
             };
         },
         computed: {
