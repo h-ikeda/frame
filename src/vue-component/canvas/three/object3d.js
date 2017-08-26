@@ -51,16 +51,28 @@ export default {
                 return new Vector3(1, 1, 1);
             }
             if (Array.isArray(s)) {
-                return new Vector3(...s);
+                if (!s.length) {
+                    return new Vector3(1, 1, 1);
+                }
+                if (s.length < 2) {
+                    const t = parseFloat(s[0]) || 1;
+                    return new Vector3(t, t, t);
+                }
+                const arr = s.length < 3 ? [...s, 1]: s;
+                return new Vector3(...arr.map((item) => parseFloat(item) || 1));
             }
             if (typeof s === "object") {
-                return new Vector3(s.x, s.y, s.z);
+                return new Vector3(parseFloat(s.x) || 1, parseFloat(s.y) || 1, parseFloat(s.z) || 1);
             }
-            const arr = s.split(" ");
+            const arr = (s + "").trim().split(/\s+/);
             if (arr.length < 2) {
-                return new Vector3(s, s, s);
+                const t = parseFloat(arr[0]) || 1;
+                return new Vector3(t, t, t);
             }
-            return new Vector3(...arr);
+            if (arr.length < 3) {
+                arr.push(1);
+            }
+            return new Vector3(...arr.map((item) => parseFloat(item) || 1));
         }
     },
     beforeCreate() {
