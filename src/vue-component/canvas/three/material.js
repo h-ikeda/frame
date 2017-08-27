@@ -6,11 +6,5 @@ export default {
     props: ["name"],
     computed: {
         instance: () => new Material()
-    },
-    created() {
-        this.parent().$emit("define", this.name, this.instance);
-    },
-    beforeDestroy() {
-        this.parent().$emit("undefine", this.name, this.instance);
     }
 };

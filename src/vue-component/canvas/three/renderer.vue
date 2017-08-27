@@ -1,6 +1,6 @@
 <template>
     <div>
-        <canvas ref="rdr" :key="key">
+        <canvas ref="renderer" :key="key">
             <slot />
         </canvas>
     </div>
@@ -25,11 +25,13 @@
         ],
         data() {
             return {
+                mountState: false,
                 key: Number.MIN_SAFE_INTEGER
             };
         },
         computed: {
             options() {
+                this.mountState = false;
                 return {
                     precision: this.precision,
                     alpha: this.alpha,
@@ -41,44 +43,65 @@
                     logarithmicDepthBuffer: this.logarithmicDepthBuffer
                 };
             },
-            rdr() {
-                return new WebGLRenderer({
-                    canvas: this.$refs.rdr,
-                    ...this.options
-                });
+            instance() {
+                if (this.mountState) {
+                    return new WebGLRenderer({
+                        canvas: this.$refs.renderer,
+                        ...this.options
+                    });
+                }
             },
-            _camera() {
-                const name = this.camera === undefined ? Object.keys(this.cameras)[0]: this.camera;
-                return this.cameras[name];
+            cameraInstance() {
+                const cameraNames = Object.keys(this.cameras);
+                if (cameraNames.length) {
+                    return this.cameras[this.camera === undefined ? cameraNames[0]: this.camera];
+                }
             },
-            _scene() {
-                const name = this.scene === undefined ? Object.keys(this.scenes)[0]: this.scene;
-                return this.scenes[name];
-            }
-        },
-        methods: {
-            render() {
-                this.rdr.render(this._scene, this._camera);
+            sceneInstance() {
+                const sceneNames = Object.keys(this.scenes);
+                if (sceneNames.length) {
+                    return this.scenes[this.scene === undefined ? sceneNames[0]: this.scene];
+                }
             }
         },
         watch: {
             options() {
                 ++this.key;
+                this.$nextTick(() => {
+                    this.mountState = true;
+                    this.$emit("resize");
+                });
             },
-            _scene(scene) {
-                this.rdr.render(scene, this._camera);
+            scene() {
+                this.$emit("update");
             },
-            _camera(camera) {
-                this.rdr.render(this._scene, camera);
+            camera() {
+                this.cameraInstance.aspect = this.$el.clientWidth / this.$el.clientHeight;
+                this.cameraInstance.updateProjectionMatrix();
+                this.$emit("update");
             }
         },
         beforeCreate() {
             this.$on("resize", () => {
-                this.rdr.setSize(this.$el.clientWidth, this.$el.clientHeight, false);
-                this._camera.aspect = this.$el.clientWidth / this.$el.clientHeight;
-                this._camera.updateProjectionMatrix();
-                this.render();
+                this.instance.setSize(this.$el.clientWidth, this.$el.clientHeight, false);
+                this.cameraInstance.aspect = this.$el.clientWidth / this.$el.clientHeight;
+                this.cameraInstance.updateProjectionMatrix();
+                this.$emit("update");
             });
+            let updateRequested = false;
+            this.$on("update", () => {
+                if (!updateRequested) {
+                    this.$nextTick(() => {
+                        this.instance.render(this.sceneInstance, this.cameraInstance);
+                        updateRequested = false;
+                    });
+                    updateRequested = true;
+                }
+            });
+        },
+        mounted() {
+            this.mountState = true;
+            this.$emit("resize");
         }
     };
 </script>

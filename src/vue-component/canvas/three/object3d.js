@@ -11,7 +11,12 @@ export default {
     ],
     computed: {
         instance: () => new Object3D(),
-        _position() {
+        parentObject() {
+            return (function _parent(c) {
+                return !c.parent ? c: c.parent.instance && c.parent.instance.isObject3D ? c.parent: _parent(c.parent);
+            })(this);
+        },
+        parsedPosition() {
             const pos = this.position;
             if (!pos) {
                 return new Vector3();
@@ -24,7 +29,7 @@ export default {
             }
             return new Vector3(...pos.trim().split(/\s+/).map((item) => parseFloat(item)));
         },
-        _rotation() {
+        parsedRotation() {
             const rot = this.rotation;
             if (!rot) {
                 return new Euler();
@@ -45,7 +50,7 @@ export default {
             const order = Euler.RotationOrders.indexOf(xyzo[3]) < 0 ? "XYZ": xyzo[3];
             return new Euler(...xyz, order);
         },
-        _scale() {
+        parsedScale() {
             const s = this.scale;
             if (!s) {
                 return new Vector3(1, 1, 1);
@@ -75,40 +80,33 @@ export default {
             return new Vector3(...arr.map((item) => parseFloat(item) || 1));
         }
     },
-    beforeCreate() {
-        // 子コンポーネントのオブジェクトを登録。
-        this.$on("add", (child) => {
-            this.instance.add(child);
-        });
-        // 子コンポーネントのオブジェクトを削除。
-        this.$on("remove", (child) => {
-            this.instance.remove(child);
-        });
-    },
     created() {
-        this.instance.position.copy(this._position);
-        this.instance.rotation.copy(this._rotation);
-        this.instance.scale.copy(this._scale);
-        this.parent().$emit("add", this.instance);
+        this.instance.position.copy(this.parsedPosition);
+        this.instance.rotation.copy(this.parsedRotation);
+        this.instance.scale.copy(this.parsedScale);
+        if (this.parentObject && this.parentObject.instance) {
+            this.parentObject.instance.add(this.instance);
+            this.$emit("update");
+        }
     },
     beforeDestroy() {
-        this.parent().$emit("remove", this.instance);
+        if (this.instance.parent) {
+            this.instance.parent.remove(this.instance);
+            this.$emit("update");
+        }
     },
     watch: {
-        instance(instance, oldInstance) {
-            if (instance !== oldInstance) {
-                this.parent().$emit("remove", oldInstance);
-                this.parent().$emit("add", instance);
-            }
-        },
-        _position(position) {
+        parsedPosition(position) {
             this.instance.position.copy(position);
+            this.$emit("update");
         },
-        _rotation(rotation) {
+        parsedRotation(rotation) {
             this.instance.rotation.copy(rotation);
+            this.$emit("update");
         },
-        _scale(scale) {
+        parsedScale(scale) {
             this.instance.scale.copy(scale);
+            this.$emit("update");
         }
     }
 };

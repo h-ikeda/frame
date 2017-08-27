@@ -11,10 +11,6 @@ export default {
         this.instance.setArray(new Float32Array(typeof this.array === "object" ? this.array: this.array.split(" ")));
         this.instance.itemSize = this.size || 3;
         this.instance.needsUpdate = true;
-        this.parent().$emit("define", this.name, this.instance);
-    },
-    beforeDestroy() {
-        this.parent().$emit("undefine", this.name, this.instance);
     },
     watch: {
         array(arr) {

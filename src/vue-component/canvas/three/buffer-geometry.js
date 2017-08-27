@@ -14,9 +14,5 @@ export default {
                 this.instance.addAttribute(name.trim(), this.attributes[attribute.trim()]);
             });
         }
-        this.parent().$emit("define", this.name, this.instance);
-    },
-    beforeDestroy() {
-        this.parent().$emit("undefine", this.name, this.instance);
     }
 };
