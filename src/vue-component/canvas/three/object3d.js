@@ -44,7 +44,7 @@ export default {
                 const order = Euler.RotationOrders.indexOf((rot.order + "").trim()) < 0 ? "XYZ": rot.order.trim();
                 return new Euler(parseFloat(rot.x), parseFloat(rot.y), parseFloat(rot.z), order);
             }
-            const xyzo = rot.trim().split(/\s+/);
+            const xyzo = (rot + "").trim().split(/\s+/);
             const xyz = xyzo.slice(0, 3).map((item) => parseFloat(item));
             xyz.length = 3;
             const order = Euler.RotationOrders.indexOf(xyzo[3]) < 0 ? "XYZ": xyzo[3];

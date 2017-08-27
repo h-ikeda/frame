@@ -211,6 +211,12 @@ describe("object3dコンポーネントのテスト", function() {
                 assert(result.isEuler);
                 assert(new Euler(-1, -5e8, 6.8, "XYZ").equals(result));
             });
+            it("rotationの文字列が表す数値の個数が少ないとき。", function() {
+                const vm = {rotation: "-1.0  -5e8    "};
+                const result = parsedRotation.call(vm);
+                assert(result.isEuler);
+                assert(new Euler(-1, -5e8, 0, "XYZ").equals(result));
+            });
             it("rotationが空文字のとき、Euler(0, 0, 0, 'XYZ')を返す。", function() {
                 const vm = {rotation: ""};
                 const result = parsedRotation.call(vm);

@@ -2,8 +2,18 @@ import renderer from "./renderer.vue";
 import assert from "assert";
 import Vue from "vue";
 
+function detectWebGLContext() {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    return context && context instanceof WebGLRenderingContext;
+}
+
 describe("rendererコンポーネントのテスト", function() {
     it("オプションを変更すると、新しいrendererに置き換えられる。", function(done) {
+        if (!detectWebGLContext()) {
+            console.log("WebGL is not supported. Skip testing.");
+            this.skip();
+        }
         const vm = new Vue({
             template: `<renderer :antialias="aa" ref="rdr" />`,
             data() {
