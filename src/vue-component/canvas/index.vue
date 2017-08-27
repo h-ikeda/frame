@@ -2,7 +2,7 @@
     <!--
         <a-circle radius="100" material="color: #666666; opacity:0.5; transparent: true" rotation="-90 0 0" />
     -->
-    <v-renderer :style="style" ref="rdr" :alpha="true" :antialias="aa" @click.native="aa = !aa" @mousedown.native="start" @mousemove.native="move" @mouseup.native="end">
+    <v-renderer :style="style" ref="rdr" :alpha="true" :antialias="true" @mousedown.native="start" @mousemove.native="move" @mouseup.native="end">
         <v-scene :rotation="`${-Math.PI * .5} 0 0`">
             <v-nodes />
             <v-lines />
@@ -28,7 +28,6 @@
     export default {
         data() {
             return {
-                aa: true,
                 evt: null,
                 orbit: {
                     radius: 10,

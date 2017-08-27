@@ -12,4 +12,6 @@ Writing now...
 ## Contribution
 Writing now...
 ## Thanks
+[<img alt="Browserstack" src="http://svgshare.com/i/iU.svg" width=170>](https://www.browserstack.com/)
+
 [BrowserStack](https://www.browserstack.com/), who provides a cross browser testing service, kindly helps us to manage easier.
