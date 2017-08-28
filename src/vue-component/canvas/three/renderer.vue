@@ -26,7 +26,7 @@
         data() {
             return {
                 mountState: false,
-                key: Number.MIN_SAFE_INTEGER
+                key: Number.MIN_SAFE_INTEGER || -9007199254740991
             };
         },
         computed: {
