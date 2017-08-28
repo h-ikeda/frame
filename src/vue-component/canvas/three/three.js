@@ -50,6 +50,36 @@ export default {
             };
         }
     },
+    watch: {
+        instance(instance, oldInstance) {
+            if (oldInstance) {
+                if (oldInstance.isMaterial) {
+                    this.$delete(this.parent.assets.materials, this.name);
+                } else if (oldInstance.isGeometry || oldInstance.isBufferGeometry) {
+                    this.$delete(this.parent.assets.geometries, this.name);
+                } else if (oldInstance.isBufferAttribute) {
+                    this.$delete(this.parent.assets.attributes, this.name);
+                } else if (oldInstance.isCamera) {
+                    this.$delete(this.parent.assets.cameras, this.name);
+                } else if (oldInstance instanceof Scene) {
+                    this.$delete(this.parent.assets.scenes, this.name);
+                }
+            }
+            if (instance) {
+                if (instance.isMaterial) {
+                    this.$set(this.parent.assets.materials, this.name, instance);
+                } else if (instance.isGeometry || instance.isBufferGeometry) {
+                    this.$set(this.parent.assets.geometries, this.name, instance);
+                } else if (instance.isBufferAttribute) {
+                    this.$set(this.parent.assets.attributes, this.name, instance);
+                } else if (instance.isCamera) {
+                    this.$set(this.parent.assets.cameras, this.name, instance);
+                } else if (this.instance instanceof Scene) {
+                    this.$set(this.parent.assets.scenes, this.name, instance);
+                }
+            }
+        }
+    },
     beforeCreate() {
         this.$on("update", () => {
             this.parent.$emit("update");

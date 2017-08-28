@@ -107,6 +107,18 @@ export default {
         parsedScale(scale) {
             this.instance.scale.copy(scale);
             this.$emit("update");
+        },
+        instance(instance, oldInstance) {
+            instance.add(...oldInstance.children);
+            instance.position.copy(this.parsedPosition);
+            instance.rotation.copy(this.parsedRotation);
+            instance.scale.copy(this.parsedScale);
+            const parent = oldInstance.parent;
+            if (parent) {
+                parent.remove(oldInstance);
+                parent.add(instance);
+                this.$emit("update");
+            }
         }
     }
 };

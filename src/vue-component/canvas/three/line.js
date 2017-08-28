@@ -5,22 +5,28 @@ export default {
     mixins: [object3d],
     props: ["geometry", "material"],
     computed: {
-        instance: () => new Line()
+        instance: () => new Line(),
+        geometryInstance() {
+            return this.geometries[this.geometry];
+        },
+        materialInstance() {
+            return this.materials[this.material];
+        }
     },
     created() {
-        if (this.material in this.materials) {
-            this.instance.material = this.materials[this.material];
+        if (this.materialInstance) {
+            this.instance.material = this.materialInstance;
         }
-        if (this.geometry in this.geometries) {
-            this.instance.geometry = this.geometries[this.geometry];
+        if (this.geometryInstance) {
+            this.instance.geometry = this.geometryInstance;
         }
     },
     watch: {
-        material(material) {
-            this.instance.material = this.materials[material];
+        materialInstance(material) {
+            this.instance.material = material;
         },
-        geometry(geometry) {
-            this.instance.geometry = this.geometries[geometry];
+        geometryInstance(geometry) {
+            this.instance.geometry = geometry;
         }
     }
 };

@@ -43,34 +43,45 @@ export default function(store) {
     });
 
     const material = uuid();
-    const section = uuid();
-    const combination = [
+    const section1 = uuid();
+    const section2 = uuid();
+    const combination1 = [
         [0, 4],
-        [0, 5],
-        [0, 6],
-        [1, 4],
         [1, 5],
-        [1, 7],
-        [2, 4],
         [2, 6],
-        [2, 7],
-        [3, 5],
-        [3, 6],
         [3, 7],
         [4, 5],
         [4, 6],
-        [4, 7],
         [5, 7],
-        [5, 6],
         [6, 7]
     ];
+    const combination2 = [
+        [0, 5],
+        [0, 6],
+        [1, 4],
+        [1, 7],
+        [2, 4],
+        [2, 7],
+        [3, 5],
+        [3, 6],
+        [4, 7],
+        [5, 6]
+    ];
     const lines = {};
-    combination.forEach((ids) => {
+    combination1.forEach((ids) => {
         lines[uuid()] = {
             n1: nodeIds[ids[0]],
             n2: nodeIds[ids[1]],
             material,
-            section
+            section: section1
+        };
+    });
+    combination2.forEach((ids) => {
+        lines[uuid()] = {
+            n1: nodeIds[ids[0]],
+            n2: nodeIds[ids[1]],
+            material,
+            section: section2
         };
     });
 
@@ -82,12 +93,17 @@ export default function(store) {
     };
 
     const sections = {
-        [section]: {
+        [section1]: {
             shape: "H",
             B: .3125,
             H: .32,
             tf: .01,
             tw: .01
+        },
+        [section2]: {
+            shape: "O",
+            D: .03,
+            t: .015
         }
     };
 

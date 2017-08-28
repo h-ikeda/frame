@@ -20,6 +20,7 @@ export default {
             } else {
                 this.instance.copyArray(_arr);
             }
+            this.instance.needsUpdate = true;
         },
         size(size) {
             this.instance.itemSize = size || 3;
