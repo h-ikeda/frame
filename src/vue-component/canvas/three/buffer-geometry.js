@@ -9,21 +9,21 @@ export default {
     },
     watch: {
         instance(instance) {
-            this.parent.assets.geometries[this.name] = instance;
+            Object.getPrototypeOf(this.assets.geometries)[this.name] = instance;
         }
     },
     created() {
         if (this.attribute) {
             this.attribute.split(";").forEach((attr) => {
                 const [name, attribute] = attr.split(":");
-                this.instance.addAttribute(name.trim(), this.attributes[attribute.trim()]);
+                this.instance.addAttribute(name.trim(), this.assets.attributes[attribute.trim()]);
             });
         }
-        this.$set(this.parent.assets.geometries, this.name, this.instance);
+        this.$set(Object.getPrototypeOf(this.assets.geometries), this.name, this.instance);
     },
     beforeDestroy() {
-        if (this.parent.assets.geometries[this.name] === this.instance) {
-            this.$delete(this.parent.assets.geometries, this.name);
+        if (Object.getPrototypeOf(this.assets.geometries)[this.name] === this.instance) {
+            this.$delete(Object.getPrototypeOf(this.assets.geometries), this.name);
         }
     }
 };

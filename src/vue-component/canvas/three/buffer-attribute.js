@@ -11,16 +11,16 @@ export default {
         this.instance.setArray(new Float32Array(typeof this.array === "object" ? this.array: this.array.split(" ")));
         this.instance.itemSize = this.size || 3;
         this.instance.needsUpdate = true;
-        this.$set(this.parent.assets.attributes, this.name, this.instance);
+        this.$set(Object.getPrototypeOf(this.assets.attributes), this.name, this.instance);
     },
     beforeDestroy() {
         if (this.parent.assets.attributes[this.name] === this.instance) {
-            this.$delete(this.parent.assets.attributes, this.name);
+            this.$delete(Object.getPrototypeOf(this.assets.attributes), this.name);
         }
     },
     watch: {
         instance(instance) {
-            this.$set(this.parent.assets.attributes, this.name, instance);
+            Object.getPrototypeOf(this.assets.attributes)[this.name] = instance;
         },
         array(arr) {
             const _arr = typeof arr === "object" ? arr: arr.split(" ");

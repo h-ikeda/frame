@@ -1,4 +1,4 @@
-import renderer from "./renderer.vue";
+import renderer from "./renderer";
 import object3d from "./object3d";
 import perspectiveCamera from "./perspective-camera";
 import scene from "./scene";

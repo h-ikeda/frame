@@ -1,6 +1,16 @@
 import {Object3D, Vector3, Euler} from "three";
 import three from "./three";
 
+function findParent(vm) {
+    if (vm.$parent) {
+        if (vm.$parent.$options.object3d) {
+            return vm.$parent;
+        }
+        return findParent(vm.$parent);
+    }
+    return null;
+}
+
 export default {
     mixins: [three],
     object3d: true,
@@ -12,11 +22,6 @@ export default {
     ],
     computed: {
         instance: () => new Object3D(),
-        parentObject() {
-            return (function _parent(c) {
-                return !c.parent ? c: c.parent.$options.object3d ? c.parent: _parent(c.parent);
-            })(this);
-        },
         parsedPosition() {
             const pos = this.position;
             if (!pos) {
@@ -85,8 +90,9 @@ export default {
         this.instance.position.copy(this.parsedPosition);
         this.instance.rotation.copy(this.parsedRotation);
         this.instance.scale.copy(this.parsedScale);
-        if (this.parentObject && this.parentObject.instance) {
-            this.parentObject.instance.add(this.instance);
+        const parent = findParent(this);
+        if (parent) {
+            parent.instance.add(this.instance);
             this.$emit("update");
         }
     },

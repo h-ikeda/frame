@@ -7,10 +7,10 @@ export default {
     computed: {
         instance: () => new Mesh(),
         geometryInstance() {
-            return this.geometries[this.geometry];
+            return this.assets.geometries[this.geometry];
         },
         materialInstance() {
-            return this.materials[this.material];
+            return this.assets.materials[this.material];
         }
     },
     created() {

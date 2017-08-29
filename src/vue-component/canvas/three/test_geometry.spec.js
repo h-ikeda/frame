@@ -6,7 +6,7 @@ import {BoxGeometry, CircleGeometry} from "three";
 
 describe("geometryコンポーネントのテスト", function() {
     describe("instanceが親コンポーネントのassetに適切にセットされる。", function() {
-        it("起動すると、instanceがthis.parent.assets.geometriesにセットされる。", function() {
+        it("起動すると、instanceが親コンポーネントのassets.geometriesにセットされる。", function() {
             const vm = new Vue({
                 template: `<three ref="p"><geometry ref="g" name="x" /></three>`,
                 components: {
@@ -17,7 +17,7 @@ describe("geometryコンポーネントのテスト", function() {
             vm.$mount();
             assert.equal(vm.$refs.p.assets.geometries.x, vm.$refs.g.instance);
         });
-        it("破棄すると、instanceがthis.parent.assets.geometriesから取り除かれる。", function(done) {
+        it("破棄すると、instanceが親コンポーネントのassets.geometriesから取り除かれる。", function(done) {
             const vm = new Vue({
                 template: `<three ref="p"><geometry ref="g" v-if="on" name="x" /></three>`,
                 data: {
@@ -29,14 +29,13 @@ describe("geometryコンポーネントのテスト", function() {
                 }
             });
             vm.$mount();
-            assert.equal(vm.$refs.p.assets.geometries.x, vm.$refs.g.instance);
             vm.on = false;
             Vue.nextTick(() => {
                 assert.equal(vm.$refs.p.assets.geometries.x, undefined);
                 done();
             });
         });
-        it("instanceを再生成すると、this.parent.assets.geometriesに反映される。", function(done) {
+        it("instanceを再生成すると、親コンポーネントのassets.geometriesに反映される。", function(done) {
             const vm = new Vue({
                 template: `<three ref="p"><geometry-ex ref="g" name="x" /></three>`,
                 components: {
