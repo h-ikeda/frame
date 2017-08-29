@@ -46,9 +46,6 @@
             }
         },
         methods: {
-            resizeHandler() {
-                this.$refs.rdr.$emit("resize");
-            },
             start(evt) {
                 this.evt = evt;
             },
@@ -65,11 +62,11 @@
                 this.evt = null;
             }
         },
-        created() {
-            addEventListener("resize", this.resizeHandler);
+        mounted() {
+            addEventListener("resize", this.$refs.rdr.resize);
         },
         beforeDestroy() {
-            removeEventListener("resize", this.resizeHandler);
+            removeEventListener("resize", this.$refs.rdr.resize);
         },
         components: {
             "v-renderer": renderer,

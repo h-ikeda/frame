@@ -3,6 +3,7 @@ import three from "./three";
 
 export default {
     mixins: [three],
+    object3d: true,
     props: [
         "position",
         "rotation",
@@ -13,7 +14,7 @@ export default {
         instance: () => new Object3D(),
         parentObject() {
             return (function _parent(c) {
-                return !c.parent ? c: c.parent.instance && c.parent.instance.isObject3D ? c.parent: _parent(c.parent);
+                return !c.parent ? c: c.parent.$options.object3d ? c.parent: _parent(c.parent);
             })(this);
         },
         parsedPosition() {

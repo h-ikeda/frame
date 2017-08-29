@@ -1,6 +1,7 @@
 import renderer from "./renderer.vue";
 import assert from "assert";
 import Vue from "vue";
+import {WebGLRenderer} from "three";
 
 function detectWebGLContext() {
     const canvas = document.createElement("canvas");
@@ -9,42 +10,56 @@ function detectWebGLContext() {
 }
 
 describe("rendererコンポーネントのテスト", function() {
-    it("オプションを変更すると、新しいrendererに置き換えられる。", function(done) {
+    it("rendererの描画対象(domElement)はVueが生成したcanvas。", function() {
         if (!detectWebGLContext()) {
             console.log("WebGL is not supported. Skip testing.");
             this.skip();
         }
-        const vm = new Vue({
-            template: `<renderer :antialias="aa" ref="rdr" />`,
-            data() {
-                return {
-                    aa: false
-                };
-            },
-            components: {
-                renderer
-            }
-        });
+        const vm = new Vue(renderer);
         vm.$mount();
-        const firstKey = vm.$refs.rdr.key;
-        const firstRenderer = vm.$refs.rdr.instance;
-        const firstCanvas = vm.$refs.rdr.$refs.renderer;
-        assert.equal(vm.$refs.rdr.key, firstKey);
-        assert.equal(vm.$refs.rdr.instance, firstRenderer);
-        assert.equal(vm.$refs.rdr.$refs.renderer, firstCanvas);
-        assert.equal(firstRenderer.domElement, firstCanvas);
-        vm.aa = true;
+        assert.equal(vm.instance.domElement, vm.$refs.renderer);
+    });
+    it("rendererオプションを変更すると、canvasエレメントが置換される。", function(done) {
+        if (!detectWebGLContext()) {
+            console.log("WebGL is not supported. Skip testing.");
+            this.skip();
+        }
+        const vm = new Vue(renderer);
+        vm.$mount();
+        const initCanvas = vm.$refs.renderer;
+        vm.antialias = true;
         Vue.nextTick(() => {
-            assert.equal(vm.$refs.rdr.key, firstKey + 1);
-            assert.equal(vm.$refs.rdr.instance, undefined);
-            const secondCanvas = vm.$refs.rdr.$refs.renderer;
-            assert.notEqual(secondCanvas, firstCanvas);
-            Vue.nextTick(() => {
-                assert.equal(vm.$refs.rdr.key, firstKey + 1);
-                assert.equal(vm.$refs.rdr.$refs.renderer, secondCanvas);
-                assert.equal(secondCanvas, vm.$refs.rdr.instance.domElement);
-                done();
-            });
+            assert.equal(vm.$refs.renderer.tagName, "CANVAS");
+            assert.notEqual(vm.$refs.renderer, initCanvas);
+            done();
+        });
+    });
+    it("rendererオプションを変更すると、rendererが再生成される。", function(done) {
+        if (!detectWebGLContext()) {
+            console.log("WebGL is not supported. Skip testing.");
+            this.skip();
+        }
+        const vm = new Vue(renderer);
+        vm.$mount();
+        const initRenderer = vm.instance;
+        vm.antialias = true;
+        Vue.nextTick(() => {
+            assert(vm.instance instanceof WebGLRenderer);
+            assert.notEqual(vm.instance, initRenderer);
+            done();
+        });
+    });
+    it("再生成されたrendererの描画対象(domElement)は、新しいcanvas要素。", function(done) {
+        if (!detectWebGLContext()) {
+            console.log("WebGL is not supported. Skip testing.");
+            this.skip();
+        }
+        const vm = new Vue(renderer);
+        vm.$mount();
+        vm.antialias = true;
+        Vue.nextTick(() => {
+            assert.equal(vm.instance.domElement, vm.$refs.renderer);
+            done();
         });
     });
 });

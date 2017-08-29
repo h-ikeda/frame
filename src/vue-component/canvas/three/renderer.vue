@@ -25,13 +25,11 @@
         ],
         data() {
             return {
-                mountState: false,
-                key: Number.MIN_SAFE_INTEGER || -9007199254740991
+                key: 0
             };
         },
         computed: {
             options() {
-                this.mountState = false;
                 return {
                     precision: this.precision,
                     alpha: this.alpha,
@@ -44,12 +42,10 @@
                 };
             },
             instance() {
-                if (this.mountState) {
-                    return new WebGLRenderer({
-                        canvas: this.$refs.renderer,
-                        ...this.options
-                    });
-                }
+                return new WebGLRenderer({
+                    canvas: this.$refs.renderer,
+                    ...this.options
+                });
             },
             cameraInstance() {
                 const cameraNames = Object.keys(this.cameras);
@@ -64,12 +60,19 @@
                 }
             }
         },
+        methods: {
+            resize() {
+                this.instance.setSize(this.$el.clientWidth, this.$el.clientHeight, false);
+                this.cameraInstance.aspect = this.$el.clientWidth / this.$el.clientHeight;
+                this.cameraInstance.updateProjectionMatrix();
+                this.$emit("update");
+            }
+        },
         watch: {
             options() {
                 ++this.key;
                 this.$nextTick(() => {
-                    this.mountState = true;
-                    this.$emit("resize");
+                    this.resize();
                 });
             },
             scene() {
@@ -82,12 +85,6 @@
             }
         },
         beforeCreate() {
-            this.$on("resize", () => {
-                this.instance.setSize(this.$el.clientWidth, this.$el.clientHeight, false);
-                this.cameraInstance.aspect = this.$el.clientWidth / this.$el.clientHeight;
-                this.cameraInstance.updateProjectionMatrix();
-                this.$emit("update");
-            });
             let updateRequested = false;
             this.$on("update", () => {
                 if (!updateRequested) {
@@ -100,8 +97,7 @@
             });
         },
         mounted() {
-            this.mountState = true;
-            this.$emit("resize");
+            this.resize();
         }
     };
 </script>

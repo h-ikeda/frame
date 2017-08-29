@@ -47,5 +47,18 @@ export default {
         parsedRotation() {
             return new Euler(this.parsedOrbit.phi - Math.PI * .5, this.parsedOrbit.theta, 0, "YXZ");
         }
+    },
+    created() {
+        this.$set(this.parent.assets.cameras, this.name, this.instance);
+    },
+    beforeDestroy() {
+        if (this.parent.assets.cameras[this.name] === this.instance) {
+            this.$delete(this.parent.assets.cameras, this.name);
+        }
+    },
+    watch: {
+        instance(instance) {
+            this.$set(this.parent.assets.cameras, this.name, instance);
+        }
     }
 };
