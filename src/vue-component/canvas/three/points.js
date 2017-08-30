@@ -8,19 +8,19 @@ export default {
         instance: () => new Points()
     },
     created() {
-        if (this.material in this.materials) {
-            this.instance.material = this.materials[this.material];
+        if (this.material in this.assets.materials) {
+            this.instance.material = this.assets.materials[this.material];
         }
-        if (this.geometry in this.geometries) {
-            this.instance.geometry = this.geometries[this.geometry];
+        if (this.geometry in this.assets.geometries) {
+            this.instance.geometry = this.assets.geometries[this.geometry];
         }
     },
     watch: {
         material(material) {
-            this.instance.material = this.materials[material];
+            this.instance.material = this.assets.materials[material];
         },
         geometry(geometry) {
-            this.instance.geometry = this.geometries[geometry];
+            this.instance.geometry = this.assets.geometries[geometry];
         }
     }
 };

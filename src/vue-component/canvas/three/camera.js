@@ -6,7 +6,7 @@ export default {
     props: ["target", "orbit"],
     computed: {
         instance: () => new Camera(),
-        _target() {
+        parsedTarget() {
             const target = this.target;
             if (!target) {
                 return new Vector3();
@@ -19,7 +19,7 @@ export default {
             }
             return new Vector3(...target.split(" ").map((el) => +el));
         },
-        _orbit() {
+        parsedOrbit() {
             const orbit = this.orbit;
             if (!orbit) {
                 return new Spherical();
@@ -41,17 +41,24 @@ export default {
             }, {});
             return new Spherical(args.radius, args.phi, args.theta);
         },
-        _position() {
-            return new Vector3().setFromSpherical(this._orbit).add(this._target);
+        parsedPosition() {
+            return new Vector3().setFromSpherical(this.parsedOrbit).add(this.parsedTarget);
         },
-        _rotation() {
-            return new Euler(this._orbit.phi - Math.PI * .5, this._orbit.theta, 0, "YXZ");
+        parsedRotation() {
+            return new Euler(this.parsedOrbit.phi - Math.PI * .5, this.parsedOrbit.theta, 0, "YXZ");
         }
     },
     created() {
-        this.parent().$emit("define", this.name, this.instance);
+        this.$set(Object.getPrototypeOf(this.assets.cameras), this.name, this.instance);
     },
     beforeDestroy() {
-        this.parent().$emit("undefine", this.name, this.instance);
+        if (Object.getPrototypeOf(this.assets.cameras)[this.name] === this.instance) {
+            this.$delete(Object.getPrototypeOf(this.assets.cameras), this.name);
+        }
+    },
+    watch: {
+        instance(instance) {
+            Object.getPrototypeOf(this.assets.cameras)[this.name] = instance;
+        }
     }
 };

@@ -1,93 +1,66 @@
-import {Scene} from "three";
+//
+// プロトタイプチェーンを利用した名前空間を提供するミックスインコンポーネントです。
+// このコンポーネントをmixinsに追加すると、this.assetsのプロパティとしてthree.jsのインスタンスにアクセスできます。
+//
+// 例えば下記のようなVueインスタンスを生成します。
+//
+// const vm = new Vue({
+//    mixins: [three],
+//    created() {
+//        this.assets.materials.a = "material-a";
+//    },
+//    components: {
+//        child: {
+//            mixins: [three],
+//            created() {
+//                this.assets.materials.b = "material-b";
+//            }
+//        }
+//    },
+//    template: "<child ref="child" />"
+// }).$mount();
+//
+// このとき、vm.$refs.child.assetsから a: "material-a", b: "material-b" の両データにアクセスできます。
+// b はオブジェクト自身のキー、a はプロトタイプオブジェクトのキーとなります。
+// 親コンポーネントの名前空間にキーを追加したい場合は、Object.getPrototypeOfメソッドでプロトタイプオブジェクトを取得します。
+// 
+
+function findParent(vm) {
+    if (vm.$parent) {
+        if (vm.$parent.$options.three) {
+            return vm.$parent;
+        }
+        return findParent(vm.$parent);
+    }
+    return null;
+}
 
 export default {
+    three: true,
     data() {
+        const parent = findParent(this);
         return {
-            localMaterials: {},
-            localGeometries: {},
-            localAttributes: {},
-            localCameras: {},
-            localScenes: {}
+            assets: {
+                materials: Object.create(parent && parent.assets.materials),
+                geometries: Object.create(parent && parent.assets.geometries),
+                attributes: Object.create(parent && parent.assets.attributes),
+                cameras: Object.create(parent && parent.assets.cameras),
+                scenes: Object.create(parent && parent.assets.scenes)
+            }
         };
     },
-    computed: {
-        three: () => true,
-        materials() {
-            const parent = this.parent();
-            return parent ? {
-                ...parent.materials,
-                ...this.localMaterials
-            }: this.localMaterials;
-        },
-        geometries() {
-            const parent = this.parent();
-            return parent ? {
-                ...parent.geometries,
-                ...this.localGeometries
-            }: this.localGeometries;
-        },
-        attributes() {
-            const parent = this.parent();
-            return parent ? {
-                ...parent.attributes,
-                ...this.localAttributes
-            }: this.localAttributes;
-        },
-        cameras() {
-            const parent = this.parent();
-            return parent ? {
-                ...parent.cameras,
-                ...this.localCameras
-            }: this.localCameras;
-        },
-        scenes() {
-            const parent = this.parent();
-            return parent ? {
-                ...parent.scenes,
-                ...this.localScenes
-            }: this.localScenes;
-        }
-    },
-    methods: {
-        parent(component) {
-            const vm = component || this;
-            return (!vm.$parent || vm.$parent.three) ? vm.$parent: this.parent(vm.$parent);
-        }
-    },
     beforeCreate() {
-        this.$on("define", (name, instance) => {
-            if (instance.isMaterial) {
-                this.$set(this.localMaterials, name, instance);
-            } else if (instance.isGeometry || instance.isBufferGeometry) {
-                this.$set(this.localGeometries, name, instance);
-            } else if (instance.isBufferAttribute) {
-                this.$set(this.localAttributes, name, instance);
-            } else if (instance.isCamera) {
-                this.$set(this.localCameras, name, instance);
-            } else if (instance instanceof Scene) {
-                this.$set(this.localScenes, name, instance);
-            }
-        });
-        this.$on("undefine", (name, instance) => {
-            if (instance.isMaterial) {
-                this.$delete(this.localMaterials, name);
-            } else if (instance.isGeometry || instance.isBufferGeometry) {
-                this.$delete(this.localGeometries, name);
-            } else if (instance.isBufferAttribute) {
-                this.$delete(this.localAttributes, name);
-            } else if (instance.isCamera) {
-                this.$delete(this.localCameras, name);
-            } else if (instance instanceof Scene) {
-                this.$delete(this.localScenes, name);
-            }
-        });
+        const parent = findParent(this);
+        if (parent) {
+            this.$on("update", () => {
+                parent.$emit("update");
+            });
+        }
     },
     render(h) {
         if (process.env.NODE_ENV !== "production") {
             return h("div", {
-                attrs: {
-                    ...this.$props
-                }
+                attrs: this.$props
             }, this.$slots.default);
         }
         if (this.$slots.default) {

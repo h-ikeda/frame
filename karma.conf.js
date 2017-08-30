@@ -9,6 +9,7 @@ module.exports = (config) => {
         preprocessors: {
             "test/index.js": ["webpack", "sourcemap"]
         },
+        polyfill: ["Math.hypot", "Promise"],
         webpack: require("./webpack.config"),
         beforeMiddleware: ["webpackBlocker"],
         coverageIstanbulReporter: {
