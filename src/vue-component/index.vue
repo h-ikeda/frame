@@ -43,7 +43,6 @@
                 this.$store.state.component.dialog.mode の値に対応するダイアログを表示します。
         -->
         <frame-dialog />
-
     </div>
 </template>
 
@@ -77,15 +76,17 @@
                 };
             }
         },
-        components: prefixed("frame-", {
-            toolbar,
-            drawer,
-            datatable,
-            canvas,
-            fab,
-            progress,
-            dialog
-        })
+        components: {
+            ...prefixed("frame-", {
+                toolbar,
+                drawer,
+                datatable,
+                canvas,
+                fab,
+                progress,
+                dialog
+            })
+        }
     };
 </script>
 

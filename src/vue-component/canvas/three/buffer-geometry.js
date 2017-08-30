@@ -7,16 +7,23 @@ export default {
     computed: {
         instance: () => new BufferGeometry()
     },
+    watch: {
+        instance(instance) {
+            Object.getPrototypeOf(this.assets.geometries)[this.name] = instance;
+        }
+    },
     created() {
         if (this.attribute) {
             this.attribute.split(";").forEach((attr) => {
                 const [name, attribute] = attr.split(":");
-                this.instance.addAttribute(name.trim(), this.attributes[attribute.trim()]);
+                this.instance.addAttribute(name.trim(), this.assets.attributes[attribute.trim()]);
             });
         }
-        this.parent().$emit("define", this.name, this.instance);
+        this.$set(Object.getPrototypeOf(this.assets.geometries), this.name, this.instance);
     },
     beforeDestroy() {
-        this.parent().$emit("undefine", this.name, this.instance);
+        if (Object.getPrototypeOf(this.assets.geometries)[this.name] === this.instance) {
+            this.$delete(Object.getPrototypeOf(this.assets.geometries), this.name);
+        }
     }
 };

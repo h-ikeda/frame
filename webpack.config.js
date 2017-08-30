@@ -136,7 +136,9 @@ module.exports = {
         // ブラウザに適したPolyfillを読み込む<script>タグがindex.htmlに挿入されます。
         // Polyfill service (https://polyfill.io)
         //
-        new HtmlWebpackPolyfillsPlugin(),
+        new HtmlWebpackPolyfillsPlugin({
+            features: ["Math.hypot", "Promise"]
+        }),
         //
         // script読込み中にロード画面を表示するHTMLが挿入されます。
         //

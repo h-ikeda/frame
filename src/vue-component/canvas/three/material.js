@@ -7,10 +7,17 @@ export default {
     computed: {
         instance: () => new Material()
     },
+    watch: {
+        instance(instance) {
+            Object.getPrototypeOf(this.assets.materials)[this.name] = instance;
+        }
+    },
     created() {
-        this.parent().$emit("define", this.name, this.instance);
+        this.$set(Object.getPrototypeOf(this.assets.materials), this.name, this.instance);
     },
     beforeDestroy() {
-        this.parent().$emit("undefine", this.name, this.instance);
+        if (Object.getPrototypeOf(this.assets.materials)[this.name] === this.instance) {
+            this.$delete(Object.getPrototypeOf(this.assets.materials), this.name);
+        }
     }
 };
