@@ -42,7 +42,7 @@
     "sass-loader": "^6.0.0",
     "style-loader": "^0.18.0",
     "superagent": "^3.5.2",
-    "three": "^0.87.1",
+    "three": "^0.88.0",
     "url-loader": "^0.5.0",
     "uuid": "^3.1.0",
     "vue": "^2.4.0",
